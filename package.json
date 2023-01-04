@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "@discordjs/voice": "^0.13.0",
+    "@napi-rs/canvas": "^0.1.30",
+    "canvas": "^2.9.3",
+    "cron": "^2.1.0",
+    "discord-canvas": "^1.5.2",
+    "discord.js": "^14.1.2",
+    "edit-json-file": "^1.7.0",
+    "rss-parser": "^3.12.0"
+  }
+}
