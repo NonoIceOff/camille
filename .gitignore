@@ -1,3 +1,6 @@
+# Private config file
+config.js
+
 # Logs
 logs
 *.log

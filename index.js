@@ -1,4 +1,5 @@
 const test = 1
+const config = require("./config.js");
 
 const { Discord,  REST, Routes, ActionRowBuilder, SelectMenuBuilder , ButtonBuilder, ButtonStyle, EmbedBuilder, Client, GatewayIntentBits, DiscordAPIError, Message, Guild, UserFlags, PermissionOverwrites, PermissionsBitField, Partials, Events, AttachmentBuilder, MessageAttachment} = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
@@ -35,9 +36,9 @@ const client = new Client({
 const { joinVoiceChannel } = require('@discordjs/voice');
 
 
-var rest = new REST({ version: '10' }).setToken("MTAwNTYxODc4MzUwMDY0NDM3Mg.GYna_5.nJG-9ZdGD_US2nGLYlsxcoDjbOquxcikUPfMPI");
+var rest = new REST({ version: '10' }).setToken(config.token);
 if (test == 1) {
-    rest = new REST({ version: '10' }).setToken("MTA1OTkyNDk3ODk5MDA3MTgzMA.GNPZlk.khryXj0TckbWCQFC1Z8iX_jy-t87dE7zdZl9Rw");
+    rest = new REST({ version: '10' }).setToken(config.testToken);
 }
 
 var adminrole = null
@@ -2548,7 +2549,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 });
 
 if (test == 0) {
-    client.login("MTAwNTYxODc4MzUwMDY0NDM3Mg.GYna_5.nJG-9ZdGD_US2nGLYlsxcoDjbOquxcikUPfMPI");
+    client.login(config.token);
 } else {
-    client.login("MTA1OTkyNDk3ODk5MDA3MTgzMA.GNPZlk.khryXj0TckbWCQFC1Z8iX_jy-t87dE7zdZl9Rw");
+    client.login(config.testToken);
 }
