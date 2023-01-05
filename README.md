@@ -14,7 +14,7 @@ git clone https://github.com/NonoIceOff/camille
 - Then, go to the bot folder and install dependencies using these commands
 ```
 cd camille
-npm -i
+npm i
 ```
 ### Run
 - To run the bot, you have to enter the following command
