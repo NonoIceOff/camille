@@ -1,5 +1,7 @@
 const test = 1
 const config = require("./config.js");
+const constantIDs = require("./src/constants/ids.js");
+const constantYoutube = require("./src/constants/youtube.js");
 
 const { Discord,  REST, Routes, ActionRowBuilder, SelectMenuBuilder , ButtonBuilder, ButtonStyle, EmbedBuilder, Client, GatewayIntentBits, DiscordAPIError, Message, Guild, UserFlags, PermissionOverwrites, PermissionsBitField, Partials, Events, AttachmentBuilder, MessageAttachment} = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
@@ -14,10 +16,7 @@ if (test == 0) {
 const { request } = require('undici');
 
 
-var guild_id = "909054839194013726"
-if (test == 1) {
-    guild_id = "918590223309496401"
-}
+var guild_id = constantIDs.workingGuild[test];
 
 const client = new Client({
     intents : [
@@ -228,12 +227,8 @@ const testcmd = new SlashCommandBuilder()
     .setDescription("test");
 
 client.on("ready", async () => {
-    adminrole = client.guilds.cache.get(guild_id).roles.cache.get("972596571915026512")
-    dreamteam = client.guilds.cache.get(guild_id).roles.cache.get("995357904834134046")
-    if (test == 1) {
-        adminrole = client.guilds.cache.get(guild_id).roles.cache.get("1031268743516520589")
-        dreamteam = client.guilds.cache.get(guild_id).roles.cache.get("1031268671470964766")
-    }
+    adminrole = client.guilds.cache.get(guild_id).roles.cache.get(constantIDs.roles.admin[test]);
+    dreamteam = client.guilds.cache.get(guild_id).roles.cache.get(constantIDs.roles.dreamTeam[test]);
 
     let votestart = new cron.CronJob('00 34 01 1 * *', startvote);
     votestart.start();
@@ -265,17 +260,17 @@ const applyText = (canvas, text) => {
 
 async function givegrades() {
 
-    const Role = client.guilds.cache.get(guild_id).roles.cache.get("1045465637138477148");
+    const Role = client.guilds.cache.get(guild_id).roles.cache.get(constantIDs.roles.superDreamTeam[test]);
     Role.members.forEach((member, i) => { // Looping through the members of Role.
         member.roles.remove(Role); // Removing the Role.
     });
 
-    const Role2 = client.guilds.cache.get(guild_id).roles.cache.get("1039297427431247873");
+    const Role2 = client.guilds.cache.get(guild_id).roles.cache.get(constantIDs.roles.dreamTeamPlus[test]);
     Role2.members.forEach((member, i) => { // Looping through the members of Role.
         member.roles.remove(Role2); // Removing the Role.
     });
 
-    const Role3 = client.guilds.cache.get(guild_id).roles.cache.get("995357904834134046");
+    const Role3 = client.guilds.cache.get(guild_id).roles.cache.get(constantIDs.roles.dreamTeam[test]);
     Role3.members.forEach((member, i) => { // Looping through the members of Role.
         member.roles.remove(Role3); // Removing the Role.
     });
@@ -295,15 +290,15 @@ async function givegrades() {
         for (let i = 0; i < 3; i++) {
             if (shopdico[key]["Grades"][i] >= 1) {
                 if (i == 0) {
-                    var role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === "995357904834134046")
+                    var role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === constantIDs.roles.dreamTeam[test])
                     member.roles.add(role).catch(console.error);
                 }
                 if (i == 1) {
-                    var role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === "1039297427431247873")
+                    var role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === constantIDs.roles.dreamTeamPlus[test])
                     member.roles.add(role).catch(console.error);
                 }
                 if (i == 2) {
-                    var role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === "1045465637138477148")
+                    var role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === constantIDs.roles.superDreamTeam[test])
                     member.roles.add(role).catch(console.error);
                 }
                 shopdico[key]["Grades"][i] -= 1
@@ -329,7 +324,7 @@ function dateDiffInDays(a, b) {
 }
 
 async function newvid() {
-    const data = await parser.parseURL("https://youtube.com/feeds/videos.xml?channel_id=UCQQSTVhlzarMRlSuTfjuMzg").catch(console.error);
+    const data = await parser.parseURL("https://youtube.com/feeds/videos.xml?channel_id="+constantYoutube.channelId).catch(console.error);
     const rawData = fs.readFileSync("./video.json");
     const jsonData = JSON.parse(rawData);
 
@@ -350,16 +345,15 @@ async function newvid() {
             },
             author: {
                 name: author,
-                iconURL : "https://yt3.ggpht.com/u48Ub7sOLV4jFWqtqsyqYU3387_mUIh17bweURjY0HtwaPkV96xVdyLcHCZe-fuf2wCzhFyh=s88-c-k-c0x00ffffff-no-rj-mo",
-                url: "https://www.youtube.com/channel/UCQQSTVhlzarMRlSuTfjuMzg/?sub_confirmation=1"
+                iconURL : constantYoutube.channelIcon,
+                url: constantYoutube.channelLink
             }
         })
-        //await client.guilds.cache.get(guild_id).channels.cache.get("1032739537950101607").send({content: "<@&1006559817164406875> **Nouvelle vidéo !**" ,embeds: [Embed]})
 
         if (data.items[0]["title"].includes("#shorts") == true) {
-            await client.guilds.cache.get(guild_id).channels.cache.get("1050825246657220608").send({content: "<@&946429189630881872> **Nouveau short !**" ,embeds: [Embed]})
+            await client.guilds.cache.get(guild_id).channels.cache.get(constantIDs.channels.shortPost[test]).send({content: "<@&946429189630881872> **Nouveau short !**" ,embeds: [Embed]})
         } else {
-            await client.guilds.cache.get(guild_id).channels.cache.get("939249174849933404").send({content: "<@&940294478038696006> **Nouvelle vidéo !**" ,embeds: [Embed]})
+            await client.guilds.cache.get(guild_id).channels.cache.get(constantIDs.channels.youtubePost[test]).send({content: "<@&940294478038696006> **Nouvelle vidéo !**" ,embeds: [Embed]})
         }
         
     };
@@ -370,7 +364,7 @@ async function startvote() {
     var votesdico = file.get("votes")
     votesdico["voted"] = {"start":1}
     if (votesdico["winner"]) {
-        role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === "1045465637138477148")
+        role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === constantIDs.roles.superDreamTeam[test])
         client.guilds.cache.get(guild_id).members.fetch(votesdico["winner"]).then(member => {
             member.roles.remove(role);
         }).catch(console.log);
@@ -383,7 +377,7 @@ async function startvote() {
         .setColor(10181046)
         .setTitle(":envelope:  __**Les votes du mois sont ouverts**__")
         .setDescription("Les votes du mois sont ouverts, vous avez maintenant 24h pour élire le meilleur membre du serveur.\nL'élu recevra le rôle <@1045446827887042700>")
-    client.guilds.cache.get(guild_id).channels.cache.get("911659053216825414").send({embeds: [exampleEmbed] })
+    client.guilds.cache.get(guild_id).channels.cache.get(constantIDs.channels.bot[test]).send({embeds: [exampleEmbed] })
 
     file.set("votes", votesdico)
     file.save()
@@ -431,7 +425,7 @@ async function stopvote() {
             exampleEmbed.addFields({ name: i.toString()+"e **|** "+personne, value: (classementarray[i-1][0]).toString()+" votes", inline: true })
         }
     }
-    client.guilds.cache.get(guild_id).channels.cache.get("911659053216825414").send({embeds: [exampleEmbed] })
+    client.guilds.cache.get(guild_id).channels.cache.get(constantIDs.channels.bot[test]).send({embeds: [exampleEmbed] })
 
     votesdiso = {}
     votesdiso["voted"] = {"start":0}
@@ -439,7 +433,7 @@ async function stopvote() {
     file.set("votes", votesdiso)
     file.save()
 
-    role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === "1045465637138477148")
+    role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === constantIDs.roles.superDreamTeam[test])
     const member = client.guilds.cache.get(guild_id).members.cache.get(winner_user.id)
     member.roles.add(role).catch(console.error);
     member.send("Vous avez gagné le vote du mois, profitez de votre rôle **SUPER DREAM TEAM** ce mois-ci.")
@@ -523,7 +517,7 @@ function add_xp_to_user(user,xp) {
         membersdico[user.id]["xp"] = membersdico[user.id]["xp"] - (5*(Math.pow(membersdico[user.id]["niveau"], 2))+(50*membersdico[user.id]["niveau"])+100)
         membersdico[user.id]["niveau"] += 1
         if (membersdico[user.id]["xp"] < 5*(Math.pow(membersdico[user.id]["niveau"], 2))+(50*membersdico[user.id]["niveau"])+100) {
-            client.guilds.cache.get(guild_id).channels.cache.get("911659053216825414").send("<@"+user.id+"> tu es passé au **NIVEAU "+membersdico[user.id]["niveau"].toString()+"**")
+            client.guilds.cache.get(guild_id).channels.cache.get(constantIDs.channels.bot[test]).send("<@"+user.id+"> tu es passé au **NIVEAU "+membersdico[user.id]["niveau"].toString()+"**")
         }
     }
     file.set("members",membersdico)
@@ -540,8 +534,8 @@ client.on("guildMemberAdd", member => {
                 .setLabel('👋 Fais coucou !')
                 .setStyle(ButtonStyle.Danger),
         );
-    client.guilds.cache.get(guild_id).channels.cache.get("909054839646986252").send({content :"**<@"+member.id+"> bienvenue !** "+messagesdico[messagesdicoindex], components: [row]});
-    member.roles.add("909079308121813012");
+    client.guilds.cache.get(guild_id).channels.cache.get(constantIDs.channels.welcomeChannel[test]).send({content :"**<@"+member.id+"> bienvenue !** "+messagesdico[messagesdicoindex], components: [row]});
+    member.roles.add(constantIDs.roles.member[test]);
 });
 
 client.on("messageCreate", async message => {
@@ -552,7 +546,7 @@ client.on("messageCreate", async message => {
         let fileg = editJsonFile("./infos.json");
         var gamesdico = fileg.get("games");
         var membersdico = file.get("members");
-        if(message.author.id != "1005618783500644372"){
+        if(message.author.id != client.user.id){
             if(!gamesdico[message.author.id]) {
                 gamesdico[message.author.id] = {"game_name":"null"}
             }
@@ -597,21 +591,19 @@ client.on("messageCreate", async message => {
         add_xp_to_user(interuser,150)
     }
 
-    if(message.author.id != "1005618783500644372"){
-        if(message.author.id != "1059924978990071830"){
-            if (message.channelId != "911659053216825414") {
-            //if(message.guildId == guild_id) {
-                let file3 = editJsonFile("./infos.json")
-                var membersdico = file3.get("members")
-                if (!membersdico[message.author.id]) {
-                    membersdico[message.author.id] = {"xp_total":0,"xp":0,"niveau":0,"esheep":0,"bumpstotal":0}
-                }
-                file3.set("members",membersdico)
-                file3.save()
-                var gain_xp = 5+Math.floor(Math.random() * 5)+1
-                add_xp_to_user(message.author,gain_xp)
+    if(!message.author.bot){
+        if (message.channelId != constantIDs.channels.bot[test]) {
+        //if(message.guildId == guild_id) {
+            let file3 = editJsonFile("./infos.json")
+            var membersdico = file3.get("members")
+            if (!membersdico[message.author.id]) {
+                membersdico[message.author.id] = {"xp_total":0,"xp":0,"niveau":0,"esheep":0,"bumpstotal":0}
             }
-       }
+            file3.set("members",membersdico)
+            file3.save()
+            var gain_xp = 5+Math.floor(Math.random() * 5)+1
+            add_xp_to_user(message.author,gain_xp)
+        }
     }
 });
 
@@ -666,7 +658,7 @@ async function start_fight_qualifs() {
         }
 
         await timer(60000/60*600) // then the created Promise can be awaited
-        client.guilds.cache.get(guild_id).channels.cache.get("976917009717674054").send({embeds: [exampleEmbed]})
+        client.guilds.cache.get(guild_id).channels.cache.get(constantIDs.event.fightDiscord.channel[test]).send({embeds: [exampleEmbed]})
     }
 
     await timer(60000/60) // Pause de 10 sec
@@ -701,7 +693,7 @@ async function start_fight_qualifs() {
 
         var points = classementarray[i-1][0]
         if (i == 20) {
-            client.guilds.cache.get(guild_id).channels.cache.get("976917009717674054").send({embeds: [exampleEmbed]})
+            client.guilds.cache.get(guild_id).channels.cache.get(constantIDs.event.fightDiscord.channel[test]).send({embeds: [exampleEmbed]})
             var exampleEmbed = new EmbedBuilder()
                 .setColor(12154643)
                 .setTitle("**Fight Discord | Manche qualificative | Résultats 2**")
@@ -719,7 +711,7 @@ async function start_fight_qualifs() {
     file.set("Saisons",fightdico)
     file.save()
 
-    client.guilds.cache.get(guild_id).channels.cache.get("976917009717674054").send({embeds: [exampleEmbed]})
+    client.guilds.cache.get(guild_id).channels.cache.get(constantIDs.event.fightDiscord.channel[test]).send({embeds: [exampleEmbed]})
 
     await timer(60000/60)
     start_fight_finals()
@@ -769,7 +761,7 @@ async function start_fight_finals() {
             }
             min += 1
         }
-        client.guilds.cache.get(guild_id).channels.cache.get("976917009717674054").send({embeds: [exampleEmbed]})
+        client.guilds.cache.get(guild_id).channels.cache.get(constantIDs.event.fightDiscord.channel[test]).send({embeds: [exampleEmbed]})
 
         await timer(60000/60*600)
 
@@ -823,7 +815,7 @@ async function start_fight_finals() {
                     exampleEmbed.addFields({ name: pseudos[0], value: match_j1[1].toString()+" points", inline: true })
                 }
 
-                client.guilds.cache.get(guild_id).channels.cache.get("976917009717674054").send({embeds: [exampleEmbed]})
+                client.guilds.cache.get(guild_id).channels.cache.get(constantIDs.event.fightDiscord.channel[test]).send({embeds: [exampleEmbed]})
                 match_j1 = ["id",0]
                 pseudos[0] = ""
                 await timer(60000/60*600)
@@ -843,7 +835,7 @@ async function start_fight_finals() {
 
         max = max/2
     }
-    client.guilds.cache.get(guild_id).channels.cache.get("976917009717674054").send(":tada: **"+win+" a gagné**")
+    client.guilds.cache.get(guild_id).channels.cache.get(constantIDs.event.fightDiscord.channel[test]).send(":tada: **"+win+" a gagné**")
     fightdico["Number"] = fightdico["Number"] + 1
 
     if (!fightdico["Wins"][win]) {
@@ -1195,7 +1187,7 @@ client.on("interactionCreate", async interaction => {
 
         if(interaction.commandName === "hug"){
             var membre = interaction.options.getUser('membre')
-            if (membre != interaction.user && membre.id != "1005618783500644372") {
+            if (membre != interaction.user && !membre.bot) {
                 await interaction.reply("__**<@"+interaction.user+"> fait un câlin**__ à <@"+membre+"> *(c'est mewgnon)*");
             }
             else if (membre == interaction.user) {
@@ -1258,7 +1250,7 @@ client.on("interactionCreate", async interaction => {
         }
 
         if(interaction.commandName === "vote"){
-            if (interaction.channel == client.channels.cache.get("911659053216825414")) {
+            if (interaction.channel == client.channels.cache.get(constantIDs.channels.bot[test])) {
                 let file = editJsonFile("./infos.json");
                 var membersdico = file.get("votes");
                 var max_votes = 1
@@ -1591,7 +1583,7 @@ client.on("interactionCreate", async interaction => {
                         .setLabel('⚔️ INSCRIVEZ-VOUS')
                         .setStyle(ButtonStyle.Danger),
                 )
-            client.guilds.cache.get(guild_id).channels.cache.get("976917009717674054").send({content:"**FIGHT DISCORD SAISON "+fightdico["Number"].toString()+"** ("+fightdico[fightdico["Number"].toString()]["Inscriptions"].length.toString()+"/"+fightdico[fightdico["Number"].toString()]["Joueurs"].toString()+")",components: [row]})
+            client.guilds.cache.get(guild_id).channels.cache.get(constantIDs.event.fightDiscord.channel[test]).send({content:"**FIGHT DISCORD SAISON "+fightdico["Number"].toString()+"** ("+fightdico[fightdico["Number"].toString()]["Inscriptions"].length.toString()+"/"+fightdico[fightdico["Number"].toString()]["Joueurs"].toString()+")",components: [row]})
             
             const row2 = new ActionRowBuilder()
                 .addComponents(
@@ -1679,7 +1671,7 @@ client.on("interactionCreate", async interaction => {
             if (text4 != "") {
                 exampleEmbed.addFields({ name: "31-32", value: text4, inline: true})
             }
-            client.guilds.cache.get(guild_id).channels.cache.get("976917009717674054").send({embeds: [exampleEmbed]})
+            client.guilds.cache.get(guild_id).channels.cache.get(constantIDs.event.fightDiscord.channel[test]).send({embeds: [exampleEmbed]})
             start_fight_qualifs()
             interaction.deferUpdate()
         }
@@ -1894,11 +1886,11 @@ function game_jp(user) {
             number_bot = membersdico[user.id]["result"]
         }
     }
-    if (typeof user !== 'undefined' && user.id != "1005618783500644372") {
+    if (typeof user !== 'undefined' && !user.bot) {
         user.createDM().then(async (channel) => {
              channel.messages.fetch({ limit: 1 }).then(messages => {
                 let lastMessage = messages.first();
-                if (lastMessage.author.id != "1005618783500644372") {
+                if (!lastMessage.author.bot) {
                     // SI ENCORE ESSAIS
                     if (!isNaN(lastMessage.content)) {
                         number_bot = membersdico[user.id]["result"]
@@ -2171,12 +2163,12 @@ function game_p4(user) {
     var item_bot = itemgame[membersdico[user.id]["result"]]
     var number_placed = 0
 
-    if (typeof user !== 'undefined' && user.id != "1005618783500644372") {
+    if (typeof user !== 'undefined' && !user.bot) {
         user.createDM().then(async (channel) => {
              channel.messages.fetch({ limit: 1 }).then(messages => {
                 let lastMessage = messages.first();
                 lastMessage.content = lastMessage.content.toLowerCase()
-                if (lastMessage.author.id != "1005618783500644372") {
+                if (!lastMessage.author.bot) {
                     // SI ENCORE ESSAIS
                     if (!isNaN(lastMessage.content)) {
                         if (lastMessage.content > 0 && lastMessage.content <= 7-membersdico[user.id]["selection"]) {
@@ -2434,22 +2426,22 @@ client.on(Events.MessageReactionRemove, async (reaction, user) => {
 		}
 	}
 
-    if (reaction.message.author.id == '1005618783500644372'){
+    if (reaction.message.author.bot){
         if (reaction.message.embeds.length >= 1) {
 
-            if (reaction.message.embeds[0]["data"]["title"].startsWith(":bell:") === true) {
+            if (reaction.message.embeds[0]["data"]["title"].startsWith(":bell:")) {
                 var role = null
                 if (reaction.emoji.name === "📊") {
-                    role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === "940294485940781177")
+                    role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === constantIDs.roles.notifPoll[test])
                 }
                 if (reaction.emoji.name === "🔴") {
-                    role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === "940294478038696006")
+                    role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === constantIDs.roles.notifVideo[test])
                 }
                 if (reaction.emoji.name === "🏆") {
-                    role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === "940294130850988082")
+                    role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === constantIDs.roles.notifEvent[test])
                 }
                 if (reaction.emoji.name === "🍺") {
-                    role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === "946429189630881872")
+                    role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === constantIDs.roles.notifShorts[test])
                 }
                 if (role != null) {
                     const member = client.guilds.cache.get(guild_id).members.cache.get(user.id)
@@ -2488,21 +2480,21 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 		}
 	}
 
-    if (reaction.message.author.id == '1005618783500644372'){
+    if (reaction.message.author.bot){
         if (reaction.message.embeds.length >= 1) {
-            if (reaction.message.embeds[0]["data"]["title"].startsWith(":bell:") === true) {
+            if (reaction.message.embeds[0]["data"]["title"].startsWith(":bell:")) {
                 var role = null
                 if (reaction.emoji.name === "📊") {
-                    role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === "940294485940781177")
+                    role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === constantIDs.roles.notifPoll[test])
                 }
                 if (reaction.emoji.name === "🔴") {
-                    role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === "940294478038696006")
+                    role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === constantIDs.roles.notifVideo[test])
                 }
                 if (reaction.emoji.name === "🏆") {
-                    role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === "940294130850988082")
+                    role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === constantIDs.roles.notifEvent[test])
                 }
                 if (reaction.emoji.name === "🍺") {
-                    role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === "946429189630881872")
+                    role = client.guilds.cache.get(guild_id).roles.cache.find(r => r.id === constantIDs.roles.notifShorts[test])
                 }
                 if (role != null) {
                     const member = client.guilds.cache.get(guild_id).members.cache.get(user.id)
@@ -2519,7 +2511,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                     if (!tirages_dic[reaction.message.id]["participate"]) {
                         tirages_dic[reaction.message.id]["participate"] = []
                     }
-                    if (user.id != "1005618783500644372" && user.id != tirages_dic[reaction.message.id]["author"]) {
+                    if (!user.bot && user.id != tirages_dic[reaction.message.id]["author"]) {
                         tirages_dic[reaction.message.id]["participate"].push(user.id)
                     }
                     if (user.id == tirages_dic[reaction.message.id]["author"]) {
