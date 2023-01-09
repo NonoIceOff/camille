@@ -1,9 +1,12 @@
-const { Events, MessageType } = require("discord.js");
+const { Events } = require("discord.js");
 
 const constantIDs = require("./constants/ids");
 
 const { client, options } = require("./client");
 const welcomeMessage = require("./misc/welcomeMessage")
+const gamesCore = require("./games/core")
+const bump = require("./misc/bump");
+const xpSources = require("./xp/sources");
 
 client.on(Events.VoiceStateUpdate, (oldVoiceState, newVoiceState) => {
     // Listeing to the voiceStateUpdate event
@@ -46,100 +49,15 @@ client.on(Events.GuildMemberAdd, (member) => {
 });
 
 client.on(Events.MessageCreate, async (message) => {
-    //Si dans un jeu
-    if (message.guild === null) {
-        let file = editJsonFile("./infos.json");
-        let fileg = editJsonFile("./infos.json");
-        var gamesdico = fileg.get("games");
-        var membersdico = file.get("members");
-        if (message.author.id != client.user.id) {
-            if (!gamesdico[message.author.id]) {
-                gamesdico[message.author.id] = {
-                    game_name: "null",
-                };
-            }
-            fileg.set("games", gamesdico);
-            fileg.save();
-            if (!membersdico[message.author.id]) {
-                membersdico[message.author.id] = {
-                    xp_total: 0,
-                    xp: 0,
-                    niveau: 0,
-                    esheep: 0,
-                    bumpstotal: 0,
-                };
-            }
-            file.set("members", membersdico);
-            file.save();
-            // JUSTE PRIX
-            if (gamesdico[message.author.id]["game_name"] == "juste_prix") {
-                game_jp(message.author);
-            }
-            // PUISSANCE 4
-            if (gamesdico[message.author.id]["game_name"] == "puissance_4") {
-                game_p4(message.author);
-            }
-        }
-    }
-
-    if (message.type === MessageType.ChatInputCommand && message.interaction.commandName == "bump") {
-        var inter = message.interaction.user.id;
-        var interuser = message.interaction.user;
-        message.channel.lastMessage.delete();
-        let file2 = editJsonFile("./infos.json");
-        var bumpmember = file2.get("bump");
-        var membersdico = file2.get("members");
-        if (!membersdico[inter]) {
-            membersdico[inter] = {
-                xp_total: 0,
-                xp: 0,
-                niveau: 0,
-                esheep: 0,
-                bumpstotal: 0,
-            };
-        }
-        bumpmember[inter] = bumpmember[inter] + 1;
-        membersdico[inter]["bumpstotal"] = membersdico[inter]["bumpstotal"] + 1;
-        file2.set("bump", bumpmember);
-        file2.set("members", membersdico);
-        file2.save();
-        const exampleEmbed = new EmbedBuilder()
-            .setColor(10181046)
-            .setTitle(":flashlight:   __**Bump effectué !**__")
-            .setDescription(
-                "***Merci <@" +
-                    inter +
-                    "> pour le bump***, il a bien été comptabilisé au classement des bumps *(/bumplead)*. Vous contribuez au développement du serveur !\nVous avez gagné **150 xp** !"
-            );
-        message.channel.send({ embeds: [exampleEmbed] });
-        add_xp_to_user(interuser, 150);
-    }
-
-    if (!message.author.bot) {
-        if (message.channelId != constantIDs.channels.bot[+options.test]) {
-            //if(message.guildId == guild_id) {
-            let file3 = editJsonFile("./infos.json");
-            var membersdico = file3.get("members");
-            if (!membersdico[message.author.id]) {
-                membersdico[message.author.id] = {
-                    xp_total: 0,
-                    xp: 0,
-                    niveau: 0,
-                    esheep: 0,
-                    bumpstotal: 0,
-                };
-            }
-            file3.set("members", membersdico);
-            file3.save();
-            var gain_xp = 5 + Math.floor(Math.random() * 5) + 1;
-            add_xp_to_user(message.author, gain_xp);
-        }
-    }
+    gamesCore.onMessage(message);
+    bump.bump(message);
+    xpSources.fromMessage(message);
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
+    
     if (interaction.isChatInputCommand()) {
-        if (interaction.commandName === "+options.test") {
+        if (interaction.commandName === "test") {
             // Create a 700x250 pixel canvas and get its context
             // The context will be used to modify the canvas
             const canvas = Canvas.createCanvas(700, 250);
