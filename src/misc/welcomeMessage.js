@@ -33,12 +33,14 @@ function sendWelcome(member) {
         var helloMessagesIndex = Math.floor(
             Math.random() * helloMessages.length
         );
+
         const row = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
                 .setCustomId("coucou")
                 .setLabel("👋 Fais coucou !")
                 .setStyle(ButtonStyle.Danger)
         );
+
         client.guilds.cache
             .get(constantIDs.workingGuild[+options.test])
             .channels.cache.get(

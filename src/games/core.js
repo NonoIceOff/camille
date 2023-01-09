@@ -13,7 +13,7 @@ const games = {
  */
 function onMessage(message) {
     if (!message.guild && !message.author.bot) {
-        // TODO : Get current game from DB
+        // TODO: Get current game from DB
         let currentGame = "";
 
         if (games[currentGame]) games[currentGame].onMessage();

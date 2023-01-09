@@ -3,10 +3,51 @@ const { Events } = require("discord.js");
 const constantIDs = require("./constants/ids");
 
 const { client, options } = require("./client");
-const welcomeMessage = require("./misc/welcomeMessage")
-const gamesCore = require("./games/core")
+const welcomeMessage = require("./misc/welcomeMessage");
+const gamesCore = require("./games/core");
 const bump = require("./misc/bump");
 const xpSources = require("./xp/sources");
+const roleMenu = require("./misc/roleMenu");
+const giveaway = require("./misc/giveaway");
+
+client.on(Events.GuildMemberAdd, (member) => {
+    welcomeMessage.sendWelcome(member);
+
+    member.roles.add(constantIDs.roles.member[+options.test]); // Give the member role
+});
+
+client.on(Events.MessageCreate, async (message) => {
+    gamesCore.onMessage(message);
+    bump.bump(message);
+    xpSources.fromMessage(message);
+});
+
+client.on(Events.MessageReactionAdd, async (reaction, user) => {
+    if (reaction.partial) {
+        try {
+            await reaction.fetch();
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+    }
+
+    roleMenu.addRole(reaction, user);
+    giveaway.checkIfFinished(reaction, user);
+});
+
+client.on(Events.MessageReactionRemove, async (reaction, user) => {
+    if (reaction.partial) {
+        try {
+            await reaction.fetch();
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+    }
+
+    roleMenu.removeRole(reaction, user);
+});
 
 client.on(Events.VoiceStateUpdate, (oldVoiceState, newVoiceState) => {
     // Listeing to the voiceStateUpdate event
@@ -42,20 +83,7 @@ client.on(Events.VoiceStateUpdate, (oldVoiceState, newVoiceState) => {
     }
 });
 
-client.on(Events.GuildMemberAdd, (member) => {
-    welcomeMessage.sendWelcome(member);
-    
-    member.roles.add(constantIDs.roles.member[+options.test]); // Give the member role
-});
-
-client.on(Events.MessageCreate, async (message) => {
-    gamesCore.onMessage(message);
-    bump.bump(message);
-    xpSources.fromMessage(message);
-});
-
 client.on(Events.InteractionCreate, async (interaction) => {
-    
     if (interaction.isChatInputCommand()) {
         if (interaction.commandName === "test") {
             // Create a 700x250 pixel canvas and get its context
@@ -1442,241 +1470,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
         }
         if (interaction.customId === "xplead_-") {
             xp_lead(1, interaction);
-        }
-    }
-});
-
-client.on(Events.MessageReactionRemove, async (reaction, user) => {
-    if (reaction.partial) {
-        try {
-            await reaction.fetch();
-        } catch (error) {
-            console.error(
-                "Something went wrong when fetching the message:",
-                error
-            );
-            return;
-        }
-    }
-
-    if (reaction.message.author.bot) {
-        if (reaction.message.embeds.length >= 1) {
-            if (
-                reaction.message.embeds[0]["data"]["title"].startsWith(":bell:")
-            ) {
-                var role = null;
-                if (reaction.emoji.name === "📊") {
-                    role = client.guilds.cache
-                        .get(guild_id)
-                        .roles.cache.find(
-                            (r) =>
-                                r.id ===
-                                constantIDs.roles.notifPoll[+options.test]
-                        );
-                }
-                if (reaction.emoji.name === "🔴") {
-                    role = client.guilds.cache
-                        .get(guild_id)
-                        .roles.cache.find(
-                            (r) =>
-                                r.id ===
-                                constantIDs.roles.notifVideo[+options.test]
-                        );
-                }
-                if (reaction.emoji.name === "🏆") {
-                    role = client.guilds.cache
-                        .get(guild_id)
-                        .roles.cache.find(
-                            (r) =>
-                                r.id ===
-                                constantIDs.roles.notifEvent[+options.test]
-                        );
-                }
-                if (reaction.emoji.name === "🍺") {
-                    role = client.guilds.cache
-                        .get(guild_id)
-                        .roles.cache.find(
-                            (r) =>
-                                r.id ===
-                                constantIDs.roles.notifShorts[+options.test]
-                        );
-                }
-                if (role != null) {
-                    const member = client.guilds.cache
-                        .get(guild_id)
-                        .members.cache.get(user.id);
-                    member.roles.remove(role).catch(console.error);
-                }
-            }
-
-            if (
-                reaction.message.embeds[0]["data"]["title"].startsWith(
-                    ":moneybag:"
-                ) === true
-            ) {
-                var config = require("./infos.json");
-                let file = editJsonFile("./infos.json");
-                var tirages_dic = file.get("tirages");
-                var members_dic = file.get("members");
-                if (tirages_dic[reaction.message.id]) {
-                    if (!tirages_dic[reaction.message.id]["participate"]) {
-                        tirages_dic[reaction.message.id][participate] = [];
-                    }
-                    var index = tirages_dic[reaction.message.id][
-                        "participate"
-                    ].indexOf(user.id);
-                    if (index !== -1) {
-                        tirages_dic[reaction.message.id]["participate"].splice(
-                            index,
-                            1
-                        );
-                    }
-                    file.set("tirages", tirages_dic);
-                    file.save();
-                }
-            }
-        }
-    }
-});
-
-client.on(Events.MessageReactionAdd, async (reaction, user) => {
-    if (reaction.partial) {
-        try {
-            await reaction.fetch();
-        } catch (error) {
-            console.error(
-                "Something went wrong when fetching the message:",
-                error
-            );
-            return;
-        }
-    }
-
-    if (reaction.message.author.bot) {
-        if (reaction.message.embeds.length >= 1) {
-            if (
-                reaction.message.embeds[0]["data"]["title"].startsWith(":bell:")
-            ) {
-                var role = null;
-                if (reaction.emoji.name === "📊") {
-                    role = client.guilds.cache
-                        .get(guild_id)
-                        .roles.cache.find(
-                            (r) =>
-                                r.id ===
-                                constantIDs.roles.notifPoll[+options.test]
-                        );
-                }
-                if (reaction.emoji.name === "🔴") {
-                    role = client.guilds.cache
-                        .get(guild_id)
-                        .roles.cache.find(
-                            (r) =>
-                                r.id ===
-                                constantIDs.roles.notifVideo[+options.test]
-                        );
-                }
-                if (reaction.emoji.name === "🏆") {
-                    role = client.guilds.cache
-                        .get(guild_id)
-                        .roles.cache.find(
-                            (r) =>
-                                r.id ===
-                                constantIDs.roles.notifEvent[+options.test]
-                        );
-                }
-                if (reaction.emoji.name === "🍺") {
-                    role = client.guilds.cache
-                        .get(guild_id)
-                        .roles.cache.find(
-                            (r) =>
-                                r.id ===
-                                constantIDs.roles.notifShorts[+options.test]
-                        );
-                }
-                if (role != null) {
-                    const member = client.guilds.cache
-                        .get(guild_id)
-                        .members.cache.get(user.id);
-                    member.roles.add(role).catch(console.error);
-                }
-            }
-
-            if (
-                reaction.message.embeds[0]["data"]["title"].startsWith(
-                    ":moneybag:"
-                ) === true
-            ) {
-                var config = require("./infos.json");
-                let file = editJsonFile("./infos.json");
-                var tirages_dic = file.get("tirages");
-                var members_dic = file.get("members");
-                if (tirages_dic[reaction.message.id]) {
-                    if (!tirages_dic[reaction.message.id]["participate"]) {
-                        tirages_dic[reaction.message.id]["participate"] = [];
-                    }
-                    if (
-                        !user.bot &&
-                        user.id != tirages_dic[reaction.message.id]["author"]
-                    ) {
-                        tirages_dic[reaction.message.id]["participate"].push(
-                            user.id
-                        );
-                    }
-                    if (user.id == tirages_dic[reaction.message.id]["author"]) {
-                        var gagnant_index = Math.floor(
-                            Math.random() *
-                                tirages_dic[reaction.message.id]["participate"]
-                                    .length
-                        );
-                        var gagnant_id =
-                            tirages_dic[reaction.message.id]["participate"][
-                                gagnant_index
-                            ].toString();
-                        var prediction =
-                            await reaction.message.channel.messages.fetch(
-                                reaction.message.id
-                            );
-                        var messagepredi = (
-                            await reaction.message.channel.messages.fetch(
-                                reaction.message.id
-                            )
-                        ).embeds;
-                        messagepredi[0]["data"]["description"] =
-                            messagepredi[0]["data"]["description"].replace(
-                                "Tirage au sort dès que l'auteur réponde.",
-                                "Tirage au sort terminé, le gagnant est <@" +
-                                    gagnant_id +
-                                    ">"
-                            );
-                        const exampleEmbed = new EmbedBuilder()
-                            .setColor(10181046)
-                            .setTitle(messagepredi[0]["data"]["title"])
-                            .setDescription(
-                                messagepredi[0]["data"]["description"]
-                            );
-                        prediction.edit({
-                            embeds: [exampleEmbed],
-                            fetchReply: true,
-                        });
-                        if (gagnant_id != undefined) {
-                            gagnant_user = client.users.cache.find(
-                                (user) => user.id === gagnant_id
-                            );
-                            await gagnant_user.send(
-                                "Vous venez de gagner le tirage au sort, vous gagnez **" +
-                                    tirages_dic[reaction.message.id][
-                                        "present"
-                                    ].toString() +
-                                    "**"
-                            );
-                        }
-                        delete tirages_dic[reaction.message.id];
-                    }
-                    file.set("tirages", tirages_dic);
-                    file.save();
-                }
-            }
         }
     }
 });
