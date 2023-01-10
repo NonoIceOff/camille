@@ -5,6 +5,7 @@
  * onButton(interaction)
  */
 async function onButton(interaction) {
+    // TODO: Rewrite
     if (interaction.isButton()) {
         if (interaction.customId === "fight_players") {
             if (fightdico[fightdico["Number"].toString()]["Joueurs"] === 4) {

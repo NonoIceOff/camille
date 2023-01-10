@@ -11,7 +11,7 @@ const roleMenu = require("./misc/roleMenu");
 const giveaway = require("./misc/giveaway");
 const commandsCore = require("./commands/core");
 
-client.on(Events.ClientReady, async () => {
+client.on(Events.ClientReady, () => {
     if (false) {
         // TODO: Remake all of this
         adminrole = client.guilds.cache
@@ -42,10 +42,10 @@ client.on(Events.GuildMemberAdd, (member) => {
     member.roles.add(constantIDs.roles.member[+options.test]); // Give the member role
 });
 
-client.on(Events.MessageCreate, async (message) => {
+client.on(Events.MessageCreate, (message) => {
     gamesCore.onMessage(message);
     bump.bump(message);
-    //xpSources.fromMessage(message);
+    xpSources.fromMessage(message);
 });
 
 client.on(Events.MessageReactionAdd, async (reaction, user) => {
@@ -76,40 +76,10 @@ client.on(Events.MessageReactionRemove, async (reaction, user) => {
 });
 
 client.on(Events.VoiceStateUpdate, (oldVoiceState, newVoiceState) => {
-    // Listeing to the voiceStateUpdate event
-    let file = editJsonFile("./infos.json");
-    var voicemember = file.get("voice");
-    var number_voices = 0;
-
-    if (newVoiceState.member.voice.channel != null) {
-        number_voices = newVoiceState.member.voice.channel.members.size;
-    }
-
-    if (newVoiceState.member.voice.selfMute == false && number_voices > 1) {
-        // SI PAS MUTE
-        if (newVoiceState.channel) {
-            // The member connected to a channel.
-            if (!voicemember[newVoiceState.member.user.id]) {
-                // Si conexxion simple
-                start_voicetime_to_user(newVoiceState.member.user);
-            } else {
-                // Si changement de salon simple
-                stop_voicetime_to_user(newVoiceState.member.user);
-                start_voicetime_to_user(newVoiceState.member.user);
-            }
-        } else if (oldVoiceState.channel) {
-            // The member disconnected from a channel.
-            if (voicemember[newVoiceState.member.user.id]) {
-                stop_voicetime_to_user(newVoiceState.member.user);
-            }
-        }
-    } else {
-        // SI MUTE
-        stop_voicetime_to_user(newVoiceState.member.user);
-    }
+    xpSources.fromVoice(oldVoiceState,newVoiceState)
 });
 
-client.on(Events.InteractionCreate, async (interaction) => {
+client.on(Events.InteractionCreate, (interaction) => {
     commandsCore.callCommand(interaction);
     welcomeMessage.sayHi(interaction);
     gamesCore.onInteraction(interaction);

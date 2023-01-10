@@ -86,7 +86,7 @@ function trigger(interaction) {
  * onButton(interaction,path)
  */
 async function onButton(interaction,path) {
-    // TODO: Rewrite with DB
+    // TODO: Rewrite
     
     if (interaction.customId === "shop_dreamteam") {
         if (membersdico[interaction.user.id]["esheep"] >= 220) {

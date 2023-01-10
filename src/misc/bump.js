@@ -7,6 +7,7 @@ const { MessageType, EmbedBuilder, Message } = require("discord.js");
  * bump(message)
  */
 function bump(message) {
+    // TODO: Rewrite with DB
     if (message.type === MessageType.ChatInputCommand && message.interaction.commandName == "bump") {
         var inter = message.interaction.user.id;
         var interuser = message.interaction.user;
