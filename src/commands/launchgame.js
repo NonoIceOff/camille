@@ -41,6 +41,26 @@ async function trigger(interaction) {
     });
 }
 
+/**
+ * Start the selected game
+ * @param {import("discord.js").Interaction} [interaction] THE interaction
+ * @param {Array<String>} [path] Path of the interaction
+ * @example
+ * onSelectMenu(interaction,path)
+ */
+async function onSelectMenu(interaction,path) {
+    // TODO: Rewrite with DB
+    if (interaction.values[0] === "jp") {
+        game_jp(interaction.user);
+    }
+    if (interaction.values[0] == "pfc") {
+        game_pfc(interaction.user);
+    }
+    if (interaction.values[0] == "p4") {
+        game_p4(interaction.user);
+    }
+    interaction.deferUpdate();
+}
 const definition = new SlashCommandBuilder()
     .setName("launchgame")
     .setDescription("Lancer un jeu");
@@ -48,4 +68,5 @@ const definition = new SlashCommandBuilder()
 module.exports = {
     trigger,
     definition,
+    onSelectMenu,
 };

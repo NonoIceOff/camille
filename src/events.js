@@ -111,20 +111,8 @@ client.on(Events.VoiceStateUpdate, (oldVoiceState, newVoiceState) => {
 
 client.on(Events.InteractionCreate, async (interaction) => {
     commandsCore.callCommand(interaction);
-    if (interaction.isSelectMenu()) {
-        if (interaction.customId === "jeu_selection") {
-            if (interaction.values[0] === "jp") {
-                game_jp(interaction.user);
-            }
-            if (interaction.values[0] == "pfc") {
-                game_pfc(interaction.user);
-            }
-            if (interaction.values[0] == "p4") {
-                game_p4(interaction.user);
-            }
-            interaction.deferUpdate();
-        }
-    } else if (interaction.isButton()) {
+    
+    if (interaction.isButton()) {
         let file2 = editJsonFile("./shop.json");
         var shopdico = file2.get("Members");
 

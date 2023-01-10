@@ -10,6 +10,9 @@ const { client, options } = require("../client");
 function callCommand(interaction) {
     if (interaction.isChatInputCommand()) {
         require(`./${interaction.commandName}`).trigger(interaction);
+    } else if (interaction.isSelectMenu()) {
+        let path = interaction.customId.split("/");
+        require(`./${path[0]}`).onSelectMenu(interaction,path);
     }
 }
 
