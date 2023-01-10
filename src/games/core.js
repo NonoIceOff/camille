@@ -1,8 +1,8 @@
 const { Message } = require("discord.js");
 
 const games = {
-    power4: require("./power4"),
-    fairPrice: require("./fairPrice"),
+    /*power4: require("./power4"),
+    fairPrice: require("./fairPrice"),*/
 }
 
 /**

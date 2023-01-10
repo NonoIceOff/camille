@@ -33,7 +33,7 @@ function addRole(reaction, user) {
 
             if (role != null) {
                 const member = client.guilds.cache
-                    .get(guild_id)
+                    .get(constantIDs.workingGuild[+options.test])
                     .members.cache.get(user.id);
 
                 member.roles.add(role).catch(console.error);
@@ -76,7 +76,7 @@ function removeRole(reaction, user) {
                  * @type {GuildMember}
                  */
                 const member = client.guilds.cache
-                    .get(guild_id)
+                    .get(constantIDs.workingGuild[+options.test])
                     .members.cache.get(user.id);
 
                 member.roles.remove(role).catch(console.error);

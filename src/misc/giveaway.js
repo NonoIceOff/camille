@@ -1,15 +1,13 @@
 const { MessageReaction, User } = require("discord.js");
 
-
 /**
- * Add the reacted role on the role menu to the user
+ * Check if the giveaway is finished and name the winner
  * @param {MessageReaction} [reaction] Reaction
  * @param {User} [user] User that reacted to the giveaway
  * @example
- * addRole(reaction, user)
+ * checkIfFinished(reaction, user)
  */
-function checkIfFinished(reaction, user) {
-    
+async function checkIfFinished(reaction, user) {
     // TODO: Remake this function with new DB
 
     if (reaction.message.author.bot) {
@@ -100,5 +98,5 @@ function checkIfFinished(reaction, user) {
 }
 
 module.exports = {
-    checkIfFinished
-}
+    checkIfFinished,
+};
