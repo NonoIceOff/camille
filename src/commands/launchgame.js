@@ -42,7 +42,7 @@ async function trigger(interaction) {
 }
 
 /**
- * Start the selected game
+ * Triggered when something is selected in a select menu
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  * @param {Array<String>} [path] Path of the interaction
  * @example
@@ -61,6 +61,8 @@ async function onSelectMenu(interaction,path) {
     }
     interaction.deferUpdate();
 }
+
+
 const definition = new SlashCommandBuilder()
     .setName("launchgame")
     .setDescription("Lancer un jeu");

@@ -16,6 +16,24 @@ async function trigger(interaction) {
     }
 }
 
+/**
+ * Triggered when a button is pressed
+ * @param {import("discord.js").Interaction} [interaction] THE interaction
+ * @param {Array<String>} [path] Path of the interaction
+ * @example
+ * onButton(interaction,path)
+ */
+async function onButton(interaction, path) {
+    // TODO: Rewrite with DB
+
+    if (interaction.customId === "xplead_+") {
+        xp_lead(2, interaction);
+    }
+    if (interaction.customId === "xplead_-") {
+        xp_lead(1, interaction);
+    }
+}
+
 const definition = new SlashCommandBuilder()
     .setName("xplead")
     .setDescription("Classement des personnes en xp.")
@@ -26,4 +44,5 @@ const definition = new SlashCommandBuilder()
 module.exports = {
     trigger,
     definition,
+    onButton,
 };

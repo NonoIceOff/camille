@@ -1,6 +1,31 @@
 const constantIDs = require("../constants/ids");
 const { client, options } = require("../client");
 
+const commands = [
+    "addxp",
+    "bumpslead",
+    "coinslead",
+    "fight",
+    "fightlead",
+    "help",
+    "hug",
+    "launchgame",
+    "lock",
+    "notifsmenu",
+    "ping",
+    "poll",
+    "quests",
+    "removexp",
+    "rulescmd",
+    "shop",
+    "stats",
+    "test",
+    "tirage",
+    "voiceslead",
+    "vote",
+    "xplead",
+];
+
 /**
  * Call the command of the interaction
  * @param {import("discord.js").Interaction} [interaction] THE interaction
@@ -8,11 +33,13 @@ const { client, options } = require("../client");
  * callCommand(interaction)
  */
 function callCommand(interaction) {
-    if (interaction.isChatInputCommand()) {
+    if (interaction.isChatInputCommand() && commands.includes(interaction.commandName)) {
         require(`./${interaction.commandName}`).trigger(interaction);
     } else if (interaction.isSelectMenu()) {
         let path = interaction.customId.split("/");
-        require(`./${path[0]}`).onSelectMenu(interaction,path);
+        if (path[0] === "cmd") {
+            require(`./${path[1]}`).onSelectMenu(interaction, path);
+        }
     }
 }
 
@@ -23,30 +50,6 @@ function callCommand(interaction) {
  */
 function resetCommands() {
     if (options.resetCommands) {
-        const commands = [
-            "addxp",
-            "bumpslead",
-            "coinslead",
-            "fight",
-            "fightlead",
-            "help",
-            "hug",
-            "launchgame",
-            "lock",
-            "notifsmenu",
-            "ping",
-            "poll",
-            "quests",
-            "removexp",
-            "rulescmd",
-            "shop",
-            "stats",
-            "test",
-            "tirage",
-            "voiceslead",
-            "vote",
-            "xplead",
-        ];
 
         const commands_definition = commands.map(
             (command) => require(`./${command}`).definition

@@ -22,6 +22,8 @@ const helloMessages = [
     "Tu viens d'emprunter le téléporteur mystère et es tombé dans le serveur",
 ];
 
+let whoSaidHi = {};
+
 /**
  * Send a welcome message in the welcome channel
  * @param {GuildMember} [member] Member to welcome
@@ -36,7 +38,7 @@ function sendWelcome(member) {
 
         const row = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
-                .setCustomId("coucou")
+                .setCustomId("hi")
                 .setLabel("👋 Fais coucou !")
                 .setStyle(ButtonStyle.Danger)
         );
@@ -54,9 +56,38 @@ function sendWelcome(member) {
                     helloMessages[helloMessagesIndex],
                 components: [row],
             });
+
+        whoSaidHi[member.id] = [];
+    }
+}
+
+/**
+ * Say "Hi" to the message of the interaction
+ * @param {import("discord.js").Interaction} [interaction] THE interaction
+ * @example
+ * sayHi(interaction)
+ */
+function sayHi(interaction) {
+    if (interaction.isButton()) {
+        if (interaction.customId === "hi") {
+            /**
+             * @type {?Array<string>}
+             */
+            var whoToSalute =
+                whoSaidHi[interaction.message.mentions.users.first().id];
+            if (whoToSalute && !whoToSalute.includes(interaction.user.id)) {
+                interaction.reply(
+                    "<@" + interaction.user.id + "> te fait un coucou !"
+                );
+                whoToSalute.push(interaction.user.id);
+            }else{
+                interaction.reply({content:"NON MAIS STOP ! TU VEUX DIRE SALUT COMBIENS DE FOIS LÀ !? ON EST OÙ LÀ !? Attention, je vais devenir tout rouge pas content ^^", ephemeral:true})
+            }
+        }
     }
 }
 
 module.exports = {
     sendWelcome,
+    sayHi,
 };

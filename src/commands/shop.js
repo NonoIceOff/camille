@@ -78,6 +78,64 @@ function trigger(interaction) {
     interaction.reply("Commande utilisée, veuillez regarder vos MP");
 }
 
+/**
+ * Triggered when a button is pressed
+ * @param {import("discord.js").Interaction} [interaction] THE interaction
+ * @param {Array<String>} [path] Path of the interaction
+ * @example
+ * onButton(interaction,path)
+ */
+async function onButton(interaction,path) {
+    // TODO: Rewrite with DB
+    
+    if (interaction.customId === "shop_dreamteam") {
+        if (membersdico[interaction.user.id]["esheep"] >= 220) {
+            interaction.reply(
+                "Dream Team acheté avec succès. (-220:coin:)"
+            );
+            shopdico[interaction.user.id]["Grades"][0] += 1;
+            membersdico[interaction.user.id]["esheep"] -= 220;
+            file2.set("Members", shopdico);
+            file2.save();
+            file.set("members", membersdico);
+            file.save();
+        } else {
+            interaction.reply("Echec. Vous n'avez pas assez de :coin:");
+        }
+    }
+    if (interaction.customId === "shop_dreamteam+") {
+        if (membersdico[interaction.user.id]["esheep"] >= 467) {
+            interaction.reply(
+                "Dream Team + acheté avec succès. (-467:coin:)"
+            );
+            shopdico[interaction.user.id]["Grades"][1] += 1;
+            membersdico[interaction.user.id]["esheep"] -= 467;
+            file2.set("Members", shopdico);
+            file2.save();
+            file.set("members", membersdico);
+            file.save();
+        } else {
+            interaction.reply("Echec. Vous n'avez pas assez de :coin:");
+        }
+    }
+    if (interaction.customId === "shop_superdreamteam") {
+        if (membersdico[interaction.user.id]["esheep"] >= 1182) {
+            interaction.reply(
+                "Super Dream Team acheté avec succès. (-1182:coin:)"
+            );
+            shopdico[interaction.user.id]["Grades"][2] += 1;
+            membersdico[interaction.user.id]["esheep"] -= 1182;
+            file2.set("Members", shopdico);
+            file2.save();
+            file.set("members", membersdico);
+            file.save();
+        } else {
+            interaction.reply("Echec. Vous n'avez pas assez de :coin:");
+        }
+    }
+}
+
+
 const definition = new SlashCommandBuilder()
     .setName("shop")
     .setDescription("Commande d'achats");
@@ -85,4 +143,5 @@ const definition = new SlashCommandBuilder()
 module.exports = {
     trigger,
     definition,
+    onButton,
 };
