@@ -51,6 +51,8 @@ function callCommand(interaction) {
 function resetCommands() {
     if (options.resetCommands) {
 
+        console.log("Resetting slash commands...");
+
         const commands_definition = commands.map(
             (command) => require(`./${command}`).definition
         );

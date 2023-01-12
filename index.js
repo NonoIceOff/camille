@@ -5,6 +5,7 @@ const constantIDs = require("./src/constants/ids");
 const constantYoutube = require("./src/constants/youtube");
 const { client, options, init } = require("./src/client");
 const events = require("./src/events");
+const db = require("./src/data/db");
 
 const {
     REST,
@@ -1685,3 +1686,4 @@ function show_puissance_4(user, grille) {
 }
 
 init({ test: true });
+db.update();
