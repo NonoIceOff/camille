@@ -1,12 +1,10 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 /**
- * Trigger of the command
+ * Action when the command is triggered
  * @param {import("discord.js").Interaction} [interaction] THE interaction
- * @example
- * trigger(interaction)
  */
-async function trigger(interaction) {
+async function onTrigger(interaction) {
     // TODO: Make it working
     await interaction.reply("Je travaille dessus ...");
     if (interaction.options.getInteger("page") == null) {
@@ -30,6 +28,6 @@ const definition = new SlashCommandBuilder()
     );
 
 module.exports = {
-    trigger,
+    onTrigger,
     definition,
 };

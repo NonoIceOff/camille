@@ -1,12 +1,10 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 /**
- * Trigger of the command
+ * Action when the command is triggered
  * @param {import("discord.js").Interaction} [interaction] THE interaction
- * @example
- * trigger(interaction)
  */
-function trigger(interaction) {
+function onTrigger(interaction) {
     // TODO: Make it working
     let file = editJsonFile("./infos.json");
     var membersdico = file.get("members");
@@ -82,8 +80,6 @@ function trigger(interaction) {
  * Triggered when a button is pressed
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  * @param {Array<String>} [path] Path of the interaction
- * @example
- * onButton(interaction,path)
  */
 async function onButton(interaction,path) {
     // TODO: Rewrite
@@ -141,7 +137,7 @@ const definition = new SlashCommandBuilder()
     .setDescription("Commande d'achats");
 
 module.exports = {
-    trigger,
+    onTrigger,
     definition,
     onButton,
 };

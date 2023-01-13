@@ -7,8 +7,6 @@ const constantIDs = require("../constants/ids");
  * Add the reacted role on the role menu to the user
  * @param {MessageReaction} [reaction] Reaction
  * @param {User} [user] User that reacted to the role menu
- * @example
- * addRole(reaction, user)
  */
 function addRole(reaction, user) {
     if (
@@ -46,8 +44,6 @@ function addRole(reaction, user) {
  * Remove the reacted role on the role menu to the user
  * @param {MessageReaction} [reaction] Reaction
  * @param {User} [user] User that reacted to the role menu
- * @example
- * removeRole(reaction, user)
  */
 function removeRole(reaction, user) {
     if (

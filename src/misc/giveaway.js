@@ -4,8 +4,6 @@ const { MessageReaction, User } = require("discord.js");
  * Check if the giveaway is finished and name the winner
  * @param {MessageReaction} [reaction] Reaction
  * @param {User} [user] User that reacted to the giveaway
- * @example
- * checkIfFinished(reaction, user)
  */
 async function checkIfFinished(reaction, user) {
     // TODO: Remake this function with new DB

@@ -1,6 +1,7 @@
 "use strict";
 const test = 1;
 const config = require("./config");
+const userPrototype = require("./src/data/prototype/User");
 const constantIDs = require("./src/constants/ids");
 const constantYoutube = require("./src/constants/youtube");
 const { client, options, init } = require("./src/client");

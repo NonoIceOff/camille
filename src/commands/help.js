@@ -1,12 +1,10 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 /**
- * Trigger of the command
+ * Action when the command is triggered
  * @param {import("discord.js").Interaction} [interaction] THE interaction
- * @example
- * trigger(interaction)
  */
-function trigger(interaction) {
+function onTrigger(interaction) {
     // TODO: Make it working
     var text = "";
     if (interaction.member.roles.cache.has(adminrole.id) === true) {
@@ -56,6 +54,6 @@ const definition = new SlashCommandBuilder()
     .setDescription("Commande d'aide");
 
 module.exports = {
-    trigger,
+    onTrigger,
     definition,
 };

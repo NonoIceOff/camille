@@ -1,12 +1,10 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 /**
- * Trigger of the command
+ * Action when the command is triggered
  * @param {import("discord.js").Interaction} [interaction] THE interaction
- * @example
- * trigger(interaction)
  */
-async function trigger(interaction) {
+async function onTrigger(interaction) {
     // TODO: Make it working
     let file = editJsonFile("./fight.json");
     var membersdico = file.get("Saisons")["Wins"];
@@ -89,6 +87,6 @@ const definition = new SlashCommandBuilder()
     .setDescription("Classement des vainqueurs de Fight Discord.");
 
 module.exports = {
-    trigger,
+    onTrigger,
     definition,
 };

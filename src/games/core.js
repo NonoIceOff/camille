@@ -9,8 +9,6 @@ const games = {
 /**
  * Call the `onMessage` function for the current game of the message author.
  * @param {Message} [message] Message
- * @example
- * onMessage(message)
  */
 function onMessage(message) {
     if (!message.guild && !message.author.bot) {
@@ -24,8 +22,6 @@ function onMessage(message) {
 /**
  * Call the `onButton` and `onSelectMenu`
  * @param {import("discord.js").Interaction} [interaction] THE interaction
- * @example
- * onInteraction(interaction)
  */
 async function onInteraction(interaction) {
     if (!interaction.guild && !interaction.isChatInputCommand()) {

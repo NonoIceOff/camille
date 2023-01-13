@@ -1,12 +1,10 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 /**
- * Trigger of the command
+ * Action when the command is triggered
  * @param {import("discord.js").Interaction} [interaction] THE interaction
- * @example
- * trigger(interaction)
  */
-function trigger(interaction) {
+function onTrigger(interaction) {
     // TODO: Make it working
     var level = 0;
     var pourcentage = 0;
@@ -92,6 +90,6 @@ const definition = new SlashCommandBuilder()
     .setDescription("Commande de vos quêtes");
 
 module.exports = {
-    trigger,
+    onTrigger,
     definition,
 };

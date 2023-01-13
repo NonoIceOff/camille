@@ -13,6 +13,9 @@ let db = new sqlite3.Database(
     }
 );
 
+/**
+ * Check if the database needs to be updated and take action if necessary
+ */
 function update() {
     db.serialize(() => {
         db.all(
@@ -25,7 +28,7 @@ function update() {
                 } else {
                     console.log('Creating "users" table in database...');
                     db.exec(
-                        "CREATE TABLE users (user_id varchar(20), xp int, bump int, monthly_bump int, coin float, voice int, last_voice_activity int);"
+                        "CREATE TABLE users (user_id varchar(20), xp int, bump int, monthly_bump int, coin float, voice int, last_voice_activity bigint);"
                     );
 
                     if (
@@ -46,7 +49,7 @@ function update() {
                                 bump: value.bumpstotal,
                                 monthly_bump: infos.bump[id] ?? 0,
                                 coin: value.esheep,
-                                voice: infos.voice.members_leaderboard[id] ?? 0,
+                                voice: new Date(0).setSeconds(infos.voice.members_leaderboard[id]) ?? 0,
                                 last_voice_activity: 0,
                             });
                         });
@@ -74,24 +77,86 @@ function update() {
     });
 }
 
+/**
+ * Register a new user in the database
+ * @param {string} userId User ID
+ * @param {() =>  void} callback Callback when the user is created.
+ */
+function registerUser(userId, callback) {
+    db.run(`INSERT INTO users (user_id,xp,bump,monthly_bump,coin,voice,last_voice_activity) VALUES (?,0,0,0,0,0,0)`,[userId],(err)=>{
+        if (err) {
+            console.error(err);
+        }else{
+            callback();
+        }
+    })
+}
+
+/**
+ * Get a user value from the database
+ * @param {string} userId User ID
+ * @param {string} valueName Name of the value to get. Look at `data/constants/userValuesName` to get the list of values.
+ */
 function getUserValue(userId, valueName) {
     return new Promise((resolve) => {
         db.get(
             `SELECT ${valueName} AS value FROM users WHERE user_id=?`,
             userId,
             (err, row) => {
-                resolve(row.value);
+                if (err) {
+                    console.error(err);
+                }
+                if (!row) {
+                    registerUser(userId, async () => {
+                        resolve(await getUserValue(userId, valueName));
+                    });
+                } else {
+                    resolve(row.value);
+                }
             }
         );
     });
 }
 
+/**
+ * Set a user value in the database
+ * @param {string} userId User ID
+ * @param {string} valueName Name of the value to set. Look at `data/constants/userValuesName` to get the list of values.
+ * @param {any} value Value to set.
+ */
 function setUserValue(userId, valueName, value) {
-    db.run(`UPDATE users SET ${valueName}=? WHERE user_id=?`,value,userId);
+    db.run(
+        `UPDATE users SET ${valueName}=? WHERE user_id=?`,
+        [value, userId],
+        (err) => {
+            if (err) {
+                console.error(err);
+            }
+        }
+    );
+}
+
+/**
+ * Add `value` to user value in the database
+ * @param {string} userId User ID
+ * @param {string} valueName Name of the value to set. Look at `data/constants/userValuesName` to get the list of values.
+ * @param {any} value Value to add.
+ */
+function addUserValue(userId, valueName, value) {
+    db.run(
+        `UPDATE users SET ${valueName}=${valueName}+? WHERE user_id=?`,
+        [value, userId],
+        (err) => {
+            if (err) {
+                console.error(err);
+            }
+        }
+    );
 }
 
 module.exports = {
     update,
     getUserValue,
     setUserValue,
+    addUserValue,
 };

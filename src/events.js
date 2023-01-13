@@ -36,10 +36,11 @@ client.on(Events.ClientReady, () => {
     commandsCore.resetCommands();
 });
 
-client.on(Events.GuildMemberAdd, (member) => {
+client.on(Events.GuildMemberAdd, async (member) => {
     welcomeMessage.sendWelcome(member);
 
-    member.roles.add(constantIDs.roles.member[+options.test]); // Give the member role
+    await member.user.getXP(); // Register the user in the database
+    await member.roles.add(constantIDs.roles.member[+options.test]); // Give the member role
 });
 
 client.on(Events.MessageCreate, (message) => {

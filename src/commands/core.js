@@ -29,12 +29,10 @@ const commands = [
 /**
  * Call the command of the interaction
  * @param {import("discord.js").Interaction} [interaction] THE interaction
- * @example
- * callCommand(interaction)
  */
 function callCommand(interaction) {
     if (interaction.isChatInputCommand() && commands.includes(interaction.commandName)) {
-        require(`./${interaction.commandName}`).trigger(interaction);
+        require(`./${interaction.commandName}`).onTrigger(interaction);
     } else if (interaction.isSelectMenu()) {
         let path = interaction.customId.split("/");
         if (path[0] === "cmd") {
@@ -45,8 +43,6 @@ function callCommand(interaction) {
 
 /**
  * Reset all commands on the current guild
- * @example
- * resetCommands()
  */
 function resetCommands() {
     if (options.resetCommands) {

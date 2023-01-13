@@ -4,7 +4,6 @@ const VoiceState = require("discord.js/src/structures/VoiceState");
 const { options } = require("../client");
 const constantIDs = require("../constants/ids");
 
-
 /**
  * Detect if `message` is eligible to give XP to the user and give it.
  * @param {Message} [message] Message
@@ -12,36 +11,20 @@ const constantIDs = require("../constants/ids");
  * fromMessage(message)
  */
 function fromMessage(message) {
-    // TODO: Rewrite with DB
-    if (false) {
-    if (!message.author.bot) {
-        if (message.channelId != constantIDs.channels.bot[+options.test]) {
-            //if(message.guildId == guild_id) {
-            let file3 = editJsonFile("./infos.json");
-            var membersdico = file3.get("members");
-            if (!membersdico[message.author.id]) {
-                membersdico[message.author.id] = {
-                    xp_total: 0,
-                    xp: 0,
-                    niveau: 0,
-                    esheep: 0,
-                    bumpstotal: 0,
-                };
-            }
-            file3.set("members", membersdico);
-            file3.save();
-            var gain_xp = 5 + Math.floor(Math.random() * 5) + 1;
-            add_xp_to_user(message.author, gain_xp);
-        }
-    }}
+    if (
+        !message.author.bot &&
+        message.channelId != constantIDs.channels.bot[+options.test] &&
+        message.channel.guildId === constantIDs.workingGuild[+options.test]
+    ) {
+        var xpGain = 5 + Math.floor(Math.random() * 5) + 1;
+        message.author.addXP(xpGain);
+    }
 }
 
 /**
  * Give XP to everyone that is no longer eligible to get XP from voice.
  * @param {VoiceState} [oldVoiceState] Old voice state of the channel
  * @param {VoiceState} [newVoiceState] New voice state of the channel
- * @example
- * fromVoice(oldVoiceState, newVoiceState)
  */
 function fromVoice(oldVoiceState, newVoiceState) {
     // TODO: Rewrite with DB
@@ -77,7 +60,8 @@ function fromVoice(oldVoiceState, newVoiceState) {
             // SI MUTE
             stop_voicetime_to_user(newVoiceState.member.user);
         }
-}}
+    }
+}
 
 module.exports = {
     fromMessage,

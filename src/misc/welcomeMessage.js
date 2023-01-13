@@ -27,8 +27,6 @@ let whoSaidHi = {};
 /**
  * Send a welcome message in the welcome channel
  * @param {GuildMember} [member] Member to welcome
- * @example
- * sendWelcome(member)
  */
 function sendWelcome(member) {
     if (member.guild.id === constantIDs.workingGuild[+options.test]) {
@@ -64,8 +62,6 @@ function sendWelcome(member) {
 /**
  * Say "Hi" to the message of the interaction
  * @param {import("discord.js").Interaction} [interaction] THE interaction
- * @example
- * sayHi(interaction)
  */
 function sayHi(interaction) {
     if (interaction.isButton()) {

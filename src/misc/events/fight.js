@@ -1,8 +1,6 @@
 /**
  * Triggered when a button is pressed
  * @param {import("discord.js").Interaction} [interaction] THE interaction
- * @example
- * onButton(interaction)
  */
 async function onButton(interaction) {
     // TODO: Rewrite

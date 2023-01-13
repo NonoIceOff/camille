@@ -3,8 +3,6 @@ const { MessageType, EmbedBuilder, Message } = require("discord.js");
 /**
  * Detect if `message` is a bump and take action of
  * @param {Message} [message] Message
- * @example
- * bump(message)
  */
 function bump(message) {
     // TODO: Rewrite with DB

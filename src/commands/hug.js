@@ -1,12 +1,10 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 /**
- * Trigger of the command
+ * Action when the command is triggered
  * @param {import("discord.js").Interaction} [interaction] THE interaction
- * @example
- * trigger(interaction)
  */
-async function trigger(interaction) {
+async function onTrigger(interaction) {
     // TODO: Make it working
     var membre = interaction.options.getUser("membre");
     if (membre != interaction.user && !membre.bot) {
@@ -46,6 +44,6 @@ const definition = new SlashCommandBuilder()
     );
 
 module.exports = {
-    trigger,
+    onTrigger,
     definition,
 };

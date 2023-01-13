@@ -1,12 +1,10 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 /**
- * Trigger of the command
+ * Action when the command is triggered
  * @param {import("discord.js").Interaction} [interaction] THE interaction
- * @example
- * trigger(interaction)
  */
-async function trigger(interaction) {
+async function onTrigger(interaction) {
     // TODO: Make it working
     const row = new ActionRowBuilder().addComponents(
         new SelectMenuBuilder()
@@ -45,8 +43,6 @@ async function trigger(interaction) {
  * Triggered when something is selected in a select menu
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  * @param {Array<String>} [path] Path of the interaction
- * @example
- * onSelectMenu(interaction,path)
  */
 async function onSelectMenu(interaction,path) {
     // TODO: Rewrite with DB
@@ -68,7 +64,7 @@ const definition = new SlashCommandBuilder()
     .setDescription("Lancer un jeu");
 
 module.exports = {
-    trigger,
+    onTrigger,
     definition,
     onSelectMenu,
 };
