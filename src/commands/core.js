@@ -15,7 +15,6 @@ const commands = [
     "ping",
     "poll",
     "quests",
-    "removexp",
     "rulescmd",
     "shop",
     "stats",
