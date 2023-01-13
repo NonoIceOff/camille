@@ -1638,5 +1638,5 @@ function show_puissance_4(user, grille) {
     user.send(grille_to_send);
 }
 
-init({ test: true });
+init({ test: true, resetCommands:false });
 db.update();

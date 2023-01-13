@@ -1,31 +1,28 @@
+const { User } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
+const { client } = require("../client");
 /**
  * Action when the command is triggered
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  */
 async function onTrigger(interaction) {
     // TODO: Make it working
-    var membre = interaction.options.getUser("membre");
-    if (membre != interaction.user && !membre.bot) {
+    /**
+     * @type {User}
+     */
+    var member = interaction.options.getUser("member");
+    if (member != interaction.user && member.id != client.user.id) {
         await interaction.reply(
-            "__**<@" +
-                interaction.user +
-                "> fait un câlin**__ à <@" +
-                membre +
-                "> *(c'est mewgnon)*"
+            `__**<@${interaction.user.id}> fait un câlin**__ à <@${member.id}> *(c'est mewgnon)*`
         );
-    } else if (membre == interaction.user) {
+    } else if (member == interaction.user) {
         await interaction.reply(
-            "__**<@" +
-                interaction.user +
-                "> se fait un câlin**__ à... lui-même *(ok...)*"
+            `__**<@${interaction.user.id}> se fait un câlin**__ à... lui-même *(ok...)*`
         );
     } else {
         await interaction.reply(
-            "__**<@" +
-                interaction.user +
-                "> me fait un câlin.**__ *(tout le monde me fait des câlins ? faut croire...)*"
+            `__**<@${interaction.user.id}> me fait un câlin.**__ *(tout le monde me fait des câlins ? faut croire...)*`
         );
     }
     interaction.channel.send(
@@ -38,7 +35,7 @@ const definition = new SlashCommandBuilder()
     .setDescription("Vous voulez un câlin ?")
     .addUserOption((msgid) =>
         msgid
-            .setName("membre")
+            .setName("member")
             .setDescription("A qui voulez-vous faire un câlin ?")
             .setRequired(true)
     );

@@ -1,42 +1,45 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
+const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
+
+const constantIDs = require("../constants/ids");
+const { options } = require("../client");
 
 /**
  * Action when the command is triggered
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  */
 function onTrigger(interaction) {
-    // TODO: Make it working
-    var text = "";
-    if (interaction.member.roles.cache.has(adminrole.id) === true) {
-        text = text + "**:badminton: __Admins commands__ :** \n";
-        text = text + "**/lock** : *verrouiller ou dévérouiller un salon* \n";
-        text = text + "**/rulescmd** : *afficher les règles* \n";
-        text =
-            text + "**/fight** : *panneau de contrôle pour FIGHT DISCORD* \n";
-        text = text + "**/tirage** : *lancer un tirage au sort* \n";
-    }
-    if (interaction.member.roles.cache.has(dreamteam.id) === true) {
-        text = text + "\n**:watermelon: __Dream Team commands__ :** \n";
-        text = text + "**/poll** : *lancer un sondage* \n";
-    }
-    text = text + "\n**__Commands__ :** \n";
-    text = text + "**/shop** : *voir le shop* \n";
-    text =
-        text + "**/launchgame** : *jouer à un jeu et mettre en jeu de l'xp* \n";
-    text = text + "**/ping** : *affiche le ping* \n";
-    text = text + "**/xplead** : *classement de l'xp du serveur* \n";
-    text = text + "**/stats** : *affiche vos statistiques* \n";
-    text = text + "**/coinslead** : *classement des coins du serveur* \n";
-    text =
-        text + "**/voiceslead** : *classement du temps de vocal du serveur* \n";
-    text =
-        text + "**/bumpslead** : *classement des bumps mensuels du serveur* \n";
-    text =
-        text +
-        "**/fightlead** : *classement des gagnants de FIGHT DISCORD du serveur* \n";
-    text = text + "**/hug** : *faire un câlin à quelqu'un* \n";
-    text = text + "**/quests** : *voir ses quêtes* \n";
-    text = text + "**/givecoins** : *donner des coins à quelqu'un* \n";
+    var text =
+        (interaction.member.roles.cache.has(
+            constantIDs.roles.admin[+options.test]
+        )
+            ? `
+**:badminton: __Admins commands__ :**
+**/lock** : *verrouiller ou dévérouiller un salon*
+**/rulescmd** : *afficher les règles*
+**/fight** : *panneau de contrôle pour FIGHT DISCORD*
+**/tirage** : *lancer un tirage au sort* \n\n`
+            : "") +
+        (interaction.member.roles.cache.has(
+            constantIDs.roles.dreamTeam[+options.test]
+        )
+            ? `
+**:watermelon: __Dream Team commands__ :**
+**/poll** : *lancer un sondage* \n\n`
+            : "") +
+        `
+**__Commands__ :**
+**/shop** : *voir le shop*
+**/launchgame** : *jouer à un jeu et mettre en jeu de l'xp*
+**/ping** : *affiche le ping*
+**/xplead** : *classement de l'xp du serveur*
+**/stats** : *affiche vos statistiques*
+**/coinslead** : *classement des coins du serveur*
+**/voiceslead** : *classement du temps de vocal du serveur*
+**/bumpslead** : *classement des bumps mensuels du serveur*
+**/fightlead** : *classement des gagnants de FIGHT DISCORD du serveur*
+**/hug** : *faire un câlin à quelqu'un*
+**/quests** : *voir ses quêtes*
+**/givecoins** : *donner des coins à quelqu'un*`;
 
     const embed = new EmbedBuilder()
         .setColor(10181046)

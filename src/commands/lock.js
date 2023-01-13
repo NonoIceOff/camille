@@ -1,4 +1,9 @@
+const { Role } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
+
+const constantIDs = require("../constants/ids");
+const { options, client } = require("../client");
+
 
 /**
  * Action when the command is triggered
@@ -6,7 +11,10 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
  */
 async function onTrigger(interaction) {
     // TODO: Make it working
-    if (interaction.member.roles.cache.has(adminrole.id) === true) {
+    if (interaction.member.roles.cache.has(constantIDs.roles.admin[+options.test])) {
+        /**
+         * @type {Role}
+         */
         let role = interaction.guild.roles.cache.find(
             (r) => r.name === "@everyone"
         );
@@ -14,22 +22,23 @@ async function onTrigger(interaction) {
             interaction.channel.permissionOverwrites.edit(role.id, {
                 SendMessages: false,
             });
-            //interaction.reply("**Salon vérouillé**");
             interaction.channel.send("**Salon vérouillé**");
         } else {
             interaction.channel.permissionOverwrites.edit(role.id, {
                 SendMessages: true,
             });
-            //interaction.reply("**Salon dévérouilllé**");
             interaction.channel.send("**Salon dévérouillé**");
         }
         interaction.reply("En attente...");
         await interaction.deleteReply();
     } else {
         interaction.reply(
-            "Vous n'avez pas le rôle **" +
-                adminrole.name +
-                "** pour executer cette commande."
+            `Vous n'avez pas le rôle **${
+                client.guilds.cache
+                    .get(constantIDs.workingGuild[+options.test])
+                    .roles.cache.get(constantIDs.roles.admin[+options.test])
+                    .name
+            }** pour executer cette commande.`
         );
     }
 }
