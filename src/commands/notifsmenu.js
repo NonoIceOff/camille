@@ -7,14 +7,14 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 async function onTrigger(interaction) {
     // TODO: Make it working
     if (interaction.member.roles.cache.has(adminrole.id) === true) {
-        const exampleEmbed = new EmbedBuilder()
+        const embed = new EmbedBuilder()
             .setColor(10181046)
             .setTitle(":bell: **__Sélection des notifications__**")
             .setDescription(
                 "📊 **Sondages**    *(Ne pas louper les sondages du serveur)*\n🔴 **Vidéos**    *(Ne pas louper les vidéos)*\n🏆 **Evènements**    *(Ne pas louper les évents organisés sur le serveur)*\n🍺 **Shorts**    *(Ne pas louper les vidéos courtes)*"
             );
         const message = await interaction.reply({
-            embeds: [exampleEmbed],
+            embeds: [embed],
             fetchReply: true,
         });
 

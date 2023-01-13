@@ -11,10 +11,6 @@ User.prototype.getXP = function () {
 User.prototype.setXP = function (xp) {
     setUserValue(this.id, userValuesName.XP, xp);
 };
-// TODO: Move this method to another file and detect if there is a levelup.
-User.prototype.addXP = async function (xp) {
-    addUserValue(this.id, userValuesName.XP, xp);
-};
 
 // Bump
 

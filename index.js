@@ -1,11 +1,12 @@
 "use strict";
 const test = 1;
 const config = require("./config");
-const userPrototype = require("./src/data/prototype/User");
+const {} = require("./src/data/prototype/User");
+const {} = require("./src/xp/prototype/User");
 const constantIDs = require("./src/constants/ids");
 const constantYoutube = require("./src/constants/youtube");
 const { client, options, init } = require("./src/client");
-const events = require("./src/events");
+const {} = require("./src/events");
 const db = require("./src/data/db");
 
 const {
@@ -230,7 +231,7 @@ async function startvote() {
     file.set("votes", votesdico);
     file.save();
 
-    const exampleEmbed = new EmbedBuilder()
+    const embed = new EmbedBuilder()
         .setColor(10181046)
         .setTitle(":envelope:  __**Les votes du mois sont ouverts**__")
         .setDescription(
@@ -239,7 +240,7 @@ async function startvote() {
     client.guilds.cache
         .get(guild_id)
         .channels.cache.get(constantIDs.channels.bot[test])
-        .send({ embeds: [exampleEmbed] });
+        .send({ embeds: [embed] });
 
     file.set("votes", votesdico);
     file.save();
@@ -268,7 +269,7 @@ async function stopvote() {
         })(0)
     );
 
-    const exampleEmbed = new EmbedBuilder()
+    const embed = new EmbedBuilder()
         .setColor(10181046)
         .setTitle(
             ":envelope:  __**Fermeture des votes, voici les résultats :**__"
@@ -284,7 +285,7 @@ async function stopvote() {
             personne = membered.username;
         }
         if (i == 1) {
-            exampleEmbed.addFields({
+            embed.addFields({
                 name: ":trophy:  **|** " + personne,
                 value: classementarray[i - 1][0].toString() + " votes",
                 inline: true,
@@ -292,7 +293,7 @@ async function stopvote() {
             winner_user = await client.users.fetch(classementarray[i - 1][1]);
         }
         if (i > 1) {
-            exampleEmbed.addFields({
+            embed.addFields({
                 name: i.toString() + "e **|** " + personne,
                 value: classementarray[i - 1][0].toString() + " votes",
                 inline: true,
@@ -302,7 +303,7 @@ async function stopvote() {
     client.guilds.cache
         .get(guild_id)
         .channels.cache.get(constantIDs.channels.bot[test])
-        .send({ embeds: [exampleEmbed] });
+        .send({ embeds: [embed] });
 
     votesdiso = {};
     votesdiso["voted"] = { start: 0 };
@@ -358,55 +359,6 @@ function stop_voicetime_to_user(user) {
     }
 }
 
-function add_xp_to_user(user, xp) {
-    let file = editJsonFile("./infos.json");
-    var membersdico = file.get("members");
-    if (!membersdico[user.id]) {
-        membersdico[user.id] = {
-            xp_total: 0,
-            xp: 0,
-            niveau: 0,
-            esheep: 0,
-            bumpstotal: 0,
-        };
-    }
-    membersdico[user.id]["xp"] = membersdico[user.id]["xp"] + xp;
-    membersdico[user.id]["esheep"] += 0.1 * xp;
-    membersdico[user.id]["xp_total"] = membersdico[user.id]["xp_total"] + xp;
-    while (
-        membersdico[user.id]["xp"] >=
-        5 * Math.pow(membersdico[user.id]["niveau"], 2) +
-            50 * membersdico[user.id]["niveau"] +
-            100
-    ) {
-        membersdico[user.id]["xp"] =
-            membersdico[user.id]["xp"] -
-            (5 * Math.pow(membersdico[user.id]["niveau"], 2) +
-                50 * membersdico[user.id]["niveau"] +
-                100);
-        membersdico[user.id]["niveau"] += 1;
-        if (
-            membersdico[user.id]["xp"] <
-            5 * Math.pow(membersdico[user.id]["niveau"], 2) +
-                50 * membersdico[user.id]["niveau"] +
-                100
-        ) {
-            client.guilds.cache
-                .get(guild_id)
-                .channels.cache.get(constantIDs.channels.bot[test])
-                .send(
-                    "<@" +
-                        user.id +
-                        "> tu es passé au **NIVEAU " +
-                        membersdico[user.id]["niveau"].toString() +
-                        "**"
-                );
-        }
-    }
-    file.set("members", membersdico);
-    file.save();
-}
-
 async function start_fight_qualifs() {
     const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 
@@ -455,7 +407,7 @@ async function start_fight_qualifs() {
         file.set("Saisons", fightdico);
         file.save();
 
-        const exampleEmbed = new EmbedBuilder()
+        const embed = new EmbedBuilder()
             .setColor(10181046)
             .setTitle("**Fight Discord | Manche qualificative**")
             .addFields(
@@ -487,16 +439,16 @@ async function start_fight_qualifs() {
 
         if (key.includes("IA") == false) {
             user = await client.users.fetch(key);
-            exampleEmbed.setDescription("**" + user.username + "**");
+            embed.setDescription("**" + user.username + "**");
         } else {
-            exampleEmbed.setDescription("**" + key + "**");
+            embed.setDescription("**" + key + "**");
         }
 
         await timer((60000 / 60) * 600); // then the created Promise can be awaited
         client.guilds.cache
             .get(guild_id)
             .channels.cache.get(constantIDs.event.fightDiscord.channel[test])
-            .send({ embeds: [exampleEmbed] });
+            .send({ embeds: [embed] });
     }
 
     await timer(60000 / 60); // Pause de 10 sec
@@ -513,7 +465,7 @@ async function start_fight_qualifs() {
         })(0)
     );
 
-    var exampleEmbed = new EmbedBuilder()
+    var embed = new EmbedBuilder()
         .setColor(12154643)
         .setTitle("**Fight Discord | Manche qualificative | Résultats**");
 
@@ -538,8 +490,8 @@ async function start_fight_qualifs() {
                 .channels.cache.get(
                     constantIDs.event.fightDiscord.channel[test]
                 )
-                .send({ embeds: [exampleEmbed] });
-            var exampleEmbed = new EmbedBuilder()
+                .send({ embeds: [embed] });
+            var embed = new EmbedBuilder()
                 .setColor(12154643)
                 .setTitle(
                     "**Fight Discord | Manche qualificative | Résultats 2**"
@@ -547,7 +499,7 @@ async function start_fight_qualifs() {
         }
         if (i <= qualified) {
             match = i / 2;
-            exampleEmbed.addFields({
+            embed.addFields({
                 name: "🇶 " + pseudo,
                 value: points.toString() + " points",
                 inline: true,
@@ -556,7 +508,7 @@ async function start_fight_qualifs() {
                 classementarray[i - 1][1]
             ] = { Phase: 1, Points: 0, Kills: 0, Morts: 0, Match: match };
         } else {
-            exampleEmbed.addFields({
+            embed.addFields({
                 name: pseudo,
                 value: points.toString() + " points",
                 inline: true,
@@ -570,7 +522,7 @@ async function start_fight_qualifs() {
     client.guilds.cache
         .get(guild_id)
         .channels.cache.get(constantIDs.event.fightDiscord.channel[test])
-        .send({ embeds: [exampleEmbed] });
+        .send({ embeds: [embed] });
 
     await timer(60000 / 60);
     start_fight_finals();
@@ -591,7 +543,7 @@ async function start_fight_finals() {
     var win = "";
     while (max >= 2) {
         var newinscrs = [];
-        var exampleEmbed = new EmbedBuilder()
+        var embed = new EmbedBuilder()
             .setColor(10181046)
             .setTitle("**Fight Discord | Phase éliminatoire**");
 
@@ -614,7 +566,7 @@ async function start_fight_finals() {
             fightdico[fightdico["Number"].toString()]["Inscriptions"].push(key);
             if (min % 2 == 1) {
                 text += " vs " + key;
-                exampleEmbed.addFields({
+                embed.addFields({
                     name: intitule + " " + (Math.floor(min / 2) + 1).toString(),
                     value: text,
                     inline: true,
@@ -628,7 +580,7 @@ async function start_fight_finals() {
         client.guilds.cache
             .get(guild_id)
             .channels.cache.get(constantIDs.event.fightDiscord.channel[test])
-            .send({ embeds: [exampleEmbed] });
+            .send({ embeds: [embed] });
 
         await timer((60000 / 60) * 600);
 
@@ -658,7 +610,7 @@ async function start_fight_finals() {
                     ] * multiplier
                 );
 
-            const exampleEmbed = new EmbedBuilder()
+            const embed = new EmbedBuilder()
                 .setColor(12154643)
                 .setTitle(
                     "**Fight Discord | " +
@@ -704,12 +656,12 @@ async function start_fight_finals() {
                         Morts: 0,
                         Match: i / 2,
                     };
-                    exampleEmbed.addFields({
+                    embed.addFields({
                         name: "🇶 " + pseudos[0],
                         value: match_j1[1].toString() + " points",
                         inline: true,
                     });
-                    exampleEmbed.addFields({
+                    embed.addFields({
                         name: pseudos[1],
                         value: match_j2[1].toString() + " points",
                         inline: true,
@@ -723,12 +675,12 @@ async function start_fight_finals() {
                         Morts: 0,
                         Match: i / 2,
                     };
-                    exampleEmbed.addFields({
+                    embed.addFields({
                         name: "🇶 " + pseudos[1],
                         value: match_j2[1].toString() + " points",
                         inline: true,
                     });
-                    exampleEmbed.addFields({
+                    embed.addFields({
                         name: pseudos[0],
                         value: match_j1[1].toString() + " points",
                         inline: true,
@@ -740,7 +692,7 @@ async function start_fight_finals() {
                     .channels.cache.get(
                         constantIDs.event.fightDiscord.channel[test]
                     )
-                    .send({ embeds: [exampleEmbed] });
+                    .send({ embeds: [embed] });
                 match_j1 = ["id", 0];
                 pseudos[0] = "";
                 await timer((60000 / 60) * 600);
@@ -812,7 +764,7 @@ async function leads(page, interaction, mode) {
 
     classementarray = classementarray.slice((page - 1) * 9, page * 9);
 
-    const exampleEmbed = new EmbedBuilder()
+    const embed = new EmbedBuilder()
         .setColor(10181046)
         .setTitle(lead_dico[mode]["title"])
         .setDescription(lead_dico[mode]["description"])
@@ -888,27 +840,27 @@ async function leads(page, interaction, mode) {
                 lead_dico[mode]["value1_text"][1];
         }
         if (page == 1) {
-            exampleEmbed.addFields({
+            embed.addFields({
                 name: place_array[i - 1] + " **|** " + personne,
                 value: desc,
                 inline: true,
             });
         } else {
-            exampleEmbed.addFields({
+            embed.addFields({
                 name: (i + 9 * (page - 1)).toString() + " **|** " + personne,
                 value: desc,
                 inline: true,
             });
         }
     }
-    interaction.editReply({ content: "", embeds: [exampleEmbed] });
+    interaction.editReply({ content: "", embeds: [embed] });
 }
 
 function embed_fight(message) {
     let file = editJsonFile("./fight.json");
     var fightdico = file.get("Saisons");
 
-    const exampleEmbed = new EmbedBuilder()
+    const embed = new EmbedBuilder()
         .setColor(10181046)
         .setTitle("**Informations de la saison 1 de Fight Discord**")
         .setDescription(
@@ -966,7 +918,7 @@ function embed_fight(message) {
         );
 
     message.edit({
-        embeds: [exampleEmbed],
+        embeds: [embed],
         components: [row],
         fetchReply: true,
     });
@@ -984,13 +936,13 @@ function game_jp(user) {
             result: Math.floor(Math.random() * 1000) + 1,
             gain: 1.5,
         };
-        const exampleEmbed = new EmbedBuilder()
+        const embed = new EmbedBuilder()
             .setColor(10181046)
             .setTitle(":coin: **__Bienvenue au Juste Prix__**")
             .setDescription(
                 "Veuillez entrer un nombre entre 1 et 1000 sur le tchat."
             );
-        user.send({ embeds: [exampleEmbed] });
+        user.send({ embeds: [embed] });
         file.set("games", membersdico);
         file.save();
     }
@@ -1048,7 +1000,7 @@ function game_jp(user) {
                                         );
                                     }
                                 } else {
-                                    const exampleEmbed = new EmbedBuilder()
+                                    const embed = new EmbedBuilder()
                                         .setColor(10181046)
                                         .setTitle(
                                             ":tada: **__Félicitations__**"
@@ -1077,7 +1029,7 @@ function game_jp(user) {
                                                 .setStyle(ButtonStyle.Danger)
                                         );
                                     user.send({
-                                        embeds: [exampleEmbed],
+                                        embeds: [embed],
                                         components: [row],
                                     });
                                     var coinsdico = file.get("members");
@@ -1119,7 +1071,7 @@ async function game_pfc(user, nbr) {
             result: Math.floor(Math.random() * (2 - 0 + 1) + 0),
             gain: 0,
         };
-        const exampleEmbed = new EmbedBuilder()
+        const embed = new EmbedBuilder()
             .setColor(10181046)
             .setTitle(":coin: **__Bienvenue au Pierre Feuille Ciseaux__**")
             .setDescription(
@@ -1145,7 +1097,7 @@ async function game_pfc(user, nbr) {
                     .setStyle(ButtonStyle.Secondary)
             );
 
-        await user.send({ embeds: [exampleEmbed], components: [row] });
+        await user.send({ embeds: [embed], components: [row] });
         file.set("games", membersdico);
         file.save();
     } else {
@@ -1214,7 +1166,7 @@ async function game_pfc(user, nbr) {
 
         if (membersdico[user.id]["game"] > 5) {
             if (membersdico[user.id]["points"] >= 3) {
-                const exampleEmbed = new EmbedBuilder()
+                const embed = new EmbedBuilder()
                     .setColor(10181046)
                     .setTitle(":tada: **__Félicitations__**")
                     .setDescription(
@@ -1232,10 +1184,10 @@ async function game_pfc(user, nbr) {
                         .setLabel("REJOUER (marche pas trop)")
                         .setStyle(ButtonStyle.Danger)
                 );
-                user.send({ embeds: [exampleEmbed] });
+                user.send({ embeds: [embed] });
             } else {
                 membersdico[user.id]["gain"] = 0;
-                const exampleEmbed = new EmbedBuilder()
+                const embed = new EmbedBuilder()
                     .setColor(10181046)
                     .setTitle(":cry:  **__Mince...__**")
                     .setDescription(
@@ -1253,7 +1205,7 @@ async function game_pfc(user, nbr) {
                         .setLabel("REJOUER (marche pas trop)")
                         .setStyle(ButtonStyle.Danger)
                 );
-                user.send({ embeds: [exampleEmbed] });
+                user.send({ embeds: [embed] });
             }
             coinsdico[user.id]["esheep"] += membersdico[user.id]["gain"];
             file.set("members", coinsdico);
@@ -1312,7 +1264,7 @@ function game_p4(user) {
             ],
             gain: 0,
         };
-        const exampleEmbed = new EmbedBuilder()
+        const embed = new EmbedBuilder()
             .setColor(10181046)
             .setTitle(":coin: **__Bienvenue au Puissance 4__**")
             .setDescription(
@@ -1361,7 +1313,7 @@ function game_p4(user) {
                     .setLabel("7")
                     .setStyle(ButtonStyle.Secondary)
             );
-        user.send({ embeds: [exampleEmbed] });
+        user.send({ embeds: [embed] });
         show_puissance_4(user, membersdico[user.id]["grille"]);
         file.set("games", membersdico);
         file.save();

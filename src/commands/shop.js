@@ -21,7 +21,7 @@ function onTrigger(interaction) {
     }
 
     var coins = membersdico[interaction.user.id]["esheep"];
-    const exampleEmbed = new EmbedBuilder()
+    const embed = new EmbedBuilder()
         .setColor(10181046)
         .setTitle(":barber: __Shop :__ ")
         .setDescription("Vous avez **" + coins.toString() + " :coin:**")
@@ -69,7 +69,7 @@ function onTrigger(interaction) {
                 .setStyle(ButtonStyle.Secondary)
         );
     interaction.user.send({
-        embeds: [exampleEmbed],
+        embeds: [embed],
         components: [row],
         fetchReply: true,
     });

@@ -38,13 +38,13 @@ function onTrigger(interaction) {
     text = text + "**/quests** : *voir ses quêtes* \n";
     text = text + "**/givecoins** : *donner des coins à quelqu'un* \n";
 
-    const exampleEmbed = new EmbedBuilder()
+    const embed = new EmbedBuilder()
         .setColor(10181046)
         .setTitle("Commandes disponibles pour vous")
         .setDescription(text);
 
     interaction.reply({
-        embeds: [exampleEmbed],
+        embeds: [embed],
         fetchReply: true,
     });
 }

@@ -61,7 +61,7 @@ async function checkIfFinished(reaction, user) {
                                     ">"
                             );
 
-                        const exampleEmbed = new EmbedBuilder()
+                        const embed = new EmbedBuilder()
                             .setColor(10181046)
                             .setTitle(messagepredi[0]["data"]["title"])
                             .setDescription(
@@ -69,7 +69,7 @@ async function checkIfFinished(reaction, user) {
                             );
 
                         prediction.edit({
-                            embeds: [exampleEmbed],
+                            embeds: [embed],
                             fetchReply: true,
                         });
 

@@ -57,7 +57,7 @@ function onTrigger(interaction) {
     }
     pourcentage = pourcentage / quests["Level " + level.toString()].length;
     pourcentage = pourcentage * 10;
-    const exampleEmbed = new EmbedBuilder()
+    const embed = new EmbedBuilder()
         .setColor(10181046)
         .setTitle("Vos quêtes : ")
         .setDescription(
@@ -80,7 +80,7 @@ function onTrigger(interaction) {
         );
 
     interaction.reply({
-        embeds: [exampleEmbed],
+        embeds: [embed],
         fetchReply: true,
     });
 }

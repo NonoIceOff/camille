@@ -1,13 +1,15 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
 
 const { toTimeFormat } = require("../utils/date");
+const { xpToLevelData } = require("../xp/utils");
 
 /**
  * Action when the command is triggered
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  */
 async function onTrigger(interaction) {
-    const exampleEmbed = new EmbedBuilder()
+    const levelData = xpToLevelData(await interaction.user.getXP());
+    const embed = new EmbedBuilder()
         .setColor(10181046)
         .setTitle(
             ":desktop:  __**Statistiques de " +
@@ -18,8 +20,7 @@ async function onTrigger(interaction) {
         .addFields(
             {
                 name: "Niveau :",
-                // TODO: Add level display
-                value: `**{level}** ({levelXp}/{levelXpToLevelup}) // TEMP: ${await interaction.user.getXP()}XP`,
+                value: `**${levelData.level}** (${levelData.levelXp}/${levelData.levelupXp})`,
                 inline: true,
             },
             {
@@ -33,7 +34,7 @@ async function onTrigger(interaction) {
                 name: "Temps en vocal :",
                 value: `**${toTimeFormat(
                     await interaction.user.getVoice(),
-                    true
+                    true,true,true,true
                 )}**`,
                 inline: true,
             },
@@ -48,7 +49,7 @@ async function onTrigger(interaction) {
                 inline: true,
             }
         );
-    interaction.reply({ embeds: [exampleEmbed] });
+    interaction.reply({ embeds: [embed] });
 }
 
 const definition = new SlashCommandBuilder()

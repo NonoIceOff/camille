@@ -16,7 +16,7 @@ git clone https://github.com/NonoIceOff/camille
 cd camille
 npm i
 ```
-- Finally, make a file called `config.js` with the token of your bot, exemple:
+- Finally, make a file called `config.js` with the token of your bot, example:
 ```js
 module.exports = {
     token: "NTAwNTYxODc4MzDSMS-DOSMg.GYna_5.nJG-9ZdGD_US2nGLAfDSflopjbOquxidfnODC5", // Token used when test = 0

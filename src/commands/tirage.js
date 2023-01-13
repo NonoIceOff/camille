@@ -9,7 +9,7 @@ async function onTrigger(interaction) {
     if (interaction.member.roles.cache.has(adminrole.id) === true) {
         let file = editJsonFile("./infos.json");
         var tiragesdico = file.get("tirages");
-        const exampleEmbed = new EmbedBuilder()
+        const embed = new EmbedBuilder()
             .setColor(10181046)
             .setTitle(
                 ":moneybag: Tentez de gagner... **__" +
@@ -18,7 +18,7 @@ async function onTrigger(interaction) {
             )
             .setDescription("Tirage au sort dès que l'auteur réponde.");
         const message = await interaction.reply({
-            embeds: [exampleEmbed],
+            embeds: [embed],
             fetchReply: true,
         });
         message.react("💰");

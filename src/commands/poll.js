@@ -54,7 +54,7 @@ async function onTrigger(interaction) {
                 "\n<:poll10:1017114271437553815> " +
                 interaction.options.getString("option10");
         }
-        const exampleEmbed = new EmbedBuilder()
+        const embed = new EmbedBuilder()
             .setColor(10181046)
             .setTitle(
                 ":bar_chart: **__" +
@@ -63,7 +63,7 @@ async function onTrigger(interaction) {
             )
             .setDescription(descr);
         const message = await interaction.reply({
-            embeds: [exampleEmbed],
+            embeds: [embed],
             fetchReply: true,
         });
         message.react("<:poll1:1017112408248041543>");

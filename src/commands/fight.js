@@ -22,7 +22,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
             "Veuillez regarder vos MP pour paramétrer la prochaine saison"
         );
 
-        const exampleEmbed = new EmbedBuilder()
+        const embed = new EmbedBuilder()
             .setColor(10181046)
             .setTitle(
                 "**Informations de la saison " +
@@ -85,7 +85,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
                     .setStyle(ButtonStyle.Danger)
             );
         interaction.user.send({
-            embeds: [exampleEmbed],
+            embeds: [embed],
             components: [row],
             fetchReply: true,
         });

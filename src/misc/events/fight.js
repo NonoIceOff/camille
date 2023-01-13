@@ -161,7 +161,7 @@ async function onButton(interaction) {
             }
 
             ia_nbr = 0;
-            const exampleEmbed = new EmbedBuilder()
+            const embed = new EmbedBuilder()
                 .setColor(10181046)
                 .setTitle("**Saison 1 de Fight Discord**")
                 .setDescription(
@@ -208,27 +208,27 @@ async function onButton(interaction) {
                     }
                 }
             }
-            exampleEmbed.addFields({
+            embed.addFields({
                 name: "1-10",
                 value: text,
                 inline: true,
             });
             if (text2 != "") {
-                exampleEmbed.addFields({
+                embed.addFields({
                     name: "11-20",
                     value: text2,
                     inline: true,
                 });
             }
             if (text3 != "") {
-                exampleEmbed.addFields({
+                embed.addFields({
                     name: "21-30",
                     value: text3,
                     inline: true,
                 });
             }
             if (text4 != "") {
-                exampleEmbed.addFields({
+                embed.addFields({
                     name: "31-32",
                     value: text4,
                     inline: true,
@@ -239,7 +239,7 @@ async function onButton(interaction) {
                 .channels.cache.get(
                     constantIDs.event.fightDiscord.channel[+options.test]
                 )
-                .send({ embeds: [exampleEmbed] });
+                .send({ embeds: [embed] });
             start_fight_qualifs();
             interaction.deferUpdate();
         }

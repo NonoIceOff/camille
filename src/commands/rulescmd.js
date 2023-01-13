@@ -7,7 +7,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 function onTrigger(interaction) {
     // TODO: Make it working
     if (interaction.member.roles.cache.has(adminrole.id) === true) {
-        const exampleEmbed = new EmbedBuilder()
+        const embed = new EmbedBuilder()
             .setColor(10181046)
             .setTitle(":books: __**Règles**__ de Shinsetsu Kurabu *V3*")
             .setDescription(
@@ -29,7 +29,7 @@ function onTrigger(interaction) {
             );
 
         interaction.reply({
-            embeds: [exampleEmbed],
+            embeds: [embed],
             fetchReply: true,
         });
     } else {

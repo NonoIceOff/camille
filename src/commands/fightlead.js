@@ -26,7 +26,7 @@ async function onTrigger(interaction) {
         })(0)
     );
 
-    const exampleEmbed = new EmbedBuilder()
+    const embed = new EmbedBuilder()
         .setColor(10181046)
         .setTitle(
             ":crossed_swords:  **__Classement des gagnants de FIGHT DISCORD :__**"
@@ -71,7 +71,7 @@ async function onTrigger(interaction) {
             pseudo = classementarray[i - 1][1];
         }
 
-        exampleEmbed.addFields({
+        embed.addFields({
             name: place_array[i - 1] + " **|** " + pseudo,
             value:
                 " " + ":star:".repeat(membersdico[classementarray[i - 1][1]]),
@@ -79,7 +79,7 @@ async function onTrigger(interaction) {
         });
     }
 
-    interaction.reply({ embeds: [exampleEmbed] });
+    interaction.reply({ embeds: [embed] });
 }
 
 const definition = new SlashCommandBuilder()

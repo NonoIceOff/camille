@@ -38,7 +38,7 @@ function onTrigger(interaction) {
                 file.set("votes", membersdico);
                 file.save();
 
-                const exampleEmbed = new EmbedBuilder()
+                const embed = new EmbedBuilder()
                     .setColor(10181046)
                     .setTitle(":ballot_box:  __**Vote comptabilisé !**__")
                     .setDescription(
@@ -50,28 +50,28 @@ function onTrigger(interaction) {
                 //interaction.channel.permissionOverwrites
                 //    .edit(interaction.user.id, { SendMessages: false});
                 interaction.reply({
-                    embeds: [exampleEmbed],
+                    embeds: [embed],
                 });
             } else {
-                const exampleEmbed = new EmbedBuilder()
+                const embed = new EmbedBuilder()
                     .setColor(10038562)
                     .setTitle(":warning:  __**Vote non comptabilisé.**__")
                     .setDescription("Vous avez déja épuisé tous vos votes.");
                 //interaction.channel.permissionOverwrites
                 //    .edit(interaction.user.id, { SendMessages: false});
                 interaction.reply({
-                    embeds: [exampleEmbed],
+                    embeds: [embed],
                 });
             }
         } else {
-            const exampleEmbed = new EmbedBuilder()
+            const embed = new EmbedBuilder()
                 .setColor(10038562)
                 .setTitle(":warning:  __**Vote non comptabilisé.**__")
                 .setDescription("Les votes ne sont pas ouverts actuellement.");
             //interaction.channel.permissionOverwrites
             //    .edit(interaction.user.id, { SendMessages: false});
             interaction.reply({
-                embeds: [exampleEmbed],
+                embeds: [embed],
             });
         }
     } else {
