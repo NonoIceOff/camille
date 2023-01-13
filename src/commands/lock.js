@@ -1,4 +1,4 @@
-const { Role } = require("discord.js");
+const { Role, PermissionFlagsBits } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const constantIDs = require("../constants/ids");
@@ -18,16 +18,16 @@ async function onTrigger(interaction) {
         let role = interaction.guild.roles.cache.find(
             (r) => r.name === "@everyone"
         );
-        if (interaction.options.getBoolean("status") == true) {
-            interaction.channel.permissionOverwrites.edit(role.id, {
-                SendMessages: false,
-            });
-            interaction.channel.send("**Salon vérouillé**");
-        } else {
+        if (interaction.channel.permissionOverwrites.cache.get(role.id).deny.has(PermissionFlagsBits.SendMessages)) {
             interaction.channel.permissionOverwrites.edit(role.id, {
                 SendMessages: true,
             });
             interaction.channel.send("**Salon dévérouillé**");
+        } else {
+            interaction.channel.permissionOverwrites.edit(role.id, {
+                SendMessages: false,
+            });
+            interaction.channel.send("**Salon vérouillé**");
         }
         interaction.reply("En attente...");
         await interaction.deleteReply();
@@ -45,10 +45,7 @@ async function onTrigger(interaction) {
 
 const definition = new SlashCommandBuilder()
     .setName("lock")
-    .setDescription("Locker un salon")
-    .addBooleanOption((choice) =>
-        choice.setName("status").setDescription("Activé ou désactivé")
-    );
+    .setDescription("Locker un salon");
 
 module.exports = {
     onTrigger,
