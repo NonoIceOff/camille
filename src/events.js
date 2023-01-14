@@ -10,6 +10,7 @@ const xpSources = require("./xp/sources");
 const roleMenu = require("./misc/roleMenu");
 const giveaway = require("./misc/giveaway");
 const commandsCore = require("./commands/core");
+const leaderboard = require("./misc/leaderboard");
 
 client.on(Events.ClientReady, () => {
     if (false) {
@@ -84,4 +85,5 @@ client.on(Events.InteractionCreate, (interaction) => {
     commandsCore.callCommand(interaction);
     welcomeMessage.sayHi(interaction);
     gamesCore.onInteraction(interaction);
+    leaderboard.onButton(interaction);
 });

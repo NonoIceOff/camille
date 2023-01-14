@@ -154,9 +154,49 @@ function addUserValue(userId, valueName, value) {
     );
 }
 
+/**
+ * Get top users in a given value from the database
+ * @param {string} userId User ID
+ * @param {string} valueName Name of the value to order by. Look at `data/constants/userValuesName` to get the list of values.
+ * @returns {Promise<{userId:string,value:any}[]>}
+ */
+function getTopUserValue(valueName,skip,count) {
+    return new Promise((resolve) => {
+        db.all(
+            `SELECT user_id AS userId, ${valueName} AS value FROM users ORDER BY ${valueName} DESC LIMIT ${skip},${count}`,
+            (err, rows) => {
+                if (err) {
+                    console.error(err);
+                }
+                resolve(rows);
+            }
+        );
+    });
+}
+
+/**
+ * Get user count
+ * @returns {Promise<number>}
+ */
+function getUserCount() {
+    return new Promise((resolve) => {
+        db.get(
+            `SELECT COUNT(ALL) AS count FROM users`,
+            (err, row) => {
+                if (err) {
+                    console.error(err);
+                }
+                resolve(row.count);
+            }
+        );
+    });
+}
+
 module.exports = {
     update,
     getUserValue,
     setUserValue,
     addUserValue,
+    getTopUserValue,
+    getUserCount,
 };

@@ -21,11 +21,11 @@ function levelToXp(level) {
  */
 function xpToLevelData(xp) {
     const level = xpToLevel(xp);
-    const baseLevelXp = levelToXp(Math.floor(level));
-    const levelupXp = levelToXp(Math.ceil(level)) - baseLevelXp;
+    const baseLevelXp = levelToXp(Math.max(-0.5,Math.floor(level)));
+    const levelupXp = levelToXp(Math.max(1,Math.ceil(level))) - baseLevelXp;
     const levelXp = xp-baseLevelXp;
     return {
-        level:Math.floor(level),
+        level:Math.max(0,Math.floor(level)),
         levelupXp:Math.floor(levelupXp),
         levelXp:Math.floor(levelXp)
     };

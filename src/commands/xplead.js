@@ -1,32 +1,18 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
+const {editLeaderboard} = require("../misc/leaderboard");
+const userValuesName = require("../data/constants/userValuesName");
+
 /**
  * Action when the command is triggered
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  */
 async function onTrigger(interaction) {
-    // TODO: Make it working
     await interaction.reply("Je travaille dessus ...");
     if (interaction.options.getInteger("page") == null) {
-        leads(1, interaction, "xp_lead");
+        editLeaderboard(interaction,userValuesName.XP,1);
     } else {
-        leads(interaction.options.getInteger("page"), interaction, "xp_lead");
-    }
-}
-
-/**
- * Triggered when a button is pressed
- * @param {import("discord.js").Interaction} [interaction] THE interaction
- * @param {Array<String>} [path] Path of the interaction
- */
-async function onButton(interaction, path) {
-    // TODO: Rewrite with DB
-
-    if (interaction.customId === "xplead_+") {
-        xp_lead(2, interaction);
-    }
-    if (interaction.customId === "xplead_-") {
-        xp_lead(1, interaction);
+        editLeaderboard(interaction,userValuesName.XP,interaction.options.getInteger("page"));
     }
 }
 
@@ -40,5 +26,4 @@ const definition = new SlashCommandBuilder()
 module.exports = {
     onTrigger,
     definition,
-    onButton,
 };

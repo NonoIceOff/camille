@@ -1,20 +1,18 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
+const {editLeaderboard} = require("../misc/leaderboard");
+const userValuesName = require("../data/constants/userValuesName");
+
 /**
  * Action when the command is triggered
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  */
 async function onTrigger(interaction) {
-    // TODO: Make it working
     await interaction.reply("Je travaille dessus ...");
     if (interaction.options.getInteger("page") == null) {
-        leads(1, interaction, "bumps_lead");
+        editLeaderboard(interaction,userValuesName.monthlyBump,1);
     } else {
-        leads(
-            interaction.options.getInteger("page"),
-            interaction,
-            "bumps_lead"
-        );
+        editLeaderboard(interaction,userValuesName.monthlyBump,interaction.options.getInteger("page"));
     }
 }
 
