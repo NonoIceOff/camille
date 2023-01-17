@@ -1,9 +1,4 @@
-const {
-    EmbedBuilder,
-    GuildMember,
-    ActionRowBuilder,
-    ButtonStyle,
-} = require("discord.js");
+const { EmbedBuilder, ActionRowBuilder, ButtonStyle } = require("discord.js");
 const { client, options } = require("../client");
 const constantIDs = require("../constants/ids");
 const { getTopUserValue, getUserCount } = require("../data/db");
@@ -142,8 +137,12 @@ async function onButton(interaction) {
             ) {
                 interaction.deferUpdate();
                 editLeaderboard(interaction, path[1], +path[2]);
-            }else{
-                interaction.reply({content:"Bah non, c'est pas ton classement, ouvre en un toi-même si tu veux l'utiliser",ephemeral:true});
+            } else {
+                interaction.reply({
+                    content:
+                        "Bah non, c'est pas ton classement, ouvre en un toi-même si tu veux l'utiliser",
+                    ephemeral: true,
+                });
             }
         }
     }

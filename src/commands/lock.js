@@ -10,7 +10,6 @@ const { options, client } = require("../client");
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  */
 async function onTrigger(interaction) {
-    // TODO: Make it working
     if (interaction.member.roles.cache.has(constantIDs.roles.admin[+options.test])) {
         /**
          * @type {Role}

@@ -9,7 +9,6 @@ const { options, client } = require("../client");
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  */
 function onTrigger(interaction) {
-    // TODO: Make it working
     if (
         interaction.member.roles.cache.has(
             constantIDs.roles.admin[+options.test]
@@ -18,7 +17,7 @@ function onTrigger(interaction) {
         var user = interaction.options.getUser("member");
         var amount = interaction.options.getInteger("amount");
 
-        user.addXP(amount);
+        user.addXP(amount,false);
         interaction.reply(`**${user.username}** a été give de ${amount}xp.`);
     } else {
         interaction.reply(

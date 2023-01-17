@@ -3,8 +3,9 @@
  * @param {number} xp 
  * @returns {number}
  */
-function xpToLevel(xp) {
-    return Math.sqrt(xp/55)-0.5;
+function xpToLevel(xp,exact = false) {
+    if (exact) return Math.sqrt(xp/55)-0.5;
+    else return Math.max(0,Math.floor(xpToLevel(xp,true)));
 }
 /**
  * Return the total XP from a level
@@ -20,7 +21,7 @@ function levelToXp(level) {
  * @returns {{level:number,levelupXp:number,levelXp:number}}
  */
 function xpToLevelData(xp) {
-    const level = xpToLevel(xp);
+    const level = xpToLevel(xp,true);
     const baseLevelXp = levelToXp(Math.max(-0.5,Math.floor(level)));
     const levelupXp = levelToXp(Math.max(1,Math.ceil(level))) - baseLevelXp;
     const levelXp = xp-baseLevelXp;
