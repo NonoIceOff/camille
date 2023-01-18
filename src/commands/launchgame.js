@@ -1,14 +1,16 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
+const { ActionRowBuilder, SelectMenuBuilder, SelectMenuInteraction } = require("discord.js");
+
+const gamesCore = require("../games/core");
 
 /**
  * Action when the command is triggered
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  */
 async function onTrigger(interaction) {
-    // TODO: Make it working
     const row = new ActionRowBuilder().addComponents(
         new SelectMenuBuilder()
-            .setCustomId("jeu_selection")
+            .setCustomId("cmd/launchgame")
             .setPlaceholder("Aucun jeu sélectionné")
             .setMinValues(1)
             .setMaxValues(1)
@@ -17,19 +19,19 @@ async function onTrigger(interaction) {
                     label: "Juste Prix",
                     description:
                         "5 essais pour trouver un nombre entre 1 et 100",
-                    value: "jp",
+                    value: "fairPrice",
                 },
                 {
                     label: "Pierre feuille ciseau",
                     description:
                         "En Best-Of 3. Celui qui a le meilleur score gagne.",
-                    value: "pfc",
+                    value: "rockPaperScissors",
                 },
-                //{
-                //	label: 'Puissance 4',
-                //	description: 'Une grille, comme le puissance 4',
-                //	value: 'p4',
-                //},
+                {
+                	label: 'Puissance 4',
+                	description: 'Une grille, comme le puissance 4',
+                	value: 'power4',
+                },
             ])
     );
 
@@ -41,11 +43,13 @@ async function onTrigger(interaction) {
 
 /**
  * Triggered when something is selected in a select menu
- * @param {import("discord.js").Interaction} [interaction] THE interaction
+ * @param {SelectMenuInteraction} [interaction] THE interaction
  * @param {Array<String>} [path] Path of the interaction
  */
 async function onSelectMenu(interaction,path) {
+    gamesCore.init(interaction.user,interaction.values[0]);
     // TODO: Rewrite with DB
+    if(false) {
     if (interaction.values[0] === "jp") {
         game_jp(interaction.user);
     }
@@ -54,7 +58,7 @@ async function onSelectMenu(interaction,path) {
     }
     if (interaction.values[0] == "p4") {
         game_p4(interaction.user);
-    }
+    }}
     interaction.deferUpdate();
 }
 

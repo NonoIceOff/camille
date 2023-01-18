@@ -1,10 +1,26 @@
-const { Message } = require("discord.js");
+const { Message, User, RateLimitError } = require("discord.js");
+const fairPrice = require("./fairPrice");
 
 const games = {
-    power4: require("./power4"),
+    //power4: require("./power4"),
     fairPrice: require("./fairPrice"),
-    rockPaperScissors: require("./rockPaperScissors"),
+    //rockPaperScissors: require("./rockPaperScissors"),
 };
+
+let playingGames = {};
+
+/**
+ * Init a game.
+ * @param {User} [user]
+ * @param {string} [game]
+ */
+function init(user, game) {
+    if (games[game]) {
+        playingGames[user.id] = new games[game](user);
+    }else{
+        user.send({content:`Déso, le jeu \`${game}\` n'est pas encore implémenté, ça arrivera un jour 🤞`});
+    }
+}
 
 /**
  * Call the `onMessage` function for the current game of the message author.
@@ -12,10 +28,7 @@ const games = {
  */
 function onMessage(message) {
     if (!message.guild && !message.author.bot) {
-        // TODO: Get current game from DB
-        let currentGame = "";
-
-        if (games[currentGame]) games[currentGame].onMessage();
+        if (playingGames[message.author.id]) playingGames[message.author.id].onMessage(message);
     }
 }
 
@@ -27,21 +40,26 @@ async function onInteraction(interaction) {
     if (!interaction.guild && !interaction.isChatInputCommand()) {
         let path = interaction.customId.split("/");
         if (path[0] === "game") {
-            // TODO: Get current game from DB
-            let currentGame = "";
+            if (!playingGames[interaction.user.id]) {
+                interaction.reply({content:"Alors... Joue à un jeu déjà, après on vera si tu peux jouer.",ephemeral:true});
 
-            if (games[currentGame]) {
+                return;   
+            }
+            if (playingGames[interaction.user.id].name == path[1]) {
                 if (interaction.isButton()) {
-                    games[currentGame].onButton(interaction, path);
+                    playingGames[interaction.user.id].onButton(interaction, path);
                 } else if (interaction.isSelectMenu()) {
-                    games[currentGame].onSelectMenu(interaction, path);
+                    playingGames[interaction.user.id].onSelectMenu(interaction, path);
                 }
+            }else{
+                interaction.reply({content:"Heu... Je crois que tu peux pas faire ça, pas sûr, mais on me dit dans l'oreillette que c'est un jeu auquel tu jouais avant.",ephemeral:true});
             }
         }
     }
 }
 
 module.exports = {
+    init,
     onMessage,
     onInteraction,
 };
