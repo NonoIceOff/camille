@@ -152,63 +152,6 @@ function dateDiffInDays(a, b) {
     return days + "j " + hours + "h " + minutes + "m";
 }
 
-async function newvid() {
-    const data = await parser
-        .parseURL(
-            "https://youtube.com/feeds/videos.xml?channel_id=" +
-                constantYoutube.channelId
-        )
-        .catch(console.error);
-    const rawData = fs.readFileSync("./video.json");
-    const jsonData = JSON.parse(rawData);
-
-    if (jsonData.id !== data.items[0].id) {
-        // new video or video not sent
-        fs.writeFileSync(
-            "./video.json",
-            JSON.stringify({ id: data.items[0].id })
-        );
-        const { title, link, id, author } = data.items[0];
-        var imagea = "https://i3.ytimg.com/vi/";
-        imagea += id.slice(9);
-        imagea += "/maxresdefault.jpg";
-        const Embed = new EmbedBuilder({
-            title: title,
-            description:
-                "Pour voir la vidéo, il vous suffit de cliquer sur le titre",
-            url: link,
-            color: 10181046,
-            timestamp: Date.now(),
-            image: {
-                url: imagea,
-            },
-            author: {
-                name: author,
-                iconURL: constantYoutube.channelIcon,
-                url: constantYoutube.channelLink,
-            },
-        });
-
-        if (data.items[0]["title"].includes("#shorts") == true) {
-            await client.guilds.cache
-                .get(guild_id)
-                .channels.cache.get(constantIDs.channels.shortPost[test])
-                .send({
-                    content: "<@&946429189630881872> **Nouveau short !**",
-                    embeds: [Embed],
-                });
-        } else {
-            await client.guilds.cache
-                .get(guild_id)
-                .channels.cache.get(constantIDs.channels.youtubePost[test])
-                .send({
-                    content: "<@&940294478038696006> **Nouvelle vidéo !**",
-                    embeds: [Embed],
-                });
-        }
-    }
-}
-
 async function startvote() {
     let file = editJsonFile("./infos.json");
     var votesdico = file.get("votes");

@@ -11,23 +11,19 @@ const roleMenu = require("./misc/roleMenu");
 const giveaway = require("./misc/giveaway");
 const commandsCore = require("./commands/core");
 const leaderboard = require("./misc/leaderboard");
+const youtube = require('./misc/youtube');
 
 client.on(Events.ClientReady, () => {
+
+    youtube.startVideoListener();
+
     if (false) {
         // TODO: Remake all of this
-        adminrole = client.guilds.cache
-            .get(guild_id)
-            .roles.cache.get(constantIDs.roles.admin[test]);
-        dreamteam = client.guilds.cache
-            .get(guild_id)
-            .roles.cache.get(constantIDs.roles.dreamTeam[test]);
 
         let votestart = new cron.CronJob("00 34 01 1 * *", startvote);
         votestart.start();
         let votestop = new cron.CronJob("00 00 00 2 * *", stopvote);
         votestop.start();
-        let vidcheck = new cron.CronJob("00 00 20 * * *", newvid);
-        vidcheck.start();
         let grades = new cron.CronJob("00 00 00 1 * *", givegrades);
         grades.start();
     }
