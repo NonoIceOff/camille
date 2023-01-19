@@ -2,6 +2,17 @@ const { User } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const { client } = require("../client");
+
+
+const randomGIFs = [
+    "https://media.tenor.com/kCZjTqCKiggAAAAC/hug.gif",
+    "https://media.tenor.com/iwKHdW8wi1IAAAAC/tohka-yatogami.gif",
+    "https://media.tenor.com/nV9t5js6BS0AAAAM/hug.gif",
+    "https://media.tenor.com/8Jk1ueYnyYUAAAAM/hug.gif",
+    "https://media.tenor.com/cF37dXAAzCMAAAAM/darling-in.gif",
+    "https://media.tenor.com/FUgPm0LE9h0AAAAM/hug.gif",
+    "https://media.tenor.com/YowICbg6ApcAAAAM/aww-hugging.gif"
+]
 /**
  * Action when the command is triggered
  * @param {import("discord.js").Interaction} [interaction] THE interaction
@@ -25,7 +36,7 @@ async function onTrigger(interaction) {
         );
     }
     interaction.channel.send(
-        "https://media.tenor.com/iwKHdW8wi1IAAAAC/tohka-yatogami.gif"
+        randomGIFs[Math.floor(Math.random()*randomGIFs.length)]
     );
 }
 
