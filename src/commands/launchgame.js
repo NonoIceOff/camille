@@ -18,8 +18,14 @@ async function onTrigger(interaction) {
                 {
                     label: "Juste Prix",
                     description:
-                        "5 essais pour trouver un nombre entre 1 et 100",
+                        "15 essais pour trouver un nombre entre 1 et 1000",
                     value: "fairPrice",
+                },
+                {
+                    label: "Juste Prix Street Edition",
+                    description:
+                        "5 essais pour trouver un nombre entre 1 et 1000 wesh",
+                    value: "streetFairPrice",
                 },
                 {
                     label: "Pierre feuille ciseau",
@@ -47,19 +53,8 @@ async function onTrigger(interaction) {
  * @param {Array<String>} [path] Path of the interaction
  */
 async function onSelectMenu(interaction,path) {
+    await interaction.deferUpdate();
     gamesCore.init(interaction.user,interaction.values[0]);
-    // TODO: Rewrite with DB
-    if(false) {
-    if (interaction.values[0] === "jp") {
-        game_jp(interaction.user);
-    }
-    if (interaction.values[0] == "pfc") {
-        game_pfc(interaction.user);
-    }
-    if (interaction.values[0] == "p4") {
-        game_p4(interaction.user);
-    }}
-    interaction.deferUpdate();
 }
 
 

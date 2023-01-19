@@ -1,9 +1,9 @@
 const { Message, User, RateLimitError } = require("discord.js");
-const fairPrice = require("./fairPrice");
 
 const games = {
-    //power4: require("./power4"),
     fairPrice: require("./fairPrice"),
+    streetFairPrice: require("./streetFairPrice"),
+    //power4: require("./power4"),
     //rockPaperScissors: require("./rockPaperScissors"),
 };
 

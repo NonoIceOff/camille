@@ -1,6 +1,5 @@
-const { User, Message, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const { User, Message, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require("discord.js");
 
-// TODO: Change all texts to "normal" texts
 class fairPrice {
     get name() {
         return "fairPrice";
@@ -16,13 +15,15 @@ class fairPrice {
     async start() {
         this.tests = 0;
         this.price = Math.floor(Math.random() * 1000) + 1;
-        this.gain = 1.6;
-        this.lastNumber = undefined;
+        this.gain = 1.8;
         
-        await this.user.send({
-            content:
-                "Wesh, bienvnue dans l'Juste Prix wesh, devine un nombre wesh (Entre 1 et 1000 wesh)",
-        });
+        const embed = new EmbedBuilder()
+            .setColor(10181046)
+            .setTitle(":coin: **__Bienvenue au Juste Prix__**")
+            .setDescription(
+                "Veuillez entrer un nombre entre 1 et 1000 sur le tchat."
+            );
+        await this.user.send({ embeds: [embed] });
     }
     /**
      * @param {Message} message
@@ -38,80 +39,89 @@ class fairPrice {
         if (!this.price) {
             this.user.send({
                 content:
-                    "Mais wesh... On est pas en jeu là wesh, faut jouer avant de dire un truc wesh...",
+                    "Veuillez lancer le jeu avant d'essayer de jouer.",
             });
         }
 
         let number = message.content;
 
         if (isNaN(number)) {
-            await this.user.send({ content: "C'est pas un nombre ça wesh 🤣" });
+            await this.user.send(
+                "Veuillez plutôt entrer un nombre entre 1 et 1000 s'il vous plait. (erreur : N'est pas un nombre)"
+            );
             return;
         }
 
         if (number < 1 || number > 1000) {
-            await this.user.send({
-                content:
-                    "J'ai dit entre 1 et 1000 wesh, t'es pas le couteau le plus aiguisé du tiroire toi wesh...",
-            });
+            await this.user.send(
+                "Veuillez plutôt entrer un nombre entre 1 et 1000 s'il vous plait. (erreur : N'est pas un nombre entre 1 et 1000 du coup)"
+            );
             return;
         }
 
 
         this.tests++
         if (number == this.price) {
-            this.price = undefined;
-            this.gain = Math.floor(this.gain*10)/10
             
             this.user.addCoin(this.gain);
 
+            const embed = new EmbedBuilder()
+            .setColor(10181046)
+            .setTitle(
+                ":tada: **__Félicitations__**"
+            )
+            .setDescription(
+                `Vous avez trouvé le nombre ${this.price} en ${this.tests} essais.`
+            )
+            .addFields({
+                name: "Gains récupérés",
+                value: `${this.gain} :coin:`,
+            });
+
+            this.price = undefined;
+
             await this.user.send({
+                embeds: [embed],
                 components: [restart_row],
-                content:
-                    `
-Omg wesh, t'as trouvé l'bon nombre en ${this.tests} essais wesh, gg en fait wesh !
-
-+${this.gain} :coin:
-
-Si tu veux tu peux recommencer wesh`,
             });
 
 
             return;
         } else {
-            this.gain-=.1;
-            if (this.tests >= 5) {
+            if (this.gain>0) this.gain=Math.floor((this.gain-.1)*10)/10;
+            if (this.tests >= 15) {
+                const embed = new EmbedBuilder()
+                .setColor(2171330)
+                .setTitle(
+                    ":tada: **__Perdu ( ˘︹˘ )__**"
+                )
+                .setDescription(
+                    `Vous n'avez pas trouvé le nombre ${this.price} en 15 essais.`
+                )
+                .addFields({
+                    name: "Gains récupérés",
+                    value: `Bah 0 du coup :coin:`,
+                });
+                
                 this.price = undefined;
-    
+
                 await this.user.send({
+                    embeds: [embed],
                     components: [restart_row],
-                    content:
-                        "C'est perdu wesh, t'es trop nul wesh 🤣\n\nSi tu veux tu peux recommencer wesh",
                 });
                 return;
             }
 
             if (number > this.price) {
-                if (number > this.lastNumber && this.lastNumber > this.price) {
-                    await this.user.send({
-                        content:
-                            "Mais wesh... T'es con ? J'AI DIT MOINS WESH !",
-                    });
-                } else {
-                    await this.user.send({ content: "Moins wesh" });
-                }
+                await this.user.send(`
+**Plus petit...**
+Vous êtes à ${this.tests} essais. *En jeu : ${this.gain} :coin:*`);
             } else {
-                if (number < this.lastNumber && this.lastNumber < this.price) {
-                    await this.user.send({
-                        content: "Mais wesh... T'es con ? J'AI DIT PLUS WESH !",
-                    });
-                } else {
-                    await this.user.send({ content: "Plus wesh" });
-                }
+                await this.user.send(`
+**Plus grand...**
+Vous êtes à ${this.tests} essais. *En jeu : ${this.gain} :coin:*`);
             }
         }
-
-        this.lastNumber = number;
         
     }
     /**
