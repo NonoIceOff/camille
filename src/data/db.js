@@ -2,6 +2,7 @@ const sqlite3 = require("sqlite3");
 const path = require("path");
 const fs = require("fs");
 const { brotliDecompress } = require("zlib");
+const { client } = require("../client");
 
 let db = new sqlite3.Database(
     path.join(process.cwd(), "data/sqlite.db"),
@@ -37,7 +38,7 @@ function update() {
                         )
                     ) {
                         console.log("Updating database...");
-                        const infos = require("../../data/infos.json"); //require(path.join(process.cwd(),"data/infos.json"));
+                        const infos = require("../../data/infos.json");
 
                         let members = [];
 
@@ -49,7 +50,10 @@ function update() {
                                 bump: value.bumpstotal,
                                 monthly_bump: infos.bump[id] ?? 0,
                                 coin: value.esheep,
-                                voice: new Date(0).setSeconds(infos.voice.members_leaderboard[id]) ?? 0,
+                                voice:
+                                    new Date(0).setSeconds(
+                                        infos.voice.members_leaderboard[id]
+                                    ) ?? 0,
                                 last_voice_activity: 0,
                             });
                         });
@@ -72,6 +76,97 @@ function update() {
                         );
                     }
                 }
+                if (tables.includes("purchases")) {
+                    //TODO: Check if all columns are correct
+                } else {
+                    console.log('Creating "purchases" table in database...');
+                    db.exec(
+                        "CREATE TABLE purchases (user_id varchar(20), item int, quantity int, timestamp bigint);"
+                    );
+                    if (
+                        fs.existsSync(
+                            path.join(process.cwd(), "data/shop.json")
+                        )
+                    ) {
+                        console.log("Updating database...");
+                        const shop = require("../../data/shop.json");
+
+                        let purchases = [];
+
+                        Object.keys(shop.Members).forEach((id) => {
+                            const value = shop.Members[id];
+
+                            value.Grades.forEach((count, item) => {
+                                purchases.push({
+                                    user_id: id,
+                                    item: item,
+                                    quantity: count,
+                                    timestamp: Date.now(),
+                                });
+                            });
+                        });
+
+                        db.run(
+                            `INSERT INTO purchases (user_id,item,quantity,timestamp) VALUES ${purchases
+                                .map(() => "(?,?,?,?)")
+                                .join(",")}`,
+                            purchases
+                                .map((item) => [
+                                    item.user_id,
+                                    item.item,
+                                    item.quantity,
+                                    item.timestamp,
+                                ])
+                                .flat()
+                        );
+                    }
+                }
+                if (tables.includes("inventory")) {
+                    //TODO: Check if all columns are correct
+                } else {
+                    console.log('Creating "inventory" table in database...');
+                    db.exec(
+                        "CREATE TABLE inventory (user_id varchar(20), item int, quantity int, expire_date bigint);"
+                    );
+                    if (
+                        fs.existsSync(
+                            path.join(process.cwd(), "data/shop.json")
+                        )
+                    ) {
+                        console.log("Updating database...");
+                        const shop = require("../../data/shop.json");
+
+                        let purchases = [];
+
+                        Object.keys(shop.Members).forEach((id) => {
+                            const value = shop.Members[id];
+
+                            value.Grades.forEach((count, item) => {
+                                purchases.push({
+                                    user_id: id,
+                                    item: item,
+                                    quantity: count,
+                                    expire_date:
+                                        Date.now() + 1000 * 60 * 60 * 24 * 30,
+                                });
+                            });
+                        });
+
+                        db.run(
+                            `INSERT INTO inventory (user_id,item,quantity,expire_date) VALUES ${purchases
+                                .map(() => "(?,?,?,?)")
+                                .join(",")}`,
+                            purchases
+                                .map((item) => [
+                                    item.user_id,
+                                    item.item,
+                                    item.quantity,
+                                    item.expire_date,
+                                ])
+                                .flat()
+                        );
+                    }
+                }
             }
         );
     });
@@ -83,13 +178,17 @@ function update() {
  * @param {() =>  void} callback Callback when the user is created.
  */
 function registerUser(userId, callback) {
-    db.run(`INSERT INTO users (user_id,xp,bump,monthly_bump,coin,voice,last_voice_activity) VALUES (?,0,0,0,0,0,0)`,[userId],(err)=>{
-        if (err) {
-            console.error(err);
-        }else{
-            callback();
+    db.run(
+        `INSERT INTO users (user_id,xp,bump,monthly_bump,coin,voice,last_voice_activity) VALUES (?,0,0,0,0,0,0)`,
+        [userId],
+        (err) => {
+            if (err) {
+                console.error(err);
+            } else {
+                callback();
+            }
         }
-    })
+    );
 }
 
 /**
@@ -98,13 +197,13 @@ function registerUser(userId, callback) {
  * @param {string} valueName Name of the value to get. Look at `data/constants/userValuesName` to get the list of values.
  */
 function getUserValue(userId, valueName) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         db.get(
             `SELECT ${valueName} AS value FROM users WHERE user_id=?`,
             userId,
             (err, row) => {
                 if (err) {
-                    console.error(err);
+                    reject(err);
                 }
                 if (!row) {
                     registerUser(userId, async () => {
@@ -160,13 +259,13 @@ function addUserValue(userId, valueName, value) {
  * @param {string} valueName Name of the value to order by. Look at `data/constants/userValuesName` to get the list of values.
  * @returns {Promise<{userId:string,value:any}[]>}
  */
-function getTopUserValue(valueName,skip,count) {
-    return new Promise((resolve) => {
+function getTopUserValue(valueName, skip, count) {
+    return new Promise((resolve, reject) => {
         db.all(
             `SELECT user_id AS userId, ${valueName} AS value FROM users ORDER BY ${valueName} DESC LIMIT ${skip},${count}`,
             (err, rows) => {
                 if (err) {
-                    console.error(err);
+                    reject(err);
                 }
                 resolve(rows);
             }
@@ -179,18 +278,185 @@ function getTopUserValue(valueName,skip,count) {
  * @returns {Promise<number>}
  */
 function getUserCount() {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+        db.get(`SELECT COUNT(ALL) AS count FROM users`, (err, row) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(row.count);
+        });
+    });
+}
+
+/**
+ * Get an item of a user.
+ * @param {string} userId
+ * @param {number} itemId
+ * @returns
+ */
+function getUserItem(userId, itemId) {
+    return new Promise((resolve, reject) => {
         db.get(
-            `SELECT COUNT(ALL) AS count FROM users`,
+            `SELECT * FROM inventory WHERE user_id=? AND item=?`,
+            [userId, itemId],
             (err, row) => {
                 if (err) {
-                    console.error(err);
+                    reject(err);
                 }
-                resolve(row.count);
+                resolve(row);
             }
         );
     });
 }
+
+/**
+ * Get all items of a user.
+ * @param {string} userId
+ * @returns
+ */
+function getUserItems(userId) {
+    return new Promise((resolve, reject) => {
+        db.all(
+            `SELECT * FROM inventory WHERE user_id=?`,
+            [userId],
+            (err, rows) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(rows);
+            }
+        );
+    });
+}
+
+/**
+ * Get an item of all users.
+ * @param {number} item
+ * @returns
+ */
+function getUsersItem(item) {
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT * FROM inventory WHERE item=?`, [item], (err, rows) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(rows);
+        });
+    });
+}
+
+/**
+ * Get all items of all users.
+ * @returns
+ */
+function getUsersItems() {
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT * FROM inventory`, (err, rows) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(rows);
+        });
+    });
+}
+
+/**
+ * Register an item for a user
+ * @param {string} userId 
+ * @param {number} itemId 
+ * @param {number} quantity 
+ * @param {number} expireDate 
+ */
+function registerUserItem(userId, itemId, quantity = 0, expireDate = 0) {
+    db.get(
+        `INSERT INTO inventory (user_id,item,quantity,expire_date) VALUES (?,?,?,?)`,
+        [userId, itemId, quantity, expireDate],
+        (err) => {
+            if (err) {
+                console.error(err);
+            }
+        }
+    );
+}
+
+/**
+ * Unregister an item for a user
+ * @param {string} userId 
+ * @param {number} itemId 
+ */
+function unregisterUserItem(userId, itemId) {
+    db.get(
+        `DETELE FROM inventory WHERE user_id=? AND item=?`,
+        [userId, itemId],
+        (err) => {
+            if (err) {
+                console.error(err);
+            }
+        }
+    );
+}
+
+
+/**
+ * Set a user value in the database
+ * @param {string} userId User ID
+ * @param {number} itemId Item ID
+ * @param {string} valueName Name of the value to set. Look at `TODO` to get the list of values.
+ * @param {any} value Value to set.
+ */
+function setUserItemValue(userId, itemId, valueName, value) {
+    db.run(
+        `UPDATE users SET ${valueName}=? WHERE user_id=? AND item=?`,
+        [value, userId, itemId],
+        (err) => {
+            if (err) {
+                console.error(err);
+            }
+        }
+    );
+}
+
+
+/**
+ * Add a user value in the database
+ * @param {string} userId User ID
+ * @param {number} itemId Item ID
+ * @param {string} valueName Name of the value to add. Look at `TODO` to get the list of values.
+ * @param {any} value Value to add.
+ */
+function addUserItemValue(userId, itemId, valueName, value) {
+    db.run(
+        `UPDATE users SET ${valueName}=${valueName}+? WHERE user_id=? AND item=?`,
+        [value, userId, itemId],
+        (err) => {
+            if (err) {
+                console.error(err);
+            }
+        }
+    );
+}
+
+
+/**
+ * Register the purchase of a user
+ * @param {string} userId 
+ * @param {number} itemId 
+ * @param {number} quantity 
+ * @param {number} timestamp 
+ */
+function registerUserPurchase(userId, itemId, quantity, timestamp) {
+    db.get(
+        `INSERT INTO inventory (user_id,item,quantity,timestamp) VALUES (?,?,?,?)`,
+        [userId, itemId, quantity, timestamp],
+        (err) => {
+            if (err) {
+                console.error(err);
+            }
+        }
+    );
+}
+
+
 
 module.exports = {
     update,
@@ -199,4 +465,13 @@ module.exports = {
     addUserValue,
     getTopUserValue,
     getUserCount,
+    getUserItem,
+    getUserItems,
+    getUsersItem,
+    getUsersItems,
+    registerUserItem,
+    unregisterUserItem,
+    setUserItemValue,
+    addUserItemValue,
+    registerUserPurchase,
 };
