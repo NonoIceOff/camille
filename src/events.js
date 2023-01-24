@@ -12,10 +12,12 @@ const giveaway = require("./misc/giveaway");
 const commandsCore = require("./commands/core");
 const leaderboard = require("./misc/leaderboard");
 const youtube = require('./misc/youtube');
+const inventory = require('./inventory/inventory');
 
 client.on(Events.ClientReady, () => {
 
     youtube.startVideoListener();
+    inventory.init();
 
     if (false) {
         // TODO: Remake all of this
@@ -24,8 +26,6 @@ client.on(Events.ClientReady, () => {
         votestart.start();
         let votestop = new cron.CronJob("00 00 00 2 * *", stopvote);
         votestop.start();
-        let grades = new cron.CronJob("00 00 00 1 * *", givegrades);
-        grades.start();
     }
 
     console.log("\x1b[32m", "Bot connecté ✓", "\x1b[0m");

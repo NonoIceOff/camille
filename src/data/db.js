@@ -146,8 +146,8 @@ function update() {
                                     user_id: id,
                                     item: item,
                                     quantity: count,
-                                    expire_date:
-                                        Date.now() + 1000 * 60 * 60 * 24 * 30,
+                                    expire_date: count ?
+                                        Date.now() + 1000 * 60 * 60 * 24 * 30 -((((29*24+23)*60+59)*60+50)*1000) : null,
                                 });
                             });
                         });
@@ -347,7 +347,7 @@ function getUsersItem(item) {
 
 /**
  * Get all items of all users.
- * @returns
+ * @returns {Promise<any[]>}
  */
 function getUsersItems() {
     return new Promise((resolve, reject) => {

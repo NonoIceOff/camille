@@ -2,6 +2,7 @@ const { User } = require("discord.js");
 
 const db = require("../data/db");
 const inventoryValuesName = require("../data/inventoryValuesName");
+const grades = require("./grades");
 
 class UserItem {
     #user;
@@ -60,8 +61,14 @@ class UserItem {
             this.#expireDate);
     }
 
-    init() {
+    async fetch() {
+        const newData = await this.#user.getItem(this.#itemId);
+        this.#quantity = newData.quantity;
+        this.#expireDate = newData.expireDate;
+    }
 
+    init() {
+        if (this.#itemId >= 0 && this.#itemId <= 2) grades.initGrade(this)
 
     }
 }

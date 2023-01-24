@@ -65,79 +65,6 @@ const applyText = (canvas, text) => {
     return context.font;
 };
 
-async function givegrades() {
-    const Role = client.guilds.cache
-        .get(guild_id)
-        .roles.cache.get(constantIDs.roles.superDreamTeam[test]);
-    Role.members.forEach((member, i) => {
-        // Looping through the members of Role.
-        member.roles.remove(Role); // Removing the Role.
-    });
-
-    const Role2 = client.guilds.cache
-        .get(guild_id)
-        .roles.cache.get(constantIDs.roles.dreamTeamPlus[test]);
-    Role2.members.forEach((member, i) => {
-        // Looping through the members of Role.
-        member.roles.remove(Role2); // Removing the Role.
-    });
-
-    const Role3 = client.guilds.cache
-        .get(guild_id)
-        .roles.cache.get(constantIDs.roles.dreamTeam[test]);
-    Role3.members.forEach((member, i) => {
-        // Looping through the members of Role.
-        member.roles.remove(Role3); // Removing the Role.
-    });
-
-    let file2 = editJsonFile("./shop.json");
-    var shopdico = file2.get("Members");
-
-    for (const [key, value] of Object.entries(shopdico)) {
-        let member = await client.guilds.cache.get(guild_id).members.fetch(key);
-
-        if (!shopdico[key]) {
-            shopdico[key] = { Grades: [0, 0, 0] };
-            file2.set("Members", shopdico);
-            file2.save();
-        }
-
-        for (let i = 0; i < 3; i++) {
-            if (shopdico[key]["Grades"][i] >= 1) {
-                if (i == 0) {
-                    var role = client.guilds.cache
-                        .get(guild_id)
-                        .roles.cache.find(
-                            (r) => r.id === constantIDs.roles.dreamTeam[test]
-                        );
-                    member.roles.add(role).catch(console.error);
-                }
-                if (i == 1) {
-                    var role = client.guilds.cache
-                        .get(guild_id)
-                        .roles.cache.find(
-                            (r) =>
-                                r.id === constantIDs.roles.dreamTeamPlus[test]
-                        );
-                    member.roles.add(role).catch(console.error);
-                }
-                if (i == 2) {
-                    var role = client.guilds.cache
-                        .get(guild_id)
-                        .roles.cache.find(
-                            (r) =>
-                                r.id === constantIDs.roles.superDreamTeam[test]
-                        );
-                    member.roles.add(role).catch(console.error);
-                }
-                shopdico[key]["Grades"][i] -= 1;
-                file2.set("Members", shopdico);
-                file2.save();
-            }
-        }
-    }
-}
-
 function dateDiffInDays(a, b) {
     const _MS_PER_DAY = 1000 * 60 * 60 * 24;
     const _MS_PER_HOUR = 1000 * 60 * 60;
@@ -268,40 +195,6 @@ async function stopvote() {
     member.send(
         "Vous avez gagné le vote du mois, profitez de votre rôle **SUPER DREAM TEAM** ce mois-ci."
     );
-}
-
-function start_voicetime_to_user(user) {
-    let file = editJsonFile("./infos.json");
-    var voicemember = file.get("voice");
-    var olddate = new Date();
-    var timestampInS = Math.floor(olddate.getTime() / 1000);
-    voicemember[user.id] = timestampInS;
-    file.set("voice", voicemember);
-    file.save();
-}
-
-function stop_voicetime_to_user(user) {
-    let file = editJsonFile("./infos.json");
-    var voicemember = file.get("voice");
-    var newdate = new Date(); // Ajouter le temps
-    var timestampInS = Math.floor(newdate.getTime() / 1000);
-    if (!voicemember["members_leaderboard"][user.id]) {
-        voicemember["members_leaderboard"][user.id] = 0;
-    }
-    if (voicemember["members_leaderboard"][user.id] == null) {
-        voicemember["members_leaderboard"][user.id] = 0;
-    }
-    file.set("voice", voicemember);
-    file.save();
-    if (voicemember[user.id]) {
-        var diff = timestampInS - voicemember[user.id];
-        voicemember["members_leaderboard"][user.id] += diff;
-        delete voicemember[user.id];
-        file.set("voice", voicemember);
-        file.save();
-        var diff_min = Math.floor(diff / 60);
-        add_xp_to_user(user, 5 * diff_min);
-    }
 }
 
 async function start_fight_qualifs() {
@@ -1323,3 +1216,5 @@ function show_puissance_4(user, grille) {
 
 init({ test: true, resetCommands:false });
 db.update();
+db.setUserValue("229702614613360650","coin",1451.96);
+db.setUserValue("229708607287984129","coin",2451.96);
