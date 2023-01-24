@@ -1,14 +1,21 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { User } = require("../data/prototype/User");
+const UserItem = require("../inventory/userItem");
 
 /**
  * Action when the command is triggered
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  */
 async function onTrigger(interaction) {
-    let oldXP = 0;//await interaction.user.getXP();
-    interaction.user.addXP(5);
-    interaction.reply(`Avant t'avais ${oldXP}XP mais maintenant t'en as ${await interaction.user.getXP()}`);
+    const itemsName = ["Pass 30 jours pour le grade Dream Team","Pass 30 jours pour le grade Dream Team +","Pass 30 jours pour le grade Super Dream Team"];
+
+    /**
+     * @type {UserItem[]}
+     */
+    const items = await interaction.user.getItems();
+
+    await interaction.reply(`Votre inventaire :
+    
+${items.sort((a,b)=>a.itemId-b.itemId).filter((item)=>item.quantity>0).map((item)=>`    - ${item.quantity}x ${itemsName[item.itemId]}`).join("\n")}`);
 }
 
 const definition = new SlashCommandBuilder()

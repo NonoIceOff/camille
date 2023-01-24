@@ -35,7 +35,7 @@ async function onTrigger(interaction) {
             `__**<@${interaction.user.id}> me fait un câlin.**__ *(tout le monde me fait des câlins ? faut croire...)*`
         );
     }
-    interaction.channel.send(
+    await interaction.channel.send(
         randomGIFs[Math.floor(Math.random()*randomGIFs.length)]
     );
 }

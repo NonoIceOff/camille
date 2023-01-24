@@ -3,6 +3,7 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 
 const { client, options } = require("../client");
 const constantIDs = require("../constants/ids");
+const {} = require("../xp/prototype/User");
 
 const helloMessages = [
     "J'espère que tu as bien posé tes valises",
@@ -81,6 +82,7 @@ function sayHi(interaction) {
             }
         }
     }
+    interaction.user.a
 }
 
 module.exports = {

@@ -1,136 +1,136 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
+const {
+    SlashCommandBuilder,
+    ActionRowBuilder,
+} = require("@discordjs/builders");
+const {
+    ButtonInteraction,
+    ModalBuilder,
+    TextInputBuilder,
+    ModalSubmitInteraction,
+    TextInputStyle,
+} = require("discord.js");
+const { shopNav, shopDetails } = require("../inventory/shop/shop");
+const shopItems = require("../inventory/shop/shopItems");
 
 /**
  * Action when the command is triggered
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  */
-function onTrigger(interaction) {
-    // TODO: Make it working
-    let file = editJsonFile("./infos.json");
-    var membersdico = file.get("members");
-
-    let file2 = editJsonFile("./shop.json");
-    var shopdico = file2.get("Members");
-
-    if (!shopdico[interaction.user.id]) {
-        shopdico[interaction.user.id] = {
-            Grades: [0, 0, 0],
-        };
-        file2.set("Members", shopdico);
-        file2.save();
-    }
-
-    var coins = membersdico[interaction.user.id]["esheep"];
-    const embed = new EmbedBuilder()
-        .setColor(10181046)
-        .setTitle(":barber: __Shop :__ ")
-        .setDescription("Vous avez **" + coins.toString() + " :coin:**")
-        .addFields(
-            {
-                name:
-                    "__**Grade Dream Team**__ *(220:coin:/mois)* " +
-                    shopdico[interaction.user.id]["Grades"][0] +
-                    "x",
-                value: "*- Création de sondages\n- Salon Dream Team exclusif\n- 1 mini-jeu en + disponible*",
-            },
-            {
-                name:
-                    "__**Grade Dream Team +**__ *(467:coin:/mois)* " +
-                    shopdico[interaction.user.id]["Grades"][1] +
-                    "x",
-                value: "*- Tous les avantages de Dream Team\n- Création de sondages et d'évènements\n- Couleur du pseudo personalisable\n- Double vote de popularité\n- Salon exclu pour les Dream Team +*",
-            },
-            {
-                name:
-                    "__**Grade Super Dream Team**__ *(1182:coin:/mois)* " +
-                    shopdico[interaction.user.id]["Grades"][2] +
-                    "x",
-                value: "*- Tous les avantages de Dream Team et Dream Team +\n- Renommer son pseudo\n- Salon exclu pour les Super Dream Team*",
-            }
-        );
-
-    const row = new ActionRowBuilder()
-        .addComponents(
-            new ButtonBuilder()
-                .setCustomId("shop_dreamteam")
-                .setLabel("🍉")
-                .setStyle(ButtonStyle.Secondary)
-        )
-        .addComponents(
-            new ButtonBuilder()
-                .setCustomId("shop_dreamteam+")
-                .setLabel("🍉+")
-                .setStyle(ButtonStyle.Secondary)
-        )
-        .addComponents(
-            new ButtonBuilder()
-                .setCustomId("shop_superdreamteam")
-                .setLabel("Super 🍉")
-                .setStyle(ButtonStyle.Secondary)
-        );
-    interaction.user.send({
-        embeds: [embed],
-        components: [row],
-        fetchReply: true,
-    });
-    interaction.reply("Commande utilisée, veuillez regarder vos MP");
+async function onTrigger(interaction) {
+    await interaction.reply("Je travaille dessus ...");
+    await shopNav(interaction);
 }
 
 /**
  * Triggered when a button is pressed
- * @param {import("discord.js").Interaction} [interaction] THE interaction
+ * @param {ButtonInteraction} [interaction] THE interaction
  * @param {Array<String>} [path] Path of the interaction
  */
-async function onButton(interaction,path) {
-    // TODO: Rewrite
-    
-    if (interaction.customId === "shop_dreamteam") {
-        if (membersdico[interaction.user.id]["esheep"] >= 220) {
-            interaction.reply(
-                "Dream Team acheté avec succès. (-220:coin:)"
+async function onButton(interaction, path) {
+    if (interaction.user.id === interaction.message.interaction.user.id) {
+        if (path[2] === "details") {
+            await interaction.deferUpdate();
+            shopDetails(interaction, path[3]);
+        } else if (path[2] === "nav") {
+            await interaction.deferUpdate();
+            shopNav(interaction, path[3]);
+        } else if (path[2] === "buy") {
+            const buyCode = await interaction.user.buyItem(path[3], path[4]);
+            if (buyCode == 0) {
+                await interaction.deferUpdate();
+                shopDetails(interaction, path[3]);
+                await interaction.message.reply({
+                    content: `${path[4] > 1 ? `${path[4]}x ` : ""}${
+                        shopItems[path[3]].name
+                    } acheté${path[4] > 1 ? "s" : ""} avec succès. (-${
+                        shopItems[path[3]].price * path[4]
+                    } :coin:)`,
+                    
+                });
+            } else {
+                await interaction.reply({
+                    content: "Echec. Vous n'avez pas assez de :coin:",
+                    ephemeral: true,
+                });
+            }
+        } else if (path[2] === "buyX") {
+            const modalTitle = `Acheter plein de ${shopItems[path[3]].name}`;
+            await interaction.showModal(
+                new ModalBuilder()
+                    .setCustomId(`cmd/shop/buyX/${path[3]}`)
+                    .setTitle(
+                        modalTitle.length > 45
+                            ? `${modalTitle.substring(0, 42)}...`
+                            : modalTitle
+                    )
+                    .addComponents(
+                        new ActionRowBuilder().setComponents(
+                            new TextInputBuilder()
+                                .setCustomId("buyQuantity")
+                                .setLabel("Quantité")
+                                .setPlaceholder("5")
+                                .setMaxLength(6)
+                                .setMinLength(1)
+                                .setRequired(true)
+                                .setStyle(TextInputStyle.Short)
+                        )
+                    )
             );
-            shopdico[interaction.user.id]["Grades"][0] += 1;
-            membersdico[interaction.user.id]["esheep"] -= 220;
-            file2.set("Members", shopdico);
-            file2.save();
-            file.set("members", membersdico);
-            file.save();
-        } else {
-            interaction.reply("Echec. Vous n'avez pas assez de :coin:");
         }
-    }
-    if (interaction.customId === "shop_dreamteam+") {
-        if (membersdico[interaction.user.id]["esheep"] >= 467) {
-            interaction.reply(
-                "Dream Team + acheté avec succès. (-467:coin:)"
-            );
-            shopdico[interaction.user.id]["Grades"][1] += 1;
-            membersdico[interaction.user.id]["esheep"] -= 467;
-            file2.set("Members", shopdico);
-            file2.save();
-            file.set("members", membersdico);
-            file.save();
-        } else {
-            interaction.reply("Echec. Vous n'avez pas assez de :coin:");
-        }
-    }
-    if (interaction.customId === "shop_superdreamteam") {
-        if (membersdico[interaction.user.id]["esheep"] >= 1182) {
-            interaction.reply(
-                "Super Dream Team acheté avec succès. (-1182:coin:)"
-            );
-            shopdico[interaction.user.id]["Grades"][2] += 1;
-            membersdico[interaction.user.id]["esheep"] -= 1182;
-            file2.set("Members", shopdico);
-            file2.save();
-            file.set("members", membersdico);
-            file.save();
-        } else {
-            interaction.reply("Echec. Vous n'avez pas assez de :coin:");
-        }
+    } else {
+        interaction.reply({
+            content:
+                "Non, c'est pas ton shop, tu fais la commande /shop et tu utilises TON interface, merci ^^",
+            ephemeral: true,
+        });
     }
 }
 
+/**
+ * Triggered when a modal is submitted
+ * @param {ModalSubmitInteraction} [interaction] THE interaction
+ * @param {Array<String>} [path] Path of the interaction
+ */
+async function onModalSubmit(interaction, path) {
+    if (path[2] === "buyX") {
+        const quantity = interaction.components[0].components[0].value;
+
+        if (isNaN(quantity)) {
+            await interaction.reply({
+                content: `Echec. "${quantity}" n'est pas un nombre.`,
+                ephemeral: true,
+            });
+            return;
+        }
+
+        if (quantity < 0) {
+            await interaction.reply({
+                content: `Echec. La quantité doit être supérieur à 0.`,
+                ephemeral: true,
+            });
+            return;
+        }
+
+        const buyCode = await interaction.user.buyItem(path[3], quantity);
+        if (buyCode == 0) {
+            await interaction.deferUpdate();
+            shopDetails(interaction, path[3]);
+            await interaction.message.reply({
+                content: `${quantity > 1 ? `${quantity}x ` : ""}${
+                    shopItems[path[3]].name
+                } acheté${quantity > 1 ? "s" : ""} avec succès. (-${
+                    shopItems[path[3]].price * quantity
+                } :coin:)`,
+                
+            });
+        } else {
+            await interaction.reply({
+                content: "Echec. Vous n'avez pas assez de :coin:",
+                ephemeral: true,
+            });
+        }
+    }
+}
 
 const definition = new SlashCommandBuilder()
     .setName("shop")
@@ -140,4 +140,5 @@ module.exports = {
     onTrigger,
     definition,
     onButton,
+    onModalSubmit,
 };

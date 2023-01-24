@@ -30,11 +30,20 @@ const commands = [
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  */
 function callCommand(interaction) {
-    if (interaction.isChatInputCommand() && commands.includes(interaction.commandName)) {
+    if (
+        interaction.isChatInputCommand() &&
+        commands.includes(interaction.commandName)
+    ) {
         require(`./${interaction.commandName}`).onTrigger(interaction);
-    } else if (interaction.isSelectMenu()) {
-        let path = interaction.customId.split("/");
-        if (path[0] === "cmd") {
+        return;
+    }
+    let path = interaction.customId.split("/");
+    if (path[0] === "cmd") {
+        if (interaction.isModalSubmit()) {
+            require(`./${path[1]}`).onModalSubmit(interaction, path);
+        } else if (interaction.isButton()) {
+            require(`./${path[1]}`).onButton(interaction, path);
+        } else if (interaction.isSelectMenu()) {
             require(`./${path[1]}`).onSelectMenu(interaction, path);
         }
     }
@@ -45,7 +54,6 @@ function callCommand(interaction) {
  */
 function resetCommands() {
     if (options.resetCommands) {
-
         console.log("Resetting slash commands...");
 
         const commands_definition = commands.map(

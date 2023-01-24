@@ -15,7 +15,7 @@ let db = new sqlite3.Database(
 );
 
 /**
- * Check if the database needs to be updated and take action if necessary
+ * Checks if the database needs to be updated and take action if necessary
  */
 function update() {
     db.serialize(() => {
@@ -194,7 +194,7 @@ function registerUser(userId, callback) {
 /**
  * Get a user value from the database
  * @param {string} userId User ID
- * @param {string} valueName Name of the value to get. Look at `data/constants/userValuesName` to get the list of values.
+ * @param {string} valueName Name of the value to get. Look at `data/userValuesName` to get the list of values.
  */
 function getUserValue(userId, valueName) {
     return new Promise((resolve, reject) => {
@@ -220,7 +220,7 @@ function getUserValue(userId, valueName) {
 /**
  * Set a user value in the database
  * @param {string} userId User ID
- * @param {string} valueName Name of the value to set. Look at `data/constants/userValuesName` to get the list of values.
+ * @param {string} valueName Name of the value to set. Look at `data/userValuesName` to get the list of values.
  * @param {any} value Value to set.
  */
 function setUserValue(userId, valueName, value) {
@@ -238,7 +238,7 @@ function setUserValue(userId, valueName, value) {
 /**
  * Add `value` to user value in the database
  * @param {string} userId User ID
- * @param {string} valueName Name of the value to set. Look at `data/constants/userValuesName` to get the list of values.
+ * @param {string} valueName Name of the value to set. Look at `data/userValuesName` to get the list of values.
  * @param {any} value Value to add.
  */
 function addUserValue(userId, valueName, value) {
@@ -256,7 +256,7 @@ function addUserValue(userId, valueName, value) {
 /**
  * Get top users in a given value from the database
  * @param {string} userId User ID
- * @param {string} valueName Name of the value to order by. Look at `data/constants/userValuesName` to get the list of values.
+ * @param {string} valueName Name of the value to order by. Look at `data/userValuesName` to get the list of values.
  * @returns {Promise<{userId:string,value:any}[]>}
  */
 function getTopUserValue(valueName, skip, count) {
@@ -312,7 +312,7 @@ function getUserItem(userId, itemId) {
 /**
  * Get all items of a user.
  * @param {string} userId
- * @returns
+ * @returns {Promise<any[]>}
  */
 function getUserItems(userId) {
     return new Promise((resolve, reject) => {
@@ -401,12 +401,12 @@ function unregisterUserItem(userId, itemId) {
  * Set a user value in the database
  * @param {string} userId User ID
  * @param {number} itemId Item ID
- * @param {string} valueName Name of the value to set. Look at `TODO` to get the list of values.
+ * @param {string} valueName Name of the value to set. Look at `data/inventoryValuesName` to get the list of values.
  * @param {any} value Value to set.
  */
 function setUserItemValue(userId, itemId, valueName, value) {
     db.run(
-        `UPDATE users SET ${valueName}=? WHERE user_id=? AND item=?`,
+        `UPDATE inventory SET ${valueName}=? WHERE user_id=? AND item=?`,
         [value, userId, itemId],
         (err) => {
             if (err) {
@@ -421,12 +421,12 @@ function setUserItemValue(userId, itemId, valueName, value) {
  * Add a user value in the database
  * @param {string} userId User ID
  * @param {number} itemId Item ID
- * @param {string} valueName Name of the value to add. Look at `TODO` to get the list of values.
+ * @param {string} valueName Name of the value to add. Look at `data/inventoryValuesName` to get the list of values.
  * @param {any} value Value to add.
  */
 function addUserItemValue(userId, itemId, valueName, value) {
     db.run(
-        `UPDATE users SET ${valueName}=${valueName}+? WHERE user_id=? AND item=?`,
+        `UPDATE inventory SET ${valueName}=${valueName}+? WHERE user_id=? AND item=?`,
         [value, userId, itemId],
         (err) => {
             if (err) {
@@ -446,7 +446,7 @@ function addUserItemValue(userId, itemId, valueName, value) {
  */
 function registerUserPurchase(userId, itemId, quantity, timestamp) {
     db.get(
-        `INSERT INTO inventory (user_id,item,quantity,timestamp) VALUES (?,?,?,?)`,
+        `INSERT INTO purchases (user_id,item,quantity,timestamp) VALUES (?,?,?,?)`,
         [userId, itemId, quantity, timestamp],
         (err) => {
             if (err) {

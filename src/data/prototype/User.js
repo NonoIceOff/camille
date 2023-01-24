@@ -1,7 +1,7 @@
 const { User } = require("discord.js");
 
 const { getUserValue, setUserValue, addUserValue } = require("../db");
-const userValuesName = require("../constants/userValuesName");
+const userValuesName = require("../userValuesName");
 
 // XP
 
