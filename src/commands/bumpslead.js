@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {editLeaderboard} = require("../misc/leaderboard");
-const userValuesName = require("../data/constants/userValuesName");
+const userValuesName = require("../data/userValuesName");
 
 /**
  * Action when the command is triggered

@@ -13,11 +13,13 @@ const commandsCore = require("./commands/core");
 const leaderboard = require("./misc/leaderboard");
 const youtube = require('./misc/youtube');
 const inventory = require('./inventory/inventory');
+const votes = require("./misc/votes");
 
 client.on(Events.ClientReady, () => {
 
     youtube.startVideoListener();
     inventory.init();
+    votes.initVotes();
 
     if (false) {
         // TODO: Remake all of this

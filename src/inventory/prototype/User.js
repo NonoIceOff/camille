@@ -14,7 +14,8 @@ User.prototype.getItem = async function (itemId, registerIfNull = true) {
     return new Promise(async (resolve) => {
         const item = await db.getUserItem(user.id, itemId);
         if (!item && registerIfNull) {
-            db.registerUserItem(user.id, itemId, 0, Date.now());
+            await db.registerUserItem(user.id, itemId, 0, Date.now());
+            resolve(await this.getItem(itemId,false));
         } else {
             resolve(new UserItem(user, item));
         }
@@ -31,4 +32,22 @@ User.prototype.getItems = async function () {
         const items = await db.getUserItems(user.id);
         resolve(items.map((item) => new UserItem(user, item)));
     });
+};
+
+/**
+ *
+ * @param {number} itemId
+ * @param {number} quantity
+ */
+User.prototype.giveItem = async function (itemId, quantity = 1) {
+    /**
+     * @type {UserItem}
+     */
+    const item = await this.getItem(itemId);
+    const baseQuantity = item.quantity;
+    item.quantity += quantity;
+
+    if (baseQuantity === 0) {
+        item.init();
+    }
 };

@@ -13,7 +13,7 @@ class UserItem {
     constructor(user, item) {
         this.#user = user;
         this.#itemId = item.item;
-        this.#quantity = item.quantity;
+        this.#quantity = item.quantity ?? 0;
         this.#expireDate = item.expire_date;
     }
 
@@ -68,7 +68,7 @@ class UserItem {
     }
 
     init() {
-        if (this.#itemId >= 0 && this.#itemId <= 2) grades.initGrade(this)
+        if (this.#itemId >= 0 && this.#itemId <= 2) grades.initGrade(this);
 
     }
 }

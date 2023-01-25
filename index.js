@@ -1216,5 +1216,7 @@ function show_puissance_4(user, grille) {
 
 init({ test: true, resetCommands:false });
 db.update();
+
+// temp
 db.setUserValue("229702614613360650","coin",1451.96);
 db.setUserValue("229708607287984129","coin",2451.96);

@@ -8,7 +8,7 @@ let db = new sqlite3.Database(
     path.join(process.cwd(), "data/sqlite.db"),
     (err) => {
         if (err) {
-            console.error(err);
+            reject(err);
         }
         console.log("Connected to database.");
     }
@@ -25,7 +25,7 @@ function update() {
                 let tables = rows.map((row) => row.name);
 
                 if (tables.includes("users")) {
-                    //TODO: Check if all columns are correct
+                    //Check if all columns are correct
                 } else {
                     console.log('Creating "users" table in database...');
                     db.exec(
@@ -77,7 +77,7 @@ function update() {
                     }
                 }
                 if (tables.includes("purchases")) {
-                    //TODO: Check if all columns are correct
+                    //Check if all columns are correct
                 } else {
                     console.log('Creating "purchases" table in database...');
                     db.exec(
@@ -122,7 +122,7 @@ function update() {
                     }
                 }
                 if (tables.includes("inventory")) {
-                    //TODO: Check if all columns are correct
+                    //Check if all columns are correct
                 } else {
                     console.log('Creating "inventory" table in database...');
                     db.exec(
@@ -146,8 +146,13 @@ function update() {
                                     user_id: id,
                                     item: item,
                                     quantity: count,
-                                    expire_date: count ?
-                                        Date.now() + 1000 * 60 * 60 * 24 * 30 -((((29*24+23)*60+59)*60+50)*1000) : null,
+                                    expire_date: count
+                                        ? Date.now() +
+                                          1000 * 60 * 60 * 24 * 30 -
+                                          (((29 * 24 + 23) * 60 + 59) * 60 +
+                                              50) *
+                                              1000
+                                        : null,
                                 });
                             });
                         });
@@ -167,6 +172,14 @@ function update() {
                         );
                     }
                 }
+                if (tables.includes("votes")) {
+                    //Check if all columns are correct
+                } else {
+                    console.log('Creating "votes" table in database...');
+                    db.exec(
+                        "CREATE TABLE votes (voter varchar(20), voted varchar(20));"
+                    );
+                }
             }
         );
     });
@@ -177,18 +190,19 @@ function update() {
  * @param {string} userId User ID
  * @param {() =>  void} callback Callback when the user is created.
  */
-function registerUser(userId, callback) {
-    db.run(
-        `INSERT INTO users (user_id,xp,bump,monthly_bump,coin,voice,last_voice_activity) VALUES (?,0,0,0,0,0,0)`,
-        [userId],
-        (err) => {
-            if (err) {
-                console.error(err);
-            } else {
-                callback();
+function registerUser(userId) {
+    return new Promise((resolve, reject) => {
+        db.run(
+            `INSERT INTO users (user_id,xp,bump,monthly_bump,coin,voice,last_voice_activity) VALUES (?,0,0,0,0,0,0)`,
+            [userId],
+            (err) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
             }
-        }
-    );
+        );
+    });
 }
 
 /**
@@ -201,14 +215,13 @@ function getUserValue(userId, valueName) {
         db.get(
             `SELECT ${valueName} AS value FROM users WHERE user_id=?`,
             userId,
-            (err, row) => {
+            async (err, row) => {
                 if (err) {
                     reject(err);
                 }
                 if (!row) {
-                    registerUser(userId, async () => {
-                        resolve(await getUserValue(userId, valueName));
-                    });
+                    await registerUser(userId);
+                    resolve(await getUserValue(userId, valueName));
                 } else {
                     resolve(row.value);
                 }
@@ -224,15 +237,18 @@ function getUserValue(userId, valueName) {
  * @param {any} value Value to set.
  */
 function setUserValue(userId, valueName, value) {
-    db.run(
-        `UPDATE users SET ${valueName}=? WHERE user_id=?`,
-        [value, userId],
-        (err) => {
-            if (err) {
-                console.error(err);
+    return new Promise((resolve, reject) => {
+        db.run(
+            `UPDATE users SET ${valueName}=? WHERE user_id=?`,
+            [value, userId],
+            (err) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
             }
-        }
-    );
+        );
+    });
 }
 
 /**
@@ -242,15 +258,18 @@ function setUserValue(userId, valueName, value) {
  * @param {any} value Value to add.
  */
 function addUserValue(userId, valueName, value) {
-    db.run(
-        `UPDATE users SET ${valueName}=${valueName}+? WHERE user_id=?`,
-        [value, userId],
-        (err) => {
-            if (err) {
-                console.error(err);
+    return new Promise((resolve, reject) => {
+        db.run(
+            `UPDATE users SET ${valueName}=${valueName}+? WHERE user_id=?`,
+            [value, userId],
+            (err) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
             }
-        }
-    );
+        );
+    });
 }
 
 /**
@@ -362,40 +381,45 @@ function getUsersItems() {
 
 /**
  * Register an item for a user
- * @param {string} userId 
- * @param {number} itemId 
- * @param {number} quantity 
- * @param {number} expireDate 
+ * @param {string} userId
+ * @param {number} itemId
+ * @param {number} quantity
+ * @param {number} expireDate
  */
 function registerUserItem(userId, itemId, quantity = 0, expireDate = 0) {
-    db.get(
-        `INSERT INTO inventory (user_id,item,quantity,expire_date) VALUES (?,?,?,?)`,
-        [userId, itemId, quantity, expireDate],
-        (err) => {
-            if (err) {
-                console.error(err);
+    return new Promise((resolve, reject) => {
+        db.run(
+            `INSERT INTO inventory (user_id,item,quantity,expire_date) VALUES (?,?,?,?)`,
+            [userId, itemId, quantity, expireDate],
+            (err) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
             }
-        }
-    );
+        );
+    });
 }
 
 /**
  * Unregister an item for a user
- * @param {string} userId 
- * @param {number} itemId 
+ * @param {string} userId
+ * @param {number} itemId
  */
 function unregisterUserItem(userId, itemId) {
-    db.get(
-        `DETELE FROM inventory WHERE user_id=? AND item=?`,
-        [userId, itemId],
-        (err) => {
-            if (err) {
-                console.error(err);
+    return new Promise((resolve, reject) => {
+        db.run(
+            `DETELE FROM inventory WHERE user_id=? AND item=?`,
+            [userId, itemId],
+            (err) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
             }
-        }
-    );
+        );
+    });
 }
-
 
 /**
  * Set a user value in the database
@@ -405,17 +429,19 @@ function unregisterUserItem(userId, itemId) {
  * @param {any} value Value to set.
  */
 function setUserItemValue(userId, itemId, valueName, value) {
-    db.run(
-        `UPDATE inventory SET ${valueName}=? WHERE user_id=? AND item=?`,
-        [value, userId, itemId],
-        (err) => {
-            if (err) {
-                console.error(err);
+    return new Promise((resolve, reject) => {
+        db.run(
+            `UPDATE inventory SET ${valueName}=? WHERE user_id=? AND item=?`,
+            [value, userId, itemId],
+            (err) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
             }
-        }
-    );
+        );
+    });
 }
-
 
 /**
  * Add a user value in the database
@@ -425,38 +451,112 @@ function setUserItemValue(userId, itemId, valueName, value) {
  * @param {any} value Value to add.
  */
 function addUserItemValue(userId, itemId, valueName, value) {
-    db.run(
-        `UPDATE inventory SET ${valueName}=${valueName}+? WHERE user_id=? AND item=?`,
-        [value, userId, itemId],
-        (err) => {
-            if (err) {
-                console.error(err);
+    return new Promise((resolve, reject) => {
+        db.run(
+            `UPDATE inventory SET ${valueName}=${valueName}+? WHERE user_id=? AND item=?`,
+            [value, userId, itemId],
+            (err) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
             }
-        }
-    );
+        );
+    });
 }
-
 
 /**
  * Register the purchase of a user
- * @param {string} userId 
- * @param {number} itemId 
- * @param {number} quantity 
- * @param {number} timestamp 
+ * @param {string} userId
+ * @param {number} itemId
+ * @param {number} quantity
+ * @param {number} timestamp
  */
 function registerUserPurchase(userId, itemId, quantity, timestamp) {
-    db.get(
-        `INSERT INTO purchases (user_id,item,quantity,timestamp) VALUES (?,?,?,?)`,
-        [userId, itemId, quantity, timestamp],
-        (err) => {
-            if (err) {
-                console.error(err);
+    return new Promise((resolve, reject) => {
+        db.run(
+            `INSERT INTO purchases (user_id,item,quantity,timestamp) VALUES (?,?,?,?)`,
+            [userId, itemId, quantity, timestamp],
+            (err) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
             }
-        }
-    );
+        );
+    });
 }
 
+/**
+ * Register the vote of a user
+ * @param {string} voter
+ * @param {string} voted
+ */
+function registerVote(voter, voted) {
+    return new Promise((resolve, reject) => {
+        db.run(
+            `INSERT INTO votes (voter, voted) VALUES (?,?)`,
+            [voter, voted],
+            (err) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
+            }
+        );
+    });
+}
 
+/**
+ * Check is a user has voted
+ * @param {string} voter
+ */
+function getUserVoteCount(voter) {
+    return new Promise((resolve, reject) => {
+        db.get(
+            `SELECT COUNT(*) AS votes FROM votes WHERE voter=?`,
+            [voter],
+            (err, row) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(row.votes);
+            }
+        );
+    });
+}
+
+/**
+ * Reset all votes
+ */
+function resetVotes() {
+    return new Promise((resolve, reject) => {
+        db.run(`DELETE FROM votes`, (err) => {
+            if (err) {
+                reject(err);
+            }
+            resolve();
+        });
+    });
+}
+
+/**
+ * Get the number of votes for each user
+ * @returns {Promise<{user:string,votes:number}[]>}
+ */
+function getVotesCount() {
+    return new Promise((resolve, reject) => {
+        db.all(
+            `SELECT voted AS user, COUNT(*) AS votes FROM votes GROUP BY voted`,
+            (err, rows) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(rows);
+            }
+        );
+    });
+}
 
 module.exports = {
     update,
@@ -474,4 +574,8 @@ module.exports = {
     setUserItemValue,
     addUserItemValue,
     registerUserPurchase,
+    registerVote,
+    resetVotes,
+    getVotesCount,
+    getUserVoteCount,
 };
