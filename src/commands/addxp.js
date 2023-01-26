@@ -3,7 +3,6 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const constantIDs = require("../constants/ids");
 const { options, client } = require("../client");
 
-
 /**
  * Action when the command is triggered
  * @param {import("discord.js").Interaction} [interaction] THE interaction
@@ -17,7 +16,7 @@ function onTrigger(interaction) {
         var user = interaction.options.getUser("member");
         var amount = interaction.options.getInteger("amount");
 
-        user.addXP(amount,false);
+        user.addXP(amount, false);
         interaction.reply(`**${user.username}** a été give de ${amount}xp.`);
     } else {
         interaction.reply(

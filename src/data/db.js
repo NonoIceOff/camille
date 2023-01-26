@@ -203,6 +203,14 @@ function update() {
                         );
                     }
                 }
+                if (tables.includes("giveaways")) {
+                    //Check if all columns are correct
+                } else {
+                    console.log('Creating "giveaways" table in database...');
+                    db.exec(
+                        "CREATE TABLE giveaways (message_id varchar(20), author_id varchar(20), title varchar(50), winner varchar(20));"
+                    );
+                }
             }
         );
     });
@@ -661,6 +669,86 @@ function getFightWinners(skip,count) {
     });
 }
 
+/**
+ * Check if a message is a giveaway
+ * @param {string} messageId 
+ */
+function checkIfMessageIsGiveaway(messageId) {
+    return new Promise((resolve, reject) => {
+        db.get(
+            `SELECT EXISTS ( SELECT 1 FROM giveaways WHERE message_id=? ) AS isGiveaway`,
+            [messageId],
+            (err,row) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(!!row.isGiveaway);
+            }
+        );
+    });
+}
+
+/**
+ * Get a giveaway from the messageId
+ * @param {string} messageId 
+ * @returns {Promise<{messageId:string,authorId:string,title:string,winner:string}>}
+ */
+function getGiveaway(messageId) {
+    return new Promise((resolve, reject) => {
+        db.get(
+            `SELECT message_id AS messageId, author_id AS authorId, title, winner FROM giveaways WHERE message_id=?`,
+            [messageId],
+            (err,row) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(row);
+            }
+        );
+    });
+}
+
+/**
+ * Register a new giveaway
+ * @param {string} messageId 
+ * @param {string} authorId 
+ * @param {string} title 
+ */
+function registerGiveaway(messageId, authorId, title) {
+    return new Promise((resolve, reject) => {
+        db.run(
+            `INSERT INTO giveaways (message_id, author_id, title, winner) VALUES (?,?,?,NULL)`,
+            [messageId,authorId,title],
+            (err) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
+            }
+        );
+    });
+}
+
+/**
+ * Set the winner of a giveaway
+ * @param {string} messageId 
+ * @param {string} winner 
+ */
+function setGiveawayWinner(messageId, winner) {
+    return new Promise((resolve, reject) => {
+        db.run(
+            `UPDATE giveaways SET winner=? WHERE message_id=?`,
+            [winner,messageId],
+            (err) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
+            }
+        );
+    });
+}
+
 module.exports = {
     update,
     getUserValue,
@@ -685,4 +773,8 @@ module.exports = {
     addFightWins,
     checkFightWin,
     getFightWinners,
+    checkIfMessageIsGiveaway,
+    getGiveaway,
+    registerGiveaway,
+    setGiveawayWinner,
 };
