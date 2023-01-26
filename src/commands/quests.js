@@ -5,7 +5,8 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  */
 function onTrigger(interaction) {
-    // TODO: Make it working
+    
+    return;
     var level = 0;
     var pourcentage = 0;
     let file = editJsonFile("./quests.json");

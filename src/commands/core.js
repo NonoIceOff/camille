@@ -14,7 +14,7 @@ const commands = [
     "notifsmenu",
     "ping",
     "poll",
-    "quests",
+    //"quests", Disabled because not already implemented.
     "rulescmd",
     "shop",
     "stats",

@@ -26,7 +26,6 @@ if (!season) season = require("../../data/fight.json").Saisons.Number ?? 1;
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  */
 async function onButton(interaction) {
-    // TODO: Rewrite
     if (interaction.isButton()) {
         let path = interaction.customId.split("/");
         if (path[0] === "fight") {
