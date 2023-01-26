@@ -11,19 +11,13 @@ function initVotes() {
         currentDate.getFullYear(),
         currentDate.getMonth() + 1,
         1,
-        1,
-        0,
-        0,
-        0
+        1
     );
     const stopDate = new Date(
         currentDate.getFullYear(),
         currentDate.getMonth() + (currentDate.getDate() >= 2 ? 1 : 0),
         2,
-        1,
-        0,
-        0,
-        0
+        1
     );
 
     runAtDate(startDate, sendVoteStart);
@@ -51,10 +45,7 @@ async function sendVoteStart() {
         currentDate.getFullYear(),
         currentDate.getMonth() + 1,
         1,
-        1,
-        0,
-        0,
-        0
+        1
     );
 
     runAtDate(startDate, sendVoteStart);
@@ -97,22 +88,23 @@ async function sendVoteStop() {
         .get(constantIDs.channels.bot[+options.test])
         .send({ embeds: [embed] });
 
-    client.users.cache.get(leaderboard[0].user).giveItem(itemIds.superDreamTeamPass,1);
+    const member = guild.members.cache.get(leaderboard[0].user);
+    member.user.giveItem(itemIds.superDreamTeamPass, 1);
+    member.send(
+        "Vous avez gagné le vote du mois, profitez de votre rôle **SUPER DREAM TEAM** ce mois-ci."
+    );
 
     const currentDate = new Date();
     const stopDate = new Date(
         currentDate.getFullYear(),
         currentDate.getMonth() + 1,
         2,
-        1,
-        0,
-        0,
-        0
+        1
     );
 
     runAtDate(stopDate, sendVoteStop);
 }
 
 module.exports = {
-    initVotes
-}
+    initVotes,
+};

@@ -9,7 +9,6 @@ const db = require("../data/db");
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  */
 async function onTrigger(interaction) {
-    // TODO: Make it working
     if (
         interaction.channel ==
         client.channels.cache.get(constantIDs.channels.bot[+options.test])

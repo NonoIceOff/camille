@@ -180,6 +180,29 @@ function update() {
                         "CREATE TABLE votes (voter varchar(20), voted varchar(20));"
                     );
                 }
+                if (tables.includes("fight_winners")) {
+                    //Check if all columns are correct
+                } else {
+                    console.log('Creating "fight_winners" table in database...');
+                    db.exec(
+                        "CREATE TABLE fight_winners (user_id varchar(20), wins int);"
+                    );
+                    if (
+                        fs.existsSync(
+                            path.join(process.cwd(), "data/fight.json")
+                        )
+                    ) {
+                        console.log("Updating database...");
+                        const fight = require("../../data/fight.json");
+
+                        db.run(
+                            `INSERT INTO fight_winners (user_id,wins) VALUES ${Object.keys(fight.Saisons.Wins)
+                                .map(() => "(?,?)")
+                                .join(",")}`,
+                                Object.entries(fight.Saisons.Wins).flat()
+                        );
+                    }
+                }
             }
         );
     });
@@ -274,8 +297,9 @@ function addUserValue(userId, valueName, value) {
 
 /**
  * Get top users in a given value from the database
- * @param {string} userId User ID
  * @param {string} valueName Name of the value to order by. Look at `data/userValuesName` to get the list of values.
+ * @param {number} skip
+ * @param {number} count
  * @returns {Promise<{userId:string,value:any}[]>}
  */
 function getTopUserValue(valueName, skip, count) {
@@ -558,6 +582,85 @@ function getVotesCount() {
     });
 }
 
+/**
+ * Register the win of a user is Fight
+ * @param {string} userId
+ * @param {number} wins
+ */
+function registerFightWin(userId, wins) {
+    return new Promise((resolve, reject) => {
+        db.run(
+            `INSERT INTO fight_winners (user_id, wins) VALUES (?,?)`,
+            [userId, wins],
+            (err) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
+            }
+        );
+    });
+}
+
+/**
+ * Add X wins the user
+ * @param {string} userId 
+ * @param {number} wins 
+ */
+function addFightWins(userId, wins) {
+    return new Promise((resolve, reject) => {
+        db.run(
+            `UPDATE inventory SET ${valueName}=? WHERE user_id=?`,
+            [wins, userId],
+            (err) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
+            }
+        );
+    });
+}
+
+/**
+ * Check if a user already won Fight
+ * @param {string} userId 
+ */
+function checkFightWin(userId) {
+    return new Promise((resolve, reject) => {
+        db.get(
+            `SELECT EXISTS ( SELECT 1 FROM fight_winners WHERE user_id=? ) AS won`,
+            [userId],
+            (err,row) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(!!row.won);
+            }
+        );
+    });
+}
+
+/**
+ * Get all winners of Fight
+ * @param {number} skip
+ * @param {number} count
+ * @returns {Promise<{userId:string,wins:number}[]>}
+ */
+function getFightWinners(skip,count) {
+    return new Promise((resolve, reject) => {
+        db.all(
+            `SELECT user_id AS userId, wins FROM fight_winners ORDER BY wins DESC LIMIT ${skip},${count}`,
+            (err,rows) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(rows);
+            }
+        );
+    });
+}
+
 module.exports = {
     update,
     getUserValue,
@@ -578,4 +681,8 @@ module.exports = {
     resetVotes,
     getVotesCount,
     getUserVoteCount,
+    registerFightWin,
+    addFightWins,
+    checkFightWin,
+    getFightWinners,
 };

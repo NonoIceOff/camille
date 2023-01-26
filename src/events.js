@@ -14,21 +14,13 @@ const leaderboard = require("./misc/leaderboard");
 const youtube = require('./misc/youtube');
 const inventory = require('./inventory/inventory');
 const votes = require("./misc/votes");
+const fight = require("./misc/fight");
 
 client.on(Events.ClientReady, () => {
 
     youtube.startVideoListener();
     inventory.init();
     votes.initVotes();
-
-    if (false) {
-        // TODO: Remake all of this
-
-        let votestart = new cron.CronJob("00 34 01 1 * *", startvote);
-        votestart.start();
-        let votestop = new cron.CronJob("00 00 00 2 * *", stopvote);
-        votestop.start();
-    }
 
     console.log("\x1b[32m", "Bot connecté ✓", "\x1b[0m");
 
@@ -84,4 +76,5 @@ client.on(Events.InteractionCreate, (interaction) => {
     welcomeMessage.sayHi(interaction);
     gamesCore.onInteraction(interaction);
     leaderboard.onButton(interaction);
+    fight.onButton(interaction);
 });

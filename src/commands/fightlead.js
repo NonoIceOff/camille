@@ -1,41 +1,16 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
+const { EmbedBuilder } = require("discord.js");
+
+const db = require("../data/db");
 
 /**
  * Action when the command is triggered
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  */
 async function onTrigger(interaction) {
-    // TODO: Make it working
-    let file = editJsonFile("./fight.json");
-    var membersdico = file.get("Saisons")["Wins"];
+    const winners = await db.getFightWinners(0, 25);
 
-    var membersnbr = 0; // NUMBER OF MEMBERS
-    for (var i in membersdico) {
-        if (membersdico.hasOwnProperty(i)) membersnbr++;
-    }
-
-    var classementarray = []; // FAIRE LE CLASSEMENT AVEC [id, nombre d'xp]
-    for (var i in membersdico) {
-        classementarray.push([membersdico[i], i]);
-    }
-    classementarray.sort(
-        (function (index) {
-            return function (a, b) {
-                return a[index] === b[index] ? 0 : a[index] < b[index] ? 1 : -1;
-            };
-        })(0)
-    );
-
-    const embed = new EmbedBuilder()
-        .setColor(10181046)
-        .setTitle(
-            ":crossed_swords:  **__Classement des gagnants de FIGHT DISCORD :__**"
-        );
-
-    if (membersnbr > 20) {
-        membersnbr = 20;
-    }
-    var place_array = [
+    var placesEmotes = [
         ":first_place:",
         ":second_place:",
         ":third_place:",
@@ -46,38 +21,36 @@ async function onTrigger(interaction) {
         ":eight:",
         ":nine:",
         ":keycap_ten:",
-        "11",
-        "12",
-        "13",
-        "14",
-        "15",
-        "16",
-        "17",
-        "18",
-        "19",
-        "20",
-        "21",
-        "22",
     ];
 
-    for (let i = 1; i <= membersnbr; i++) {
-        var user = classementarray[i - 1][1];
-        var pseudo = "";
-
-        if (user.includes("IA") == false) {
-            let usered = await client.users.fetch(classementarray[i - 1][1]);
-            pseudo = usered.username;
-        } else {
-            pseudo = classementarray[i - 1][1];
-        }
-
-        embed.addFields({
-            name: place_array[i - 1] + " **|** " + pseudo,
-            value:
-                " " + ":star:".repeat(membersdico[classementarray[i - 1][1]]),
-            inline: true,
-        });
-    }
+    const embed = new EmbedBuilder()
+        .setColor(10181046)
+        .setTitle(
+            ":crossed_swords:  **__Classement des gagnants de FIGHT DISCORD :__**"
+        )
+        .addFields(
+            await Promise.all(
+                winners.map(async (winner, i) => {
+                    let username = `<!${winner.userId}>`;
+                    if (winner.userId.startsWith("IA"))
+                        username = winner.userId;
+                    else {
+                        const guildMember = await guild.members.fetch(
+                            winner.userId
+                        );
+                        if (guildMember)
+                            username =
+                                guildMember.nickname ??
+                                guildMember.user.username;
+                    }
+                    return {
+                        name: `${placesEmotes[i]} **|** ${username}`,
+                        value: " :star:".repeat(winner.wins),
+                        inline: true,
+                    };
+                })
+            )
+        );
 
     interaction.reply({ embeds: [embed] });
 }
