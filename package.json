@@ -1,14 +1,25 @@
 {
   "dependencies": {
-    "@discordjs/voice": "^0.13.0",
-    "@napi-rs/canvas": "^0.1.30",
-    "canvas": "^2.9.3",
-    "cron": "^2.1.0",
-    "discord-canvas": "^1.5.2",
     "discord.js": "^14.1.2",
-    "edit-json-file": "^1.7.0",
     "fast-xml-parser": "^4.0.13",
-    "rss-parser": "^3.12.0",
     "sqlite3": "^5.1.4"
-  }
+  },
+  "name": "camille",
+  "description": "Bot pour le serveur discord \"Shinsetsu Kurabu\"",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "node index -t"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NonoIceOff/camille.git"
+  },
+  "author": "NonoIceOff, Piripe",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NonoIceOff/camille/issues"
+  },
+  "homepage": "https://github.com/NonoIceOff/camille#readme"
 }
