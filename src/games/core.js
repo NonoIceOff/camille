@@ -4,7 +4,7 @@ const games = {
     fairPrice: require("./fairPrice"),
     streetFairPrice: require("./streetFairPrice"),
     //power4: require("./power4"),
-    //rockPaperScissors: require("./rockPaperScissors"),
+    rockPaperScissors: require("./rockPaperScissors"),
 };
 
 let playingGames = {};
