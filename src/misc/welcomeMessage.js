@@ -1,5 +1,4 @@
-const { GuildMember } = require("discord.js/src/structures/GuildMember");
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, GuildMember } = require("discord.js");
 
 const { client, options } = require("../client");
 const constantIDs = require("../constants/ids");

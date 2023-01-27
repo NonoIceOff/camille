@@ -3,9 +3,9 @@ const {
     VoiceChannel,
     time,
     ReactionUserManager,
+    GuildMember,
+    VoiceState,
 } = require("discord.js");
-const { GuildMember } = require("discord.js/src/structures/GuildMember");
-const VoiceState = require("discord.js/src/structures/VoiceState");
 
 const { options } = require("../client");
 const constantIDs = require("../constants/ids");

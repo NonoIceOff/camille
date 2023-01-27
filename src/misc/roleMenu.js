@@ -1,5 +1,4 @@
-const { MessageReaction, User, Role } = require("discord.js");
-const { GuildMember } = require("discord.js/src/structures/GuildMember");
+const { MessageReaction, User, Role, GuildMember } = require("discord.js");
 const { client, options } = require("../client");
 const constantIDs = require("../constants/ids");
 
