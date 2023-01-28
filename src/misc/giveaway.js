@@ -27,22 +27,25 @@ async function checkIfFinished(reaction, user) {
                     ];
                 await reaction.message.fetch();
 
-                db.setGiveawayWinner(reaction.message.id, winner.id);
-
                 const embed = new EmbedBuilder()
                     .setColor(10181046)
                     .setTitle(
                         `:moneybag: Tirage pour gagner **__${giveaway.title}__** terminé.`
                     )
                     .setDescription(
-                        `Tirage au sort terminé, le gagnant est ${winner}`
+                        `Tirage au sort terminé, le gagnant est ${
+                            winner ?? "personne ahah, fallait participer"
+                        }`
                     );
 
                 reaction.message.edit({ content: "", embeds: [embed] });
 
-                await winner.send(
-                    `Vous venez de gagner le tirage au sort, vous gagnez **${giveaway.title}**`
-                );
+                if (winner) {
+                    db.setGiveawayWinner(reaction.message.id, winner.id);
+                    await winner.send(
+                        `Vous venez de gagner le tirage au sort, vous gagnez **${giveaway.title}**`
+                    );
+                }
             }
         }
     }
