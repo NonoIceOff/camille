@@ -7,7 +7,10 @@ const xp = require("../constants/xp");
  * @param {Message} [message] Message
  */
 function bump(message) {
-    if (message.type === MessageType.ChatInputCommand && message.interaction.commandName == "bump") {
+    if (
+        message.type === MessageType.ChatInputCommand &&
+        message.interaction.commandName == "bump"
+    ) {
         const user = message.interaction.user;
         message.channel.lastMessage.delete();
         user.addBump(1);
@@ -23,5 +26,5 @@ function bump(message) {
 }
 
 module.exports = {
-    bump
+    bump,
 };

@@ -1,5 +1,9 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
-const { ActionRowBuilder, SelectMenuBuilder, SelectMenuInteraction } = require("discord.js");
+const {
+    ActionRowBuilder,
+    SelectMenuBuilder,
+    SelectMenuInteraction,
+    SlashCommandBuilder,
+} = require("discord.js");
 
 const gamesCore = require("../games/core");
 
@@ -34,9 +38,9 @@ async function onTrigger(interaction) {
                     value: "rockPaperScissors",
                 },
                 {
-                	label: 'Puissance 4',
-                	description: 'Une grille, comme le puissance 4',
-                	value: 'power4',
+                    label: "Puissance 4",
+                    description: "Une grille, comme le puissance 4",
+                    value: "power4",
                 },
             ])
     );
@@ -52,11 +56,10 @@ async function onTrigger(interaction) {
  * @param {SelectMenuInteraction} [interaction] THE interaction
  * @param {Array<String>} [path] Path of the interaction
  */
-async function onSelectMenu(interaction,path) {
+async function onSelectMenu(interaction, path) {
     await interaction.deferUpdate();
-    gamesCore.init(interaction.user,interaction.values[0]);
+    gamesCore.init(interaction.user, interaction.values[0]);
 }
-
 
 const definition = new SlashCommandBuilder()
     .setName("launchgame")

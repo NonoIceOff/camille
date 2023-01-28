@@ -1,4 +1,11 @@
-const { User, Message, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require("discord.js");
+const {
+    User,
+    Message,
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    EmbedBuilder,
+} = require("discord.js");
 
 class fairPrice {
     get name() {
@@ -16,7 +23,7 @@ class fairPrice {
         this.tests = 0;
         this.price = Math.floor(Math.random() * 1000) + 1;
         this.gain = 1.8;
-        
+
         const embed = new EmbedBuilder()
             .setColor(10181046)
             .setTitle(":coin: **__Bienvenue au Juste Prix__**")
@@ -38,8 +45,7 @@ class fairPrice {
 
         if (!this.price) {
             this.user.send({
-                content:
-                    "Veuillez lancer le jeu avant d'essayer de jouer.",
+                content: "Veuillez lancer le jeu avant d'essayer de jouer.",
             });
         }
 
@@ -59,24 +65,20 @@ class fairPrice {
             return;
         }
 
-
-        this.tests++
+        this.tests++;
         if (number == this.price) {
-            
             this.user.addCoin(this.gain);
 
             const embed = new EmbedBuilder()
-            .setColor(10181046)
-            .setTitle(
-                ":tada: **__Félicitations__**"
-            )
-            .setDescription(
-                `Vous avez trouvé le nombre ${this.price} en ${this.tests} essais.`
-            )
-            .addFields({
-                name: "Gains récupérés",
-                value: `${this.gain} :coin:`,
-            });
+                .setColor(10181046)
+                .setTitle(":tada: **__Félicitations__**")
+                .setDescription(
+                    `Vous avez trouvé le nombre ${this.price} en ${this.tests} essais.`
+                )
+                .addFields({
+                    name: "Gains récupérés",
+                    value: `${this.gain} :coin:`,
+                });
 
             this.price = undefined;
 
@@ -85,24 +87,22 @@ class fairPrice {
                 components: [restart_row],
             });
 
-
             return;
         } else {
-            if (this.gain>0) this.gain=Math.floor((this.gain-.1)*10)/10;
+            if (this.gain > 0)
+                this.gain = Math.floor((this.gain - 0.1) * 10) / 10;
             if (this.tests >= 15) {
                 const embed = new EmbedBuilder()
-                .setColor(2171330)
-                .setTitle(
-                    ":tada: **__Perdu ( ˘︹˘ )__**"
-                )
-                .setDescription(
-                    `Vous n'avez pas trouvé le nombre ${this.price} en 15 essais.`
-                )
-                .addFields({
-                    name: "Gains récupérés",
-                    value: `Bah 0 du coup :coin:`,
-                });
-                
+                    .setColor(2171330)
+                    .setTitle(":tada: **__Perdu ( ˘︹˘ )__**")
+                    .setDescription(
+                        `Vous n'avez pas trouvé le nombre ${this.price} en 15 essais.`
+                    )
+                    .addFields({
+                        name: "Gains récupérés",
+                        value: `Bah 0 du coup :coin:`,
+                    });
+
                 this.price = undefined;
 
                 await this.user.send({
@@ -122,7 +122,6 @@ Vous êtes à ${this.tests} essais. *En jeu : ${this.gain} :coin:*`);
 Vous êtes à ${this.tests} essais. *En jeu : ${this.gain} :coin:*`);
             }
         }
-        
     }
     /**
      * Triggered when a button is pressed

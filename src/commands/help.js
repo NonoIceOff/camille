@@ -1,7 +1,6 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
+const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 
 const permissions = require("../utils/permissions");
-const { options } = require("../client");
 
 /**
  * Action when the command is triggered
@@ -17,7 +16,10 @@ function onTrigger(interaction) {
 **/fight** : *panneau de contrôle pour FIGHT DISCORD*
 **/tirage** : *lancer un tirage au sort* \n\n`
             : "") +
-        (permissions.hasPermission(interaction.member,permissions.levels.dreamTeam)
+        (permissions.hasPermission(
+            interaction.member,
+            permissions.levels.dreamTeam
+        )
             ? `
 **:watermelon: __Dream Team commands__ :**
 **/poll** : *lancer un sondage* \n\n`

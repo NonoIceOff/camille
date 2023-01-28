@@ -59,7 +59,9 @@ async function sendVoteStop() {
 
     let fieldsLeaderboard = await Promise.all(
         leaderboard.map(async (place, i) => {
-            const guildMember = await constants.workingGuild.members.fetch(place.user);
+            const guildMember = await constants.workingGuild.members.fetch(
+                place.user
+            );
             let username = `<!${place.user}>`;
             if (guildMember)
                 username = guildMember.nickname ?? guildMember.user.username;
@@ -78,7 +80,9 @@ async function sendVoteStop() {
 
     await constants.channels.bot.send({ embeds: [embed] });
 
-    const member = constants.workingGuild.members.cache.get(leaderboard[0].user);
+    const member = constants.workingGuild.members.cache.get(
+        leaderboard[0].user
+    );
     member.user.giveItem(itemIds.superDreamTeamPass, 1);
     member.send(
         "Vous avez gagné le vote du mois, profitez de votre rôle **SUPER DREAM TEAM** ce mois-ci."

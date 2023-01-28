@@ -1,4 +1,10 @@
-const { User, Message, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const {
+    User,
+    Message,
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+} = require("discord.js");
 
 class streetFairPrice {
     get name() {
@@ -17,7 +23,7 @@ class streetFairPrice {
         this.price = Math.floor(Math.random() * 1000) + 1;
         this.gain = 1.6;
         this.lastNumber = undefined;
-        
+
         await this.user.send({
             content:
                 "Wesh, bienvnue dans l'Juste Prix wesh, devine un nombre wesh (Entre 1 et 1000 wesh)",
@@ -56,18 +62,16 @@ class streetFairPrice {
             return;
         }
 
-
-        this.tests++
+        this.tests++;
         if (number == this.price) {
             this.price = undefined;
-            this.gain = Math.floor(this.gain*10)/10
-            
+            this.gain = Math.floor(this.gain * 10) / 10;
+
             this.user.addCoin(this.gain);
 
             await this.user.send({
                 components: [restart_row],
-                content:
-                    `
+                content: `
 Omg wesh, t'as trouvé l'bon nombre en ${this.tests} essais wesh, gg en fait wesh !
 
 +${this.gain} :coin:
@@ -75,13 +79,12 @@ Omg wesh, t'as trouvé l'bon nombre en ${this.tests} essais wesh, gg en fait wes
 Si tu veux tu peux recommencer wesh`,
             });
 
-
             return;
         } else {
-            if (this.gain>0) this.gain-=.1;
+            if (this.gain > 0) this.gain -= 0.1;
             if (this.tests >= 5) {
                 this.price = undefined;
-    
+
                 await this.user.send({
                     components: [restart_row],
                     content:
@@ -111,7 +114,6 @@ Si tu veux tu peux recommencer wesh`,
         }
 
         this.lastNumber = number;
-        
     }
     /**
      * Triggered when a button is pressed

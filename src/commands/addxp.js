@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
+const { SlashCommandBuilder } = require("discord.js");
 
 const permissions = require("../utils/permissions");
 
@@ -7,7 +7,7 @@ const permissions = require("../utils/permissions");
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  */
 function onTrigger(interaction) {
-    if (permissions.canCommandRun(interaction,permissions.levels.admin)) {
+    if (permissions.canCommandRun(interaction, permissions.levels.admin)) {
         var user = interaction.options.getUser("member");
         var amount = interaction.options.getInteger("amount");
 

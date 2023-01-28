@@ -16,14 +16,14 @@ const fight = require("./misc/fight");
 const clientConstants = require("./utils/clientConstants");
 
 function init() {
-    client.on(Events.ClientReady, () => {
+    client.on(Events.ClientReady, async () => {
+        await clientConstants.init();
         youtube.startVideoListener();
         inventory.init();
         votes.initVotes();
 
         console.log("\x1b[32m", "Bot connecté ✓", "\x1b[0m");
 
-        clientConstants.init();
         commandsCore.resetCommands();
     });
 

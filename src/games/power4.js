@@ -402,6 +402,4 @@ function show_puissance_4(user, grille) {
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  * @param {Array<String>} [path] Path of the interaction
  */
- function onButton(interaction,path) {
-
-}
+function onButton(interaction, path) {}

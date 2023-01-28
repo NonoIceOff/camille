@@ -5,7 +5,7 @@ async function init() {
     const items = await db.getUsersItems();
     const usersItems = {};
 
-    items.forEach((item)=>{
+    items.forEach((item) => {
         if (!usersItems[item.user_id]) {
             usersItems[item.user_id] = [];
         }
@@ -17,4 +17,4 @@ async function init() {
 
 module.exports = {
     init,
-}
+};

@@ -47,12 +47,14 @@ function toTimeFormat(
 }
 
 function runAtDate(date, func) {
-    var now = Date.now()
-    var diff = Math.max((date - now), 0);
-    if (diff > 0x7FFFFFFF) //setTimeout limit is MAX_INT32=(2^31-1)
-        setTimeout(function() {runAtDate(date, func);}, 0x7FFFFFFF);
-    else
-        setTimeout(func, diff);
+    var now = Date.now();
+    var diff = Math.max(date - now, 0);
+    if (diff > 0x7fffffff)
+        //setTimeout limit is MAX_INT32=(2^31-1)
+        setTimeout(function () {
+            runAtDate(date, func);
+        }, 0x7fffffff);
+    else setTimeout(func, diff);
 }
 
 module.exports = {

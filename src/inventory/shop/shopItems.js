@@ -15,8 +15,16 @@ Avantages :
         calcExpire: async (item) => {
             const dreamTeamPlus = await item.user.getItem(1);
             const superDreamTeam = await item.user.getItem(2);
-            if (item.quantity>0 && dreamTeamPlus.quantity === 0 && superDreamTeam.quantity === 0) {
-                return item.expireDate - Date.now() + (item.quantity-1) * 1000 * 60 * 60 * 24 * 30;
+            if (
+                item.quantity > 0 &&
+                dreamTeamPlus.quantity === 0 &&
+                superDreamTeam.quantity === 0
+            ) {
+                return (
+                    item.expireDate -
+                    Date.now() +
+                    (item.quantity - 1) * 1000 * 60 * 60 * 24 * 30
+                );
             }
             return 0;
         },
@@ -37,8 +45,12 @@ Avantages :
         /**@param {UserItem} item */
         calcExpire: async (item) => {
             const superDreamTeam = await item.user.getItem(2);
-            if (item.quantity>0 && superDreamTeam.quantity === 0) {
-                return item.expireDate - Date.now() + (item.quantity-1) * 1000 * 60 * 60 * 24 * 30;
+            if (item.quantity > 0 && superDreamTeam.quantity === 0) {
+                return (
+                    item.expireDate -
+                    Date.now() +
+                    (item.quantity - 1) * 1000 * 60 * 60 * 24 * 30
+                );
             }
             return 0;
         },
@@ -59,8 +71,12 @@ Avantages :
         price: 1182,
         /**@param {UserItem} item */
         calcExpire: async (item) => {
-            if (item.quantity>0) {
-                return item.expireDate - Date.now() + (item.quantity-1) * 1000 * 60 * 60 * 24 * 30;
+            if (item.quantity > 0) {
+                return (
+                    item.expireDate -
+                    Date.now() +
+                    (item.quantity - 1) * 1000 * 60 * 60 * 24 * 30
+                );
             }
             return 0;
         },

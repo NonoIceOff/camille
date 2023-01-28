@@ -1,6 +1,6 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
+const { SlashCommandBuilder } = require("discord.js");
 
-const {editLeaderboard} = require("../misc/leaderboard");
+const { editLeaderboard } = require("../misc/leaderboard");
 const userValuesName = require("../data/userValuesName");
 
 /**
@@ -10,9 +10,13 @@ const userValuesName = require("../data/userValuesName");
 async function onTrigger(interaction) {
     await interaction.reply("Je travaille dessus ...");
     if (interaction.options.getInteger("page") == null) {
-        editLeaderboard(interaction,userValuesName.voice,1);
+        editLeaderboard(interaction, userValuesName.voice, 1);
     } else {
-        editLeaderboard(interaction,userValuesName.voice,interaction.options.getInteger("page"));
+        editLeaderboard(
+            interaction,
+            userValuesName.voice,
+            interaction.options.getInteger("page")
+        );
     }
 }
 

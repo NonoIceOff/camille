@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
+const { SlashCommandBuilder } = require("discord.js");
 const UserItem = require("../inventory/userItem");
 
 /**
@@ -6,7 +6,11 @@ const UserItem = require("../inventory/userItem");
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  */
 async function onTrigger(interaction) {
-    const itemsName = ["Pass 30 jours pour le grade Dream Team","Pass 30 jours pour le grade Dream Team +","Pass 30 jours pour le grade Super Dream Team"];
+    const itemsName = [
+        "Pass 30 jours pour le grade Dream Team",
+        "Pass 30 jours pour le grade Dream Team +",
+        "Pass 30 jours pour le grade Super Dream Team",
+    ];
 
     /**
      * @type {UserItem[]}
@@ -15,7 +19,11 @@ async function onTrigger(interaction) {
 
     await interaction.reply(`Votre inventaire :
     
-${items.sort((a,b)=>a.itemId-b.itemId).filter((item)=>item.quantity>0).map((item)=>`    - ${item.quantity}x ${itemsName[item.itemId]}`).join("\n")}`);
+${items
+    .sort((a, b) => a.itemId - b.itemId)
+    .filter((item) => item.quantity > 0)
+    .map((item) => `    - ${item.quantity}x ${itemsName[item.itemId]}`)
+    .join("\n")}`);
 }
 
 const definition = new SlashCommandBuilder()

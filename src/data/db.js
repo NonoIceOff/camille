@@ -1,8 +1,6 @@
 const sqlite3 = require("sqlite3");
 const path = require("path");
 const fs = require("fs");
-const { brotliDecompress } = require("zlib");
-const { client } = require("../client");
 
 let db = new sqlite3.Database(
     path.join(process.cwd(), "data/sqlite.db"),
@@ -183,7 +181,9 @@ function update() {
                 if (tables.includes("fight_winners")) {
                     //Check if all columns are correct
                 } else {
-                    console.log('Creating "fight_winners" table in database...');
+                    console.log(
+                        'Creating "fight_winners" table in database...'
+                    );
                     db.exec(
                         "CREATE TABLE fight_winners (user_id varchar(20), wins int);"
                     );
@@ -196,10 +196,12 @@ function update() {
                         const fight = require("../../data/fight.json");
 
                         db.run(
-                            `INSERT INTO fight_winners (user_id,wins) VALUES ${Object.keys(fight.Saisons.Wins)
+                            `INSERT INTO fight_winners (user_id,wins) VALUES ${Object.keys(
+                                fight.Saisons.Wins
+                            )
                                 .map(() => "(?,?)")
                                 .join(",")}`,
-                                Object.entries(fight.Saisons.Wins).flat()
+                            Object.entries(fight.Saisons.Wins).flat()
                         );
                     }
                 }
@@ -612,8 +614,8 @@ function registerFightWin(userId, wins) {
 
 /**
  * Add X wins the user
- * @param {string} userId 
- * @param {number} wins 
+ * @param {string} userId
+ * @param {number} wins
  */
 function addFightWins(userId, wins) {
     return new Promise((resolve, reject) => {
@@ -632,14 +634,14 @@ function addFightWins(userId, wins) {
 
 /**
  * Check if a user already won Fight
- * @param {string} userId 
+ * @param {string} userId
  */
 function checkFightWin(userId) {
     return new Promise((resolve, reject) => {
         db.get(
             `SELECT EXISTS ( SELECT 1 FROM fight_winners WHERE user_id=? ) AS won`,
             [userId],
-            (err,row) => {
+            (err, row) => {
                 if (err) {
                     reject(err);
                 }
@@ -655,11 +657,11 @@ function checkFightWin(userId) {
  * @param {number} count
  * @returns {Promise<{userId:string,wins:number}[]>}
  */
-function getFightWinners(skip,count) {
+function getFightWinners(skip, count) {
     return new Promise((resolve, reject) => {
         db.all(
             `SELECT user_id AS userId, wins FROM fight_winners ORDER BY wins DESC LIMIT ${skip},${count}`,
-            (err,rows) => {
+            (err, rows) => {
                 if (err) {
                     reject(err);
                 }
@@ -671,14 +673,14 @@ function getFightWinners(skip,count) {
 
 /**
  * Check if a message is a giveaway
- * @param {string} messageId 
+ * @param {string} messageId
  */
 function checkIfMessageIsGiveaway(messageId) {
     return new Promise((resolve, reject) => {
         db.get(
             `SELECT EXISTS ( SELECT 1 FROM giveaways WHERE message_id=? ) AS isGiveaway`,
             [messageId],
-            (err,row) => {
+            (err, row) => {
                 if (err) {
                     reject(err);
                 }
@@ -690,7 +692,7 @@ function checkIfMessageIsGiveaway(messageId) {
 
 /**
  * Get a giveaway from the messageId
- * @param {string} messageId 
+ * @param {string} messageId
  * @returns {Promise<{messageId:string,authorId:string,title:string,winner:string}>}
  */
 function getGiveaway(messageId) {
@@ -698,7 +700,7 @@ function getGiveaway(messageId) {
         db.get(
             `SELECT message_id AS messageId, author_id AS authorId, title, winner FROM giveaways WHERE message_id=?`,
             [messageId],
-            (err,row) => {
+            (err, row) => {
                 if (err) {
                     reject(err);
                 }
@@ -710,15 +712,15 @@ function getGiveaway(messageId) {
 
 /**
  * Register a new giveaway
- * @param {string} messageId 
- * @param {string} authorId 
- * @param {string} title 
+ * @param {string} messageId
+ * @param {string} authorId
+ * @param {string} title
  */
 function registerGiveaway(messageId, authorId, title) {
     return new Promise((resolve, reject) => {
         db.run(
             `INSERT INTO giveaways (message_id, author_id, title, winner) VALUES (?,?,?,NULL)`,
-            [messageId,authorId,title],
+            [messageId, authorId, title],
             (err) => {
                 if (err) {
                     reject(err);
@@ -731,14 +733,14 @@ function registerGiveaway(messageId, authorId, title) {
 
 /**
  * Set the winner of a giveaway
- * @param {string} messageId 
- * @param {string} winner 
+ * @param {string} messageId
+ * @param {string} winner
  */
 function setGiveawayWinner(messageId, winner) {
     return new Promise((resolve, reject) => {
         db.run(
             `UPDATE giveaways SET winner=? WHERE message_id=?`,
-            [winner,messageId],
+            [winner, messageId],
             (err) => {
                 if (err) {
                     reject(err);

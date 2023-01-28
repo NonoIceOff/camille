@@ -56,7 +56,9 @@ async function initGrade(item) {
 
     if (currentGrade.itemId != item.itemId) return;
 
-    const member = constants.workingGuild.members.cache.get(currentGrade.user.id);
+    const member = constants.workingGuild.members.cache.get(
+        currentGrade.user.id
+    );
     if (member) {
         currentGrade.expireDate = Date.now() + 1000 * 60 * 60 * 24 * 30;
         initExpireTimeout(currentGrade, member);

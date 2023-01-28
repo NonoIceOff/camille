@@ -122,7 +122,7 @@ class rockPaperScissors {
                 this.user.send({ embeds: [embed] });
 
                 this.user.addCoin(this.gain);
-            }else{
+            } else {
                 this.user.send({
                     content: "___\n**NOUVELLE MANCHE**\n",
                     components: [gameComponents],

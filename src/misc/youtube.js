@@ -56,7 +56,6 @@ async function checkForVideo() {
                 })
                 .setTimestamp(new Date(video.published));
 
-
             if (video.title.includes("#shorts")) {
                 await constants.channels.shortPost.send({
                     content: `${constants.roles.notifShorts} **Nouveau short !**`,

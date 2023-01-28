@@ -1,13 +1,11 @@
 const {
-    SlashCommandBuilder,
-    ActionRowBuilder,
-} = require("@discordjs/builders");
-const {
     ButtonInteraction,
     ModalBuilder,
     TextInputBuilder,
     ModalSubmitInteraction,
     TextInputStyle,
+    SlashCommandBuilder,
+    ActionRowBuilder,
 } = require("discord.js");
 const { shopNav, shopDetails } = require("../inventory/shop/shop");
 const shopItems = require("../inventory/shop/shopItems");
@@ -45,7 +43,6 @@ async function onButton(interaction, path) {
                     } acheté${path[4] > 1 ? "s" : ""} avec succès. (-${
                         shopItems[path[3]].price * path[4]
                     } :coin:)`,
-                    
                 });
             } else {
                 await interaction.reply({
@@ -121,7 +118,6 @@ async function onModalSubmit(interaction, path) {
                 } acheté${quantity > 1 ? "s" : ""} avec succès. (-${
                     shopItems[path[3]].price * quantity
                 } :coin:)`,
-                
             });
         } else {
             await interaction.reply({

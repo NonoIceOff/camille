@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
+const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 
 const { toTimeFormat } = require("../utils/date");
 const { xpToLevelData } = require("../xp/utils");
@@ -34,7 +34,10 @@ async function onTrigger(interaction) {
                 name: "Temps en vocal :",
                 value: `**${toTimeFormat(
                     await interaction.user.getVoice(),
-                    true,true,true,true
+                    true,
+                    true,
+                    true,
+                    true
                 )}**`,
                 inline: true,
             },

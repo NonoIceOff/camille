@@ -32,26 +32,33 @@ const ids = require("../constants/ids.json");
 /**
  * @type {{workingGuild:Guild,roles:Roles,channels:Channels,events:Events}}
  */
-const constants = { roles: {}, channels: {}, events: { fightDiscord: {} } };
+const constants = {};
 
 async function init() {
-    constants.workingGuild = await client.guilds.fetch(
+    const newConstants = {
+        roles: {},
+        channels: {},
+        events: { fightDiscord: {} },
+    };
+    newConstants.workingGuild = await client.guilds.fetch(
         ids.workingGuild[+options.test]
     );
     Object.entries(ids.roles).forEach(async ([key, value]) => {
-        constants.roles[key] = await constants.workingGuild.roles.fetch(
+        newConstants.roles[key] = await newConstants.workingGuild.roles.fetch(
             value[+options.test]
         );
     });
     Object.entries(ids.channels).forEach(async ([key, value]) => {
-        constants.channels[key] = await constants.workingGuild.channels.fetch(
-            value[+options.test]
-        );
+        newConstants.channels[key] =
+            await newConstants.workingGuild.channels.fetch(
+                value[+options.test]
+            );
     });
-    constants.events.fightDiscord.channel =
-        await constants.workingGuild.channels.fetch(
+    newConstants.events.fightDiscord.channel =
+        await newConstants.workingGuild.channels.fetch(
             ids.events.fightDiscord.channel[+options.test]
         );
+    Object.assign(constants, newConstants);
 }
 
 module.exports = {

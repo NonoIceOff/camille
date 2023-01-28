@@ -1,11 +1,10 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
+const { SlashCommandBuilder } = require("discord.js");
 
 /**
  * Action when the command is triggered
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  */
 function onTrigger(interaction) {
-    
     return;
     var level = 0;
     var pourcentage = 0;

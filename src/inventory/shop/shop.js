@@ -71,7 +71,7 @@ ${shopItemsArray
 
 async function shopDetails(interaction, itemId) {
     let item = shopItems[itemId];
-    
+
     const coin = await interaction.user.getCoin();
     /** @type {UserItem}*/
     const invItem = await interaction.user.getItem(item.id);
@@ -89,26 +89,23 @@ ${item.description}`
             value: `${item.price} :coin:`,
             inline: true,
         });
-    
-        if (invItem.quantity>0) {
-            embed.addFields({
-                name: "Vous possedez",
-                value: `${invItem.quantity}x ce produit`,
-                inline: true,
-            })
-        }
 
-        const expireIn = await item.calcExpire(invItem);
-        if (expireIn>0) {
-            embed.addFields({
-                name: "Expire dans",
-                value: toTimeFormat(
-                    await expireIn,
-                    true,true,false,true
-                ),
-                inline: true,
-            })
-        }
+    if (invItem.quantity > 0) {
+        embed.addFields({
+            name: "Vous possedez",
+            value: `${invItem.quantity}x ce produit`,
+            inline: true,
+        });
+    }
+
+    const expireIn = await item.calcExpire(invItem);
+    if (expireIn > 0) {
+        embed.addFields({
+            name: "Expire dans",
+            value: toTimeFormat(await expireIn, true, true, false, true),
+            inline: true,
+        });
+    }
 
     const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
@@ -119,12 +116,12 @@ ${item.description}`
             .setCustomId(`cmd/shop/buy/${itemId}/1`)
             .setLabel("💸 Acheter 1")
             .setStyle(ButtonStyle.Secondary)
-            .setDisabled(item.price>coin),
+            .setDisabled(item.price > coin),
         new ButtonBuilder()
             .setCustomId(`cmd/shop/buyX/${itemId}`)
             .setLabel("💸 Acheter...")
             .setStyle(ButtonStyle.Secondary)
-            .setDisabled(item.price>coin),
+            .setDisabled(item.price > coin)
     );
 
     interaction.editReply({
@@ -135,5 +132,6 @@ ${item.description}`
 }
 
 module.exports = {
-    shopNav,shopDetails
+    shopNav,
+    shopDetails,
 };

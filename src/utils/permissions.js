@@ -15,7 +15,7 @@ const levels = {
  * @param {number} requiredLevel
  */
 function hasPermission(member, requiredLevel) {
-    var level;
+    var level = 0;
 
     const levelRoles = [
         constants.roles.member.id,
@@ -39,15 +39,15 @@ function hasPermission(member, requiredLevel) {
  */
 function canCommandRun(interaction, requiredLevel) {
     if (hasPermission(interaction.member, requiredLevel)) return true;
-    const levelRoles = [
-        constants.roles.member.id,
-        constants.roles.dreamTeam.id,
-        constants.roles.dreamTeamPlus.id,
-        constants.roles.superDreamTeam.id,
-        constants.roles.admin.id,
+    var levelRoles = [
+        constants.roles.member,
+        constants.roles.dreamTeam,
+        constants.roles.dreamTeamPlus,
+        constants.roles.superDreamTeam,
+        constants.roles.admin,
     ];
     interaction.reply({
-        content: `Vous n'avez pas le rôle **${levelRoles[requiredLevel].name}** pour executer cette commande.`,
+        content: `Vous n'avez pas le rôle **${levelRoles[requiredLevel]}** pour executer cette commande.`,
         ephemeral: true,
     });
     return false;
@@ -56,5 +56,5 @@ function canCommandRun(interaction, requiredLevel) {
 module.exports = {
     levels,
     hasPermission,
-    canCommandRun
+    canCommandRun,
 };

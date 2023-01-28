@@ -43,7 +43,8 @@ class UserItem {
             this.user.id,
             this.itemId,
             inventoryValuesName.quantity,
-            this.#quantity);
+            this.#quantity
+        );
     }
 
     /**
@@ -58,7 +59,8 @@ class UserItem {
             this.user.id,
             this.itemId,
             inventoryValuesName.expireDate,
-            this.#expireDate);
+            this.#expireDate
+        );
     }
 
     async fetch() {
@@ -69,7 +71,6 @@ class UserItem {
 
     init() {
         if (this.#itemId >= 0 && this.#itemId <= 2) grades.initGrade(this);
-
     }
 }
 

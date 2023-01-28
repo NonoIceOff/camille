@@ -35,8 +35,8 @@ let options = {};
  * init({test:true,resetCommands:false})
  */
 async function init(botOptions) {
-    if (botOptions) Object.assign(options,botOptions);
-    
+    if (botOptions) Object.assign(options, botOptions);
+
     if (options.test) {
         await client.login(config.testToken);
     } else {
