@@ -1,5 +1,8 @@
 # Private config file
-config.js
+/config.js
+
+# Bot Data Folder
+/data
 
 # Logs
 logs
