@@ -3,6 +3,9 @@ const { User } = require("discord.js");
 const shopItems = require("../shopItems");
 const db = require("../../../data/db");
 
+/**
+ * Init all shop-related prototypes.
+ */
 function init() {
     /**
      *

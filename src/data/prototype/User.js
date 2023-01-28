@@ -3,6 +3,9 @@ const { User } = require("discord.js");
 const { getUserValue, setUserValue, addUserValue } = require("../db");
 const userValuesName = require("../userValuesName");
 
+/**
+ * Init all user basic values-related prototypes
+ */
 function init() {
     // XP
 

@@ -69,6 +69,11 @@ ${shopItemsArray
     });
 }
 
+/**
+ * Edit the interaction message to the details of an item.
+ * @param {import("discord.js").Interaction} interaction 
+ * @param {number} itemId 
+ */
 async function shopDetails(interaction, itemId) {
     let item = shopItems[itemId];
 

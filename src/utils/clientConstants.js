@@ -34,6 +34,9 @@ const ids = require("../constants/ids.json");
  */
 const constants = {};
 
+/**
+ * Init all Client constants.
+ */
 async function init() {
     const newConstants = {
         roles: {},

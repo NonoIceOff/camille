@@ -5,12 +5,18 @@ const https = require("https");
 const youtubeConstants = require("../constants/youtube");
 const { constants } = require("../utils/clientConstants");
 
+/**
+ * Starts the interval to check for new videos. 
+ */
 function startVideoListener() {
     setInterval(() => {
         checkForVideo();
     }, 1000 * 60 * 10);
 }
 
+/**
+ * Checks if a new video is posted then send messages in the youtube and shorts channels.
+ */
 async function checkForVideo() {
     /**
      * @type {{feed:{author:{name:string,uri:string},entry:[{'yt:videoId':string,title:string,link:{'@_href':string},published:string,updated:string,'media:group':{'media:title':string,'media:description':string}}]}}}

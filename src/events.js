@@ -15,6 +15,9 @@ const votes = require("./misc/votes");
 const fight = require("./misc/fight");
 const clientConstants = require("./utils/clientConstants");
 
+/**
+ * Init all events
+ */
 function init() {
     client.on(Events.ClientReady, async () => {
         await clientConstants.init();

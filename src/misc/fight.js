@@ -184,6 +184,9 @@ async function editSettingsPanel(message) {
     });
 }
 
+/**
+ * Start the season of Fight Discord
+ */
 async function start() {
     for (var i = 0; i < settings.players; i++) {
         if (players[i]) {
@@ -220,6 +223,11 @@ ${players
     setTimeout(() => startQualifyingRounds(0), 1000 * 60 * 60);
 }
 
+/**
+ * Get the score of a player from his stats.
+ * @param {number} playerIndex 
+ * @returns 
+ */
 function getPlayerScore(playerIndex) {
     const deathMultiplier = Math.random() * (75 - 30) + 30;
     const pointMultiplier = Math.random() * (2.5 - 1) + 1;
@@ -234,6 +242,10 @@ function getPlayerScore(playerIndex) {
     };
 }
 
+/**
+ * Starts the qualifying round of the playerIndex (and starts automatically the next rounds) 
+ * @param {number} playerIndex 
+ */
 async function startQualifyingRounds(playerIndex) {
     const playerScore = getPlayerScore(playerIndex);
     players[playerIndex].score = playerScore;
@@ -271,6 +283,9 @@ async function startQualifyingRounds(playerIndex) {
     else setTimeout(() => endQualifyingRounds(), 1000);
 }
 
+/**
+ * Shows leaderboard of the qualifications then starts the finals.
+ */
 async function endQualifyingRounds() {
     var embeds = [
         new EmbedBuilder()
@@ -307,6 +322,9 @@ async function endQualifyingRounds() {
     setTimeout(() => startFinals(), 1000);
 }
 
+/**
+ * Says who is gonna play versus who then starts the finals rounds.
+ */
 async function startFinals() {
     const roundsName = {
         2: "Finale",
@@ -334,6 +352,11 @@ async function startFinals() {
 
     setTimeout(() => startFinalRounds(0), 1000 * 60 * 10);
 }
+
+/**
+ * Starts the final round of the playerIndex (and starts automatically the next rounds)  
+ * @param {number} playerIndex 
+ */
 async function startFinalRounds(playerIndex) {
     const roundsName = {
         2: "Finale",

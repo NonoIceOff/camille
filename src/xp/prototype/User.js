@@ -5,6 +5,9 @@ const userValuesName = require("../../data/userValuesName");
 const { xpToLevel } = require("../utils");
 const { sendLevelupMessage } = require("../levelup");
 
+/**
+ * Init all XP-related prototypes.
+ */
 function init() {
     User.prototype.addXP = async function (xp, giveCoin = true) {
         let currentXp = await this.getXP();

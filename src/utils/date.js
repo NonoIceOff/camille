@@ -46,6 +46,11 @@ function toTimeFormat(
     }`;
 }
 
+/**
+ * Call a function at the given date (setTimeout for delay greater than int max)
+ * @param {number} date 
+ * @param {()=>{}} func 
+ */
 function runAtDate(date, func) {
     var now = Date.now();
     var diff = Math.max(date - now, 0);

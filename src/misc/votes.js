@@ -4,6 +4,9 @@ const db = require("../data/db");
 const itemIds = require("../inventory/itemIds");
 const { constants } = require("../utils/clientConstants");
 
+/**
+ * Init votes timeouts.
+ */
 function initVotes() {
     const currentDate = new Date();
     const startDate = new Date(
@@ -23,6 +26,9 @@ function initVotes() {
     runAtDate(stopDate, sendVoteStop);
 }
 
+/**
+ * Send the votes starting message and reset old votes.
+ */
 async function sendVoteStart() {
     const embed = new EmbedBuilder()
         .setColor(10181046)
@@ -46,6 +52,9 @@ async function sendVoteStart() {
     runAtDate(startDate, sendVoteStart);
 }
 
+/**
+ * Send the vote closing message with a leaderboard of votes and give the 30-day Super Dream Team Pass.  
+ */
 async function sendVoteStop() {
     const embed = new EmbedBuilder()
         .setColor(10181046)

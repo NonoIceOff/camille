@@ -1,6 +1,9 @@
 const grades = require("./grades");
 const db = require("../data/db");
 
+/**
+ * Init all items of all users.
+ */
 async function init() {
     const items = await db.getUsersItems();
     const usersItems = {};

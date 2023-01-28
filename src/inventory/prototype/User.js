@@ -3,6 +3,9 @@ const { User } = require("discord.js");
 const db = require("../../data/db");
 const UserItem = require("../userItem");
 
+/**
+ * Init all inventory-related prototypes.
+ */
 function init() {
     /**
      *
