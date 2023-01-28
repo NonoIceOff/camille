@@ -1,8 +1,11 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, GuildMember } = require("discord.js");
+const {
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    GuildMember,
+} = require("discord.js");
 
-const { client, options } = require("../client");
-const constantIDs = require("../constants/ids");
-const {} = require("../xp/prototype/User");
+const { constants } = require("../utils/clientConstants");
 
 const helloMessages = [
     "J'espère que tu as bien posé tes valises",
@@ -29,7 +32,7 @@ let whoSaidHi = {};
  * @param {GuildMember} [member] Member to welcome
  */
 function sendWelcome(member) {
-    if (member.guild.id === constantIDs.workingGuild[+options.test]) {
+    if (member.guild.id === constants.workingGuild.id) {
         var helloMessagesIndex = Math.floor(
             Math.random() * helloMessages.length
         );
@@ -41,19 +44,14 @@ function sendWelcome(member) {
                 .setStyle(ButtonStyle.Danger)
         );
 
-        client.guilds.cache
-            .get(constantIDs.workingGuild[+options.test])
-            .channels.cache.get(
-                constantIDs.channels.welcomeChannel[+options.test]
-            )
-            .send({
-                content:
-                    "**<@" +
-                    member.id +
-                    "> bienvenue !** " +
-                    helloMessages[helloMessagesIndex],
-                components: [row],
-            });
+        constants.channels.welcomeChannel.send({
+            content:
+                "**<@" +
+                member.id +
+                "> bienvenue !** " +
+                helloMessages[helloMessagesIndex],
+            components: [row],
+        });
 
         whoSaidHi[member.id] = [];
     }
@@ -76,12 +74,16 @@ function sayHi(interaction) {
                     "<@" + interaction.user.id + "> te fait un coucou !"
                 );
                 whoToSalute.push(interaction.user.id);
-            }else{
-                interaction.reply({content:"NON MAIS STOP ! TU VEUX DIRE SALUT COMBIENS DE FOIS LÀ !? ON EST OÙ LÀ !? Attention, je vais devenir tout rouge pas content ^^", ephemeral:true})
+            } else {
+                interaction.reply({
+                    content:
+                        "NON MAIS STOP ! TU VEUX DIRE SALUT COMBIENS DE FOIS LÀ !? ON EST OÙ LÀ !? Attention, je vais devenir tout rouge pas content ^^",
+                    ephemeral: true,
+                });
             }
         }
     }
-    interaction.user.a
+    interaction.user.a;
 }
 
 module.exports = {

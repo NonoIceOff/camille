@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
 
-const constantIDs = require("../constants/ids");
+const permissions = require("../utils/permissions");
 const { options } = require("../client");
 
 /**
@@ -9,9 +9,7 @@ const { options } = require("../client");
  */
 function onTrigger(interaction) {
     var text =
-        (interaction.member.roles.cache.has(
-            constantIDs.roles.admin[+options.test]
-        )
+        (permissions.hasPermission(interaction.member, permissions.levels.admin)
             ? `
 **:badminton: __Admins commands__ :**
 **/lock** : *verrouiller ou dévérouiller un salon*
@@ -19,9 +17,7 @@ function onTrigger(interaction) {
 **/fight** : *panneau de contrôle pour FIGHT DISCORD*
 **/tirage** : *lancer un tirage au sort* \n\n`
             : "") +
-        (interaction.member.roles.cache.has(
-            constantIDs.roles.dreamTeam[+options.test]
-        )
+        (permissions.hasPermission(interaction.member,permissions.levels.dreamTeam)
             ? `
 **:watermelon: __Dream Team commands__ :**
 **/poll** : *lancer un sondage* \n\n`

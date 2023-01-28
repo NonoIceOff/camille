@@ -2,8 +2,8 @@ const dataPrototype = require("./src/data/prototype/User");
 const xpPrototype = require("./src/xp/prototype/User");
 const inventoryPrototype = require("./src/inventory/prototype/User");
 const shopPrototype = require("./src/inventory/shop/prototype/User");
-const { init } = require("./src/client");
 const events = require("./src/events");
+const client = require("./src/client");
 const db = require("./src/data/db");
 
 function main() {
@@ -44,7 +44,7 @@ Options:
         inventoryPrototype.init();
         shopPrototype.init();
         events.init();
-        init(config);
+        client.init(config);
         db.update();
     }
 }

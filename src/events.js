@@ -1,8 +1,6 @@
 const { Events } = require("discord.js");
 
-const constantIDs = require("./constants/ids");
-
-const { client, options } = require("./client");
+const { client } = require("./client");
 const welcomeMessage = require("./misc/welcomeMessage");
 const gamesCore = require("./games/core");
 const bump = require("./misc/bump");
@@ -15,6 +13,7 @@ const youtube = require("./misc/youtube");
 const inventory = require("./inventory/inventory");
 const votes = require("./misc/votes");
 const fight = require("./misc/fight");
+const clientConstants = require("./utils/clientConstants");
 
 function init() {
     client.on(Events.ClientReady, () => {
@@ -24,6 +23,7 @@ function init() {
 
         console.log("\x1b[32m", "Bot connecté ✓", "\x1b[0m");
 
+        clientConstants.init();
         commandsCore.resetCommands();
     });
 
@@ -31,7 +31,7 @@ function init() {
         welcomeMessage.sendWelcome(member);
 
         await member.user.getXP(); // Register the user in the database
-        await member.roles.add(constantIDs.roles.member[+options.test]); // Give the member role
+        await member.roles.add(clientConstants.constants.roles.member); // Give the member role
     });
 
     client.on(Events.MessageCreate, (message) => {

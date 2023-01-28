@@ -1,9 +1,7 @@
 const { GuildMember } = require("discord.js");
-const { client, options } = require("../client");
 const UserItem = require("./userItem");
-const constantIDs = require("../constants/ids");
 const itemIds = require("./itemIds");
-const { toTimeFormat } = require("../utils/date");
+const { constants } = require("../utils/clientConstants");
 
 const gradesIds = [
     itemIds.dreamTeamPass,
@@ -16,10 +14,7 @@ const gradesIds = [
  * @param {any[]} usersItems
  */
 async function initExpirations(usersItems) {
-    const guild = await client.guilds.cache
-        .get(constantIDs.workingGuild[+options.test])
-        .fetch();
-    const members = await guild.members.fetch();
+    const members = await constants.workingGuild.members.fetch();
     Object.values(usersItems).forEach(async (userItems) => {
         let grade = userItems[gradesIds[0]];
 
@@ -61,10 +56,7 @@ async function initGrade(item) {
 
     if (currentGrade.itemId != item.itemId) return;
 
-    const guild = client.guilds.cache.get(
-        constantIDs.workingGuild[+options.test]
-    );
-    const member = guild.members.cache.get(currentGrade.user.id);
+    const member = constants.workingGuild.members.cache.get(currentGrade.user.id);
     if (member) {
         currentGrade.expireDate = Date.now() + 1000 * 60 * 60 * 24 * 30;
         initExpireTimeout(currentGrade, member);
@@ -139,15 +131,10 @@ async function gradeExpired(item, member) {
  * @param {GuildMember} member
  */
 async function giveRoles(grade, member) {
-    const guild = member.guild;
     const gradesRoles = [
-        await guild.roles.cache.get(constantIDs.roles.dreamTeam[+options.test]),
-        await guild.roles.cache.get(
-            constantIDs.roles.dreamTeamPlus[+options.test]
-        ),
-        await guild.roles.cache.get(
-            constantIDs.roles.superDreamTeam[+options.test]
-        ),
+        constants.roles.dreamTeam,
+        constants.roles.dreamTeamPlus,
+        constants.roles.superDreamTeam,
     ];
 
     if (gradesIds.indexOf(grade.itemId) >= 2)

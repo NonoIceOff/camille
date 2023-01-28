@@ -1,9 +1,8 @@
 const { EmbedBuilder } = require("discord.js");
 const { runAtDate } = require("../utils/date");
-const constantIDs = require("../constants/ids");
-const { options, client } = require("../client");
 const db = require("../data/db");
 const itemIds = require("../inventory/itemIds");
+const { constants } = require("../utils/clientConstants");
 
 function initVotes() {
     const currentDate = new Date();
@@ -29,16 +28,12 @@ async function sendVoteStart() {
         .setColor(10181046)
         .setTitle(":envelope:  __**Les votes du mois sont ouverts**__")
         .setDescription(
-            `Les votes du mois sont ouverts, vous avez maintenant 24h pour élire le meilleur membre du serveur.\nL'élu recevra le rôle <@${
-                constantIDs.roles.superDreamTeam[+options.test]
-            }>`
+            `Les votes du mois sont ouverts, vous avez maintenant 24h pour élire le meilleur membre du serveur.\nL'élu recevra le rôle **${constants.roles.superDreamTeam.name}**`
         );
-    await client.guilds.cache
-        .get(constantIDs.workingGuild[+options.test])
-        .channels.cache.get(constantIDs.channels.bot[+options.test])
-        .send({ embeds: [embed] });
 
     db.resetVotes();
+
+    await constants.channels.bot.send({ embeds: [embed] });
 
     const currentDate = new Date();
     const startDate = new Date(
@@ -52,9 +47,6 @@ async function sendVoteStart() {
 }
 
 async function sendVoteStop() {
-    const guild = client.guilds.cache.get(
-        constantIDs.workingGuild[+options.test]
-    );
     const embed = new EmbedBuilder()
         .setColor(10181046)
         .setTitle(
@@ -67,7 +59,7 @@ async function sendVoteStop() {
 
     let fieldsLeaderboard = await Promise.all(
         leaderboard.map(async (place, i) => {
-            const guildMember = await guild.members.fetch(place.user);
+            const guildMember = await constants.workingGuild.members.fetch(place.user);
             let username = `<!${place.user}>`;
             if (guildMember)
                 username = guildMember.nickname ?? guildMember.user.username;
@@ -84,11 +76,9 @@ async function sendVoteStop() {
 
     embed.addFields(fieldsLeaderboard);
 
-    await guild.channels.cache
-        .get(constantIDs.channels.bot[+options.test])
-        .send({ embeds: [embed] });
+    await constants.channels.bot.send({ embeds: [embed] });
 
-    const member = guild.members.cache.get(leaderboard[0].user);
+    const member = constants.workingGuild.members.cache.get(leaderboard[0].user);
     member.user.giveItem(itemIds.superDreamTeamPass, 1);
     member.send(
         "Vous avez gagné le vote du mois, profitez de votre rôle **SUPER DREAM TEAM** ce mois-ci."

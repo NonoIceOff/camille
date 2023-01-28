@@ -1,6 +1,5 @@
 const { User } = require("discord.js");
-const { options, client } = require("../client");
-const constantIDs = require("../constants/ids");
+const { constants } = require("../utils/clientConstants");
 const { xpToLevel } = require("./utils");
 
 /**
@@ -13,11 +12,8 @@ async function sendLevelupMessage(user, level = null) {
         level = Math.floor(xpToLevel(await user.getXP()));
     }
     
-    client.guilds.cache
-    .get(constantIDs.workingGuild[+options.test])
-    .channels.cache.get(constantIDs.channels.bot[+options.test])
-    .send(
-        `<@${user.id}> tu es passé au **NIVEAU ${level}**`
+    constants.channels.bot.send(
+        `${user} tu es passé au **NIVEAU ${level}**`
     );
 }
 

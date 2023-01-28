@@ -1,20 +1,18 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { EmbedBuilder } = require("discord.js");
-const { options, client } = require("../client");
-const constantIDs = require("../constants/ids");
+const permissions = require("../utils/permissions");
 const db = require("../data/db");
+const { constants } = require("../utils/clientConstants");
 
 /**
  * Action when the command is triggered
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  */
 async function onTrigger(interaction) {
-    if (
-        interaction.channel ==
-        client.channels.cache.get(constantIDs.channels.bot[+options.test])
-    ) {
-        const maxVotes = interaction.member.roles.cache.has(
-            constantIDs.roles.dreamTeamPlus[+options.test]
+    if (interaction.channel.id === constants.channels.bot.id) {
+        const maxVotes = permissions.hasPermission(
+            interaction.member,
+            permissions.levels.dreamTeamPlus
         )
             ? 2
             : 1;

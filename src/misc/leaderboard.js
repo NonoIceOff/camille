@@ -1,10 +1,9 @@
-const { EmbedBuilder, ActionRowBuilder, ButtonStyle } = require("discord.js");
-const { client, options } = require("../client");
-const constantIDs = require("../constants/ids");
+const { EmbedBuilder, ActionRowBuilder, ButtonStyle,ButtonBuilder  } = require("discord.js");
+const { client} = require("../client");
 const { getTopUserValue, getUserCount } = require("../data/db");
 const { xpToLevelData } = require("../xp/utils");
 const { toTimeFormat } = require("../utils/date");
-const { ButtonBuilder } = require("@discordjs/builders");
+const { constants } = require("../utils/clientConstants");
 
 const leaderboardValues = {
     xp: {
@@ -60,14 +59,10 @@ async function editLeaderboard(interaction, value, page) {
                 leaderboard.map(async (userValue, index) => {
                     const place = index + (page - 1) * 9;
 
-                    const workingGuild = client.guilds.cache.get(
-                        constantIDs.workingGuild[+options.test]
-                    );
-
-                    let user = workingGuild.members.cache.get(userValue);
+                    let user = constants.workingGuild.members.cache.get(userValue);
                     if (!user) {
                         try {
-                            user = await workingGuild.members.fetch(
+                            user = await constants.workingGuild.members.fetch(
                                 userValue.userId
                             );
                         } catch {

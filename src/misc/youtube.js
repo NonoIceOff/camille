@@ -1,13 +1,14 @@
 const { EmbedBuilder } = require("discord.js");
-const { XMLParser, XMLBuilder } = require("fast-xml-parser");
+const { XMLParser } = require("fast-xml-parser");
 const https = require("https");
 
-const constantIDs = require("../constants/ids");
 const youtubeConstants = require("../constants/youtube");
-const { client, options } = require("../client");
+const { constants } = require("../utils/clientConstants");
 
 function startVideoListener() {
-    setInterval(()=>{checkForVideo()},1000*60*10);
+    setInterval(() => {
+        checkForVideo();
+    }, 1000 * 60 * 10);
 }
 
 async function checkForVideo() {
@@ -34,8 +35,7 @@ async function checkForVideo() {
 
     data.feed.entry
         .filter(
-            (video) =>
-                Date.now() - new Date(video.published) < 1000 * 60 * 10
+            (video) => Date.now() - new Date(video.published) < 1000 * 60 * 10
         )
         .reverse()
         .forEach(async (video) => {
@@ -56,30 +56,19 @@ async function checkForVideo() {
                 })
                 .setTimestamp(new Date(video.published));
 
-            const guild = client.guilds.cache.get(
-                constantIDs.workingGuild[+options.test]
-            );
 
             if (video.title.includes("#shorts")) {
-                await guild.channels.cache
-                    .get(constantIDs.channels.shortPost[+options.test])
-                    .send({
-                        content: `<@&${
-                            constantIDs.roles.notifShorts[+options.test]
-                        }> **Nouveau short !**`,
-                        embeds: [embed],
-                    });
+                await constants.channels.shortPost.send({
+                    content: `${constants.roles.notifShorts} **Nouveau short !**`,
+                    embeds: [embed],
+                });
             } else {
-                await guild.channels.cache
-                    .get(constantIDs.channels.youtubePost[+options.test])
-                    .send({
-                        content: `<@&${
-                            constantIDs.roles.notifVideo[+options.test]
-                        }> **Nouvelle vidéo !**`,
-                        embeds: [embed],
-                    });
+                await constants.channels.youtubePost.send({
+                    content: `${constants.roles.notifVideo} **Nouvelle vidéo !**`,
+                    embeds: [embed],
+                });
             }
         });
 }
 
-module.exports = {startVideoListener};
+module.exports = { startVideoListener };

@@ -1,15 +1,12 @@
 const {
     Message,
     VoiceChannel,
-    time,
-    ReactionUserManager,
     GuildMember,
     VoiceState,
 } = require("discord.js");
 
-const { options } = require("../client");
-const constantIDs = require("../constants/ids");
 const xp = require("../constants/xp");
+const { constants } = require("../utils/clientConstants");
 
 /**
  * Detect if `message` is eligible to give XP to the user and give it.
@@ -20,8 +17,8 @@ const xp = require("../constants/xp");
 function fromMessage(message) {
     if (
         !message.author.bot &&
-        message.channelId != constantIDs.channels.bot[+options.test] &&
-        message.channel.guildId === constantIDs.workingGuild[+options.test]
+        message.channelId != constants.channels.bot.id &&
+        message.channel.guildId === constants.workingGuild.id
     ) {
         var xpGain =
             xp.messageMinGain +
@@ -39,7 +36,7 @@ function fromMessage(message) {
  * @param {VoiceState} [newVoiceState] New voice state of the user
  */
 function fromVoice(oldVoiceState, newVoiceState) {
-    if (newVoiceState.guild.id === constantIDs.workingGuild[+options.test]) {
+    if (newVoiceState.guild.id === constants.workingGuild.id) {
         let eligibleCount = 0;
         let memberJoined =
             !isVoiceEligible(oldVoiceState) && isVoiceEligible(newVoiceState);

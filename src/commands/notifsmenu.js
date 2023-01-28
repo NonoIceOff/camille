@@ -1,9 +1,9 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, ReactionUserManager } = require("discord.js");
 const fs = require("fs");
 
-var constantIDs = require("../constants/ids");
-const { options, client } = require("../client");
+const permissions = require("../utils/permissions");
+const constantIDs = require("../constants/ids.json");
 const path = require("path");
 
 /**
@@ -11,11 +11,7 @@ const path = require("path");
  * @param {import("discord.js").ChatInputCommandInteraction} [interaction] THE interaction
  */
 async function onTrigger(interaction) {
-    if (
-        interaction.member.roles.cache.has(
-            constantIDs.roles.admin[+options.test]
-        )
-    ) {
+    if (permissions.canCommandRun(interaction, permissions.levels.admin)) {
         const embed = new EmbedBuilder()
             .setColor(10181046)
             .setTitle(":bell: **__Sélection des notifications__**")
@@ -35,15 +31,9 @@ async function onTrigger(interaction) {
         message.react("🍺");
 
         constantIDs.messages.notifsRoleMenu[+options.test] = message.id;
-        fs.writeFileSync(path.join(process.cwd(),"src/constants/ids.json"),JSON.stringify(constantIDs));
-    } else {
-        interaction.reply(
-            `Vous n'avez pas le rôle **${
-                client.guilds.cache
-                    .get(constantIDs.workingGuild[+options.test])
-                    .roles.cache.get(constantIDs.roles.admin[+options.test])
-                    .name
-            }** pour executer cette commande.`
+        fs.writeFileSync(
+            path.join(process.cwd(), "src/constants/ids.json"),
+            JSON.stringify(constantIDs)
         );
     }
 }

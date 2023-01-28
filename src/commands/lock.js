@@ -1,8 +1,7 @@
 const { Role, PermissionFlagsBits } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
-const constantIDs = require("../constants/ids");
-const { options, client } = require("../client");
+const permissions = require("../utils/permissions");
 
 
 /**
@@ -10,7 +9,7 @@ const { options, client } = require("../client");
  * @param {import("discord.js").Interaction} [interaction] THE interaction
  */
 async function onTrigger(interaction) {
-    if (interaction.member.roles.cache.has(constantIDs.roles.admin[+options.test])) {
+    if (permissions.canCommandRun(interaction,permissions.levels.admin)) {
         /**
          * @type {Role}
          */
@@ -30,15 +29,6 @@ async function onTrigger(interaction) {
         }
         interaction.reply("En attente...");
         await interaction.deleteReply();
-    } else {
-        interaction.reply(
-            `Vous n'avez pas le rôle **${
-                client.guilds.cache
-                    .get(constantIDs.workingGuild[+options.test])
-                    .roles.cache.get(constantIDs.roles.admin[+options.test])
-                    .name
-            }** pour executer cette commande.`
-        );
     }
 }
 

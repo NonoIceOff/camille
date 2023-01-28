@@ -1,14 +1,15 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
-const { client, options } = require("../client");
-const constantIDs = require("../constants/ids");
+const { constants } = require("../utils/clientConstants");
+
+const permissions = require("../utils/permissions");
 
 /**
  * Action when the command is triggered
  * @param {ChatInputCommandInteraction} [interaction] THE interaction
  */
 async function onTrigger(interaction) {
-    if (interaction.member.roles.cache.has(constantIDs.roles.dreamTeam[+options.test])) {
+    if (permissions.canCommandRun(interaction, permissions.levels.admin)) {
         const emotes = [
             "<:poll1:1017112408248041543>",
             "<:poll2:1017113079869341818>",
@@ -41,22 +42,13 @@ async function onTrigger(interaction) {
             embeds: [embed],
             fetchReply: true,
         });
-        
-        pollOptions.forEach(async (_,i)=> {
+
+        pollOptions.forEach(async (_, i) => {
             await message.react(emotes[i]);
         });
-        
+
         await message.channel.send(
-            `<:pollup:1017130270979264602> <:pollup:1017130270979264602> <@&${constantIDs.roles.notifPoll[+options.test]}>`
-        );
-    } else {
-        interaction.reply(
-            `Vous n'avez pas le rôle **${
-                client.guilds.cache
-                    .get(constantIDs.workingGuild[+options.test])
-                    .roles.cache.get(constantIDs.roles.dreamTeam[+options.test])
-                    .name
-            }** pour executer cette commande.`
+            `<:pollup:1017130270979264602> <:pollup:1017130270979264602> ${constants.roles.notifPoll}`
         );
     }
 }

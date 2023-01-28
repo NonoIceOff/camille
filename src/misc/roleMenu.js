@@ -1,6 +1,7 @@
 const { MessageReaction, User, Role, GuildMember } = require("discord.js");
 const { client, options } = require("../client");
 const constantIDs = require("../constants/ids");
+const { constants } = require("../utils/clientConstants");
 
 /**
  * Add the reacted role on the role menu to the user
@@ -13,10 +14,10 @@ function addRole(reaction, user) {
         constantIDs.messages.notifsRoleMenu[+options.test]
     ) {
         const reactionRoles = {
-            "📊": constantIDs.roles.notifPoll[+options.test],
-            "🔴": constantIDs.roles.notifVideo[+options.test],
-            "🏆": constantIDs.roles.notifEvent[+options.test],
-            "🍺": constantIDs.roles.notifShorts[+options.test],
+            "📊": constants.roles.notifPoll,
+            "🔴": constants.roles.notifVideo,
+            "🏆": constants.roles.notifEvent,
+            "🍺": constants.roles.notifShorts,
         };
 
         /**
@@ -24,14 +25,12 @@ function addRole(reaction, user) {
          */
         var role = null;
         if (reactionRoles[reaction.emoji.name]) {
-            role = client.guilds.cache
-                .get(constantIDs.workingGuild[+options.test])
-                .roles.cache.get(reactionRoles[reaction.emoji.name]);
+            role = reactionRoles[reaction.emoji.name];
 
             if (role != null) {
-                const member = client.guilds.cache
-                    .get(constantIDs.workingGuild[+options.test])
-                    .members.cache.get(user.id);
+                const member = constants.workingGuild.members.cache.get(
+                    user.id
+                );
 
                 member.roles.add(role).catch(console.error);
             }
@@ -50,29 +49,23 @@ function removeRole(reaction, user) {
         constantIDs.messages.notifsRoleMenu[+options.test]
     ) {
         const reactionRoles = {
-            "📊": constantIDs.roles.notifPoll[+options.test],
-            "🔴": constantIDs.roles.notifVideo[+options.test],
-            "🏆": constantIDs.roles.notifEvent[+options.test],
-            "🍺": constantIDs.roles.notifShorts[+options.test],
+            "📊": constants.roles.notifPoll,
+            "🔴": constants.roles.notifVideo,
+            "🏆": constants.roles.notifEvent,
+            "🍺": constants.roles.notifShorts,
         };
 
         /**
          * @type {Role}
          */
         var role = null;
-
         if (reactionRoles[reaction.emoji.name]) {
-            role = client.guilds.cache
-                .get(constantIDs.workingGuild[+options.test])
-                .roles.cache.get(reactionRoles[reaction.emoji.name]);
+            role = reactionRoles[reaction.emoji.name];
 
             if (role != null) {
-                /**
-                 * @type {GuildMember}
-                 */
-                const member = client.guilds.cache
-                    .get(constantIDs.workingGuild[+options.test])
-                    .members.cache.get(user.id);
+                const member = constants.workingGuild.members.cache.get(
+                    user.id
+                );
 
                 member.roles.remove(role).catch(console.error);
             }

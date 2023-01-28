@@ -7,14 +7,13 @@ const {
 } = require("discord.js");
 const fs = require("fs");
 
-const { client, options } = require("../client");
-const constantIDs = require("../constants/ids");
 const db = require("../data/db");
 
 const victoryConditions = ["Points", "Kills"];
 
 var { season } = require("../../data/fight.json");
 const path = require("path");
+const { constants } = require("../utils/clientConstants");
 var settings = { players: 8, qualifyingRounds: 3, victoryCondition: 0 };
 var players = [];
 var started = false;
@@ -78,15 +77,10 @@ async function onButton(interaction) {
                         .setLabel("⚔️ INSCRIVEZ-VOUS")
                         .setStyle(ButtonStyle.Danger)
                 );
-                client.guilds.cache
-                    .get(constantIDs.workingGuild[+options.test])
-                    .channels.cache.get(
-                        constantIDs.event.fightDiscord.channel[+options.test]
-                    )
-                    .send({
-                        content: `**FIGHT DISCORD SAISON ${season}** (${players.length}/${settings.players})`,
-                        components: [row],
-                    });
+                constants.events.fightDiscord.channel.send({
+                    content: `**FIGHT DISCORD SAISON ${season}** (${players.length}/${settings.players})`,
+                    components: [row],
+                });
 
                 const row2 = new ActionRowBuilder().addComponents(
                     new ButtonBuilder()
@@ -191,12 +185,11 @@ async function editSettingsPanel(message) {
 }
 
 async function start() {
-    const guild = client.guilds.cache.get(
-        constantIDs.workingGuild[+options.test]
-    );
     for (var i = 0; i < settings.players; i++) {
         if (players[i]) {
-            const guildMember = await guild.members.fetch(players[i]);
+            const guildMember = await constants.workingGuild.members.fetch(
+                players[i]
+            );
             let username = `<!${players[i]}>`;
             if (guildMember)
                 username = guildMember.nickname ?? guildMember.user.username;
@@ -222,9 +215,7 @@ ${players
             text: "Lancement dans 1h - avec intervale de 10 mins.",
         });
 
-    await guild.channels.cache
-        .get(constantIDs.event.fightDiscord.channel[+options.test])
-        .send({ embeds: [embed] });
+    await constants.events.fightDiscord.channel.send({ embeds: [embed] });
 
     setTimeout(() => startQualifyingRounds(0), 1000 * 60 * 60);
 }
@@ -244,10 +235,6 @@ function getPlayerScore(playerIndex) {
 }
 
 async function startQualifyingRounds(playerIndex) {
-    const guild = client.guilds.cache.get(
-        constantIDs.workingGuild[+options.test]
-    );
-
     const playerScore = getPlayerScore(playerIndex);
     players[playerIndex].score = playerScore;
 
@@ -276,9 +263,7 @@ async function startQualifyingRounds(playerIndex) {
             text: `Episode ${playerIndex + 1} / ${settings.players}`,
         });
 
-    await guild.channels.cache
-        .get(constantIDs.event.fightDiscord.channel[+options.test])
-        .send({ embeds: [embed] });
+    await constants.events.fightDiscord.channel.send({ embeds: [embed] });
 
     playerIndex++;
     if (playerIndex < settings.players)
@@ -287,9 +272,6 @@ async function startQualifyingRounds(playerIndex) {
 }
 
 async function endQualifyingRounds() {
-    const guild = client.guilds.cache.get(
-        constantIDs.workingGuild[+options.test]
-    );
     var embeds = [
         new EmbedBuilder()
             .setColor(12154643)
@@ -317,9 +299,7 @@ async function endQualifyingRounds() {
 
     if (players.length <= 24) embeds.pop();
 
-    await guild.channels.cache
-        .get(constantIDs.event.fightDiscord.channel[+options.test])
-        .send({ embeds: embeds });
+    await constants.events.fightDiscord.channel.send({ embeds: embeds });
 
     players.splice(settings.players / 2);
     settings.players /= 2;
@@ -328,13 +308,6 @@ async function endQualifyingRounds() {
 }
 
 async function startFinals() {
-    const guild = client.guilds.cache.get(
-        constantIDs.workingGuild[+options.test]
-    );
-    const channel = guild.channels.cache.get(
-        constantIDs.event.fightDiscord.channel[+options.test]
-    );
-
     const roundsName = {
         2: "Finale",
         4: "Demi-Finale",
@@ -357,18 +330,11 @@ async function startFinals() {
         });
     }
 
-    await channel.send({ embeds: [embed] });
+    await constants.events.fightDiscord.channel.send({ embeds: [embed] });
 
     setTimeout(() => startFinalRounds(0), 1000 * 60 * 10);
 }
 async function startFinalRounds(playerIndex) {
-    const guild = client.guilds.cache.get(
-        constantIDs.workingGuild[+options.test]
-    );
-    const channel = guild.channels.cache.get(
-        constantIDs.event.fightDiscord.channel[+options.test]
-    );
-
     const roundsName = {
         2: "Finale",
         4: "Demi-Finale",
@@ -424,7 +390,7 @@ async function startFinalRounds(playerIndex) {
             },
         ]);
 
-    await channel.send({ embeds: [embed] });
+    await constants.events.fightDiscord.channel.send({ embeds: [embed] });
 
     if (!draw)
         if (playerWon) players[opponentIndex] = undefined;
@@ -443,18 +409,23 @@ async function startFinalRounds(playerIndex) {
         if (settings.players > 1) {
             setTimeout(() => startFinals(), 1000 * 60 * 10);
         } else {
-            await channel.send(`:tada: **${players[0].name} a gagné**`);
+            await constants.events.fightDiscord.channel.send(
+                `:tada: **${players[0].name} a gagné**`
+            );
 
             const userId = players[0].user ? players[0].id : players[0].name;
 
             if (await db.checkFightWin(userId)) {
-                db.addFightWins(userId,1);
-            } else{
-                db.registerFightWin(userId,1);
+                db.addFightWins(userId, 1);
+            } else {
+                db.registerFightWin(userId, 1);
             }
 
             season++;
-            fs.writeFileSync(path.join(process.cwd(),"data/fight.json"),JSON.stringify({season:season}));
+            fs.writeFileSync(
+                path.join(process.cwd(), "data/fight.json"),
+                JSON.stringify({ season: season })
+            );
         }
     }
 }

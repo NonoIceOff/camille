@@ -1,19 +1,14 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { EmbedBuilder } = require("discord.js");
 
-const constantIDs = require("../constants/ids");
-const { options, client } = require("../client");
+const permissions = require("../utils/permissions");
 
 /**
  * Action when the command is triggered
  * @param {import("discord.js").ChatInputCommandInteraction} [interaction] THE interaction
  */
 function onTrigger(interaction) {
-    if (
-        interaction.member.roles.cache.has(
-            constantIDs.roles.admin[+options.test]
-        )
-    ) {
+    if (permissions.canCommandRun(interaction, permissions.levels.admin)) {
         const embed = new EmbedBuilder()
             .setColor(10181046)
             .setTitle(":books: __**Règles**__ de Shinsetsu Kurabu *V3*")
@@ -48,15 +43,6 @@ Bienvenue dans le serveur Shinsetsu Kurabu. Avant de bien vous installer, veuill
             embeds: [embed],
             fetchReply: true,
         });
-    } else {
-        interaction.reply(
-            `Vous n'avez pas le rôle **${
-                client.guilds.cache
-                    .get(constantIDs.workingGuild[+options.test])
-                    .roles.cache.get(constantIDs.roles.admin[+options.test])
-                    .name
-            }** pour executer cette commande.`
-        );
     }
 }
 

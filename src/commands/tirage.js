@@ -1,21 +1,17 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
+const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 
 const db = require("../data/db");
-const constantIDs = require("../constants/ids");
-const { options, client } = require("../client");
-const { EmbedBuilder } = require("discord.js");
+const permissions = require("../utils/permissions");
 
 /**
  * Action when the command is triggered
  * @param {import("discord.js").ChatInputCommandInteraction} [interaction] THE interaction
  */
 async function onTrigger(interaction) {
-    if (
-        interaction.member.roles.cache.has(
-            constantIDs.roles.admin[+options.test]
-        )
-    ) {
-        const title = (interaction.options.getString("title") ?? "Quelque chose").substring(0,50);
+    if (permissions.canCommandRun(interaction, permissions.levels.admin)) {
+        const title = (
+            interaction.options.getString("title") ?? "Quelque chose"
+        ).substring(0, 50);
 
         const embed = new EmbedBuilder()
             .setColor(10181046)
@@ -27,16 +23,7 @@ async function onTrigger(interaction) {
         });
         message.react("💰");
 
-        db.registerGiveaway(message.id,interaction.user.id,title)
-    } else {
-        interaction.reply(
-            `Vous n'avez pas le rôle **${
-                client.guilds.cache
-                    .get(constantIDs.workingGuild[+options.test])
-                    .roles.cache.get(constantIDs.roles.admin[+options.test])
-                    .name
-            }** pour executer cette commande.`
-        );
+        db.registerGiveaway(message.id, interaction.user.id, title);
     }
 }
 

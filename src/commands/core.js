@@ -1,5 +1,5 @@
-const constantIDs = require("../constants/ids");
-const { client, options } = require("../client");
+const { options } = require("../client");
+const { constants } = require("../utils/clientConstants");
 
 const commands = [
     "addxp",
@@ -60,9 +60,7 @@ function resetCommands() {
             (command) => require(`./${command}`).definition
         );
 
-        client.guilds.cache
-            .get(constantIDs.workingGuild[+options.test])
-            .commands.set(commands_definition);
+        constants.workingGuild.commands.set(commands_definition);
     }
 }
 
