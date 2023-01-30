@@ -16,12 +16,18 @@ git clone https://github.com/NonoIceOff/camille
 cd camille
 npm i
 ```
-- Finally, make a file called `config.js` with the token of your bot, example:
+- Make a file called `config.js` with the token of your bot, example:
 ```js
 module.exports = {
     token: "NTAwNTYxODc4MzDSMS-DOSMg.GYna_5.nJG-9ZdGD_US2nGLAfDSflopjbOquxidfnODC5", // Token used when test = 0
     testToken:"ODAzdfdsnfnj7VzUxODA1.GI1mU1.ILDSOvkxzpLINUX46ZMQn0J6MHX69pcvxl.SQKI", // Token used when test = 1
 };
+```
+- Finally, make a folder called `data` with a file called `fight.json` containing the season number of Fight, example:
+```json
+{
+    "season":"1"
+}
 ```
 ### Run
 - To run the bot, you have to enter the following command

@@ -136,7 +136,7 @@ async function onButton(interaction) {
             if (
                 interaction.message.interaction.user.id === interaction.user.id
             ) {
-                interaction.deferUpdate();
+                await interaction.deferUpdate();
                 editLeaderboard(interaction, path[1], +path[2]);
             } else {
                 interaction.reply({
