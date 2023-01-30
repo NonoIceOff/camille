@@ -195,14 +195,15 @@ function update() {
                         console.log("Updating database...");
                         const fight = require("../../data/fight.json");
 
-                        db.run(
-                            `INSERT INTO fight_winners (user_id,wins) VALUES ${Object.keys(
-                                fight.Saisons.Wins
-                            )
-                                .map(() => "(?,?)")
-                                .join(",")}`,
-                            Object.entries(fight.Saisons.Wins).flat()
-                        );
+                        if (fight.Saisons)
+                            db.run(
+                                `INSERT INTO fight_winners (user_id,wins) VALUES ${Object.keys(
+                                    fight.Saisons.Wins
+                                )
+                                    .map(() => "(?,?)")
+                                    .join(",")}`,
+                                Object.entries(fight.Saisons.Wins).flat()
+                            );
                     }
                 }
                 if (tables.includes("giveaways")) {
