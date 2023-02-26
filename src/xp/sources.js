@@ -42,12 +42,13 @@ function fromVoice(oldVoiceState, newVoiceState) {
             !isVoiceEligible(oldVoiceState) && isVoiceEligible(newVoiceState);
         let memberLeft =
             isVoiceEligible(oldVoiceState) && !isVoiceEligible(newVoiceState);
+
         /**
          * @type {VoiceChannel}
          */
-        let channel = newVoiceState.channel;
+        let channel = oldVoiceState.channel;
         if (!channel) {
-            channel = oldVoiceState.channel;
+            channel = newVoiceState.channel;
         }
         if (!channel) return;
 
@@ -64,14 +65,9 @@ function fromVoice(oldVoiceState, newVoiceState) {
         if (eligibleCount >= 2) {
             const eventDate = Math.floor(Date.now() / 1000);
 
+            if (memberLeft) oldVoiceState.member.user.setLastVoiceActivity(0);
+
             channel.members.forEach(async (member) => {
-                let lastVoiceActivity =
-                    await member.user.getLastVoiceActivity();
-                if (eligibleCount === 2 && memberJoined) lastVoiceActivity = 0;
-
-                if (memberLeft && newVoiceState.id === member.id)
-                    member.user.setLastVoiceActivity(0);
-
                 if (
                     !(
                         memberLeft &&
@@ -81,6 +77,10 @@ function fromVoice(oldVoiceState, newVoiceState) {
                     !isVoiceEligible(member)
                 )
                     return;
+
+                let lastVoiceActivity =
+                    await member.user.getLastVoiceActivity();
+                if (eligibleCount === 2 && memberJoined) lastVoiceActivity = 0;
 
                 const timeSinceLastActivity = eventDate - lastVoiceActivity;
 
